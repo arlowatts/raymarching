@@ -1,27 +1,31 @@
 import java.lang.Math;
+import java.util.ArrayList;
 
 public class Main {
 	private Ray forSomeReasonTheRayClassDoesntRecompileOnItsOwn;
 	
 	public static void main(String[] args) throws InterruptedException {
-		Camera c = new Camera(0, 0, -50);
-		Screen s = new Screen(500, 300, 500, 0xffffff, "Raymarching");
+		Object camera = new Object(0, 0, -25, 0);
+		Screen screen = new Screen(1500, 900, 500, 0xffffff, "Raymarching");
 		
-		Object objects[] = new Object[5];
-		objects[0] = new Box(-5, 0, -20, 3, 3, 5, 0x00ffff);
-		objects[1] = new Sphere(2, -6, 20, 2, 0xff00ff);
-		objects[2] = new Sphere(0, 0, 10, 1, 0xffff00);
-		objects[3] = new Box(-1, 3, 0, 2, 2, 4, 0x0000ff);
-		objects[4] = new Sphere(8, 9, 10, 4, 0xff0000);
+		ArrayList<Object> objects = new ArrayList<>();
+		
+		objects.add(new Box(-1, -2, -1, 2, 4, 2, 0x0088ff));
+		objects.add(new Box(1, -2.5, -0.5, 1, 4, 1, 0x0077ee));
+		objects.add(new Box(-2, -2.5, -0.5, 1, 4, 1, 0x0077ee));
+		objects.add(new Box(0.5, -6, -0.5, 1, 4, 1, 0x0077ee));
+		objects.add(new Box(-1.5, -6, -0.5, 1, 4, 1, 0x0077ee));
+		objects.add(new Sphere(0, 3.5, 0, 1.5, 0xffddbb));
 		
 		while (true) {
-			s.update(c, objects);
+			screen.update(camera, objects);
+			
+			for (int i = 0; i < objects.size(); i++) {
+				objects.get(i).rotate(0.08, 0);
+				objects.get(i).getPos().rotate(0.08, 0, 0, 0, 0);
+			}
 			
 			//Thread.sleep(10);
-			
-			//c.getPos().add(-Math.cos(c.getAngleY()), 0, -Math.sin(c.getAngleY()));
-			
-			//c.setAngleY(c.getAngleY() - 0.025);
 		}
 	}
 }

@@ -1,41 +1,20 @@
 import java.lang.Math;
 
 public class Vector {
+	// Member variables
 	private double x, y, z;
 	
-	public Vector(double x, double y, double z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
+	// Constructors
+	public Vector(double x, double y, double z) {set(x, y, z);}
 	
-	public Vector(Vector v) {this(v.x, v.y, v.z);}
+	public Vector(Vector v) {set(v);}
 	
-	public double getX() {return x;}
+	public Vector() {set(0, 0, 0);}
 	
-	public double getY() {return y;}
-	
-	public double getZ() {return z;}
-	
-	public void setX(double x) {this.x = x;}
-	
-	public void setY(double y) {this.y = y;}
-	
-	public void setZ(double z) {this.z = z;}
-	
-	public double getDistance(Vector v) {
-		return Math.sqrt((v.x - x)*(v.x - x) + (v.y - y)*(v.y - y) + (v.z - z)*(v.z - z));
-	}
-	
-	public double getLength() {
-		return Math.sqrt(x*x + y*y + z*z);
-	}
-	
-	public void setLength(double length) {
-		multiply(length / getLength());
-	}
-	
-	public void rotate(double sincos[], double originX, double originY, double originZ) {
+	// Methods
+	public void rotate(double angleX, double angleY, double originX, double originY, double originZ) {
+		double[] sincos = getSincos(angleX, angleY);
+		
 		x -= originX;
 		y -= originY;
 		z -= originZ;
@@ -55,14 +34,8 @@ public class Vector {
 		z += originZ;
 	}
 	
-	public void rotate(double sincos[], Vector origin) {
-		rotate(sincos, origin.x, origin.y, origin.z);
-	}
-	
-	public static double[] getSincos(double angleX, double angleY) {
-		double sincos[] = {Math.sin(angleX), Math.sin(angleY), Math.cos(angleX), Math.cos(angleY)};
-		
-		return sincos;
+	public void rotate(double angleX, double angleY, Vector origin) {
+		rotate(angleX, angleY, origin.x, origin.y, origin.z);
 	}
 	
 	public void add(double x, double y, double z) {
@@ -87,5 +60,49 @@ public class Vector {
 		x *= l;
 		y *= l;
 		z *= l;
+	}
+	
+	// Getters
+	public double getX() {return x;}
+	public double getY() {return y;}
+	public double getZ() {return z;}
+	
+	public double getDistance(Vector v) {
+		return Math.sqrt((v.x - x)*(v.x - x) + (v.y - y)*(v.y - y) + (v.z - z)*(v.z - z));
+	}
+	
+	public double getLength() {
+		return Math.sqrt(x*x + y*y + z*z);
+	}
+	
+	// Setters
+	public void setX(double x) {this.x = x;}
+	public void setY(double y) {this.y = y;}
+	public void setZ(double z) {this.z = z;}
+	
+	public void set(double x, double y, double z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+	
+	public void set(Vector v) {
+		set(v.x, v.y, v.z);
+	}
+	
+	public void setLength(double length) {
+		multiply(length / getLength());
+	}
+	
+	// Helpers
+	private static double[] getSincos(double angleX, double angleY) {
+		double sincos[] = {Math.sin(angleX), Math.sin(angleY), Math.cos(angleX), Math.cos(angleY)};
+		
+		return sincos;
+	}
+	
+	// toString
+	public String toString() {
+		return "X: " + x + "\tY: " + y + "\tZ: " + z;
 	}
 }
