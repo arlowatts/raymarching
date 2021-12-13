@@ -22,10 +22,10 @@ public class Box extends Object {
 	public void setBounds(Object camera, Screen screen) {
 		double[] bounds = getBounds();
 		
-		bounds[0] = screen.getWidth();
-		bounds[1] = screen.getHeight();
-		bounds[2] = -screen.getWidth();
-		bounds[3] = -screen.getHeight();
+		bounds[0] = getPos().getX() - 100;//screen.getWidth();
+		bounds[1] = 1000;//getPos().getY() - 100;//screen.getHeight();
+		bounds[2] = getPos().getX() + 100;//-screen.getWidth();
+		bounds[3] = getPos().getY() + 100;//-screen.getHeight();
 		
 		int numInvalid = 0;
 		
@@ -48,10 +48,10 @@ public class Box extends Object {
 				double screenX = newPos.getX() * ratio;
 				double screenY = newPos.getY() * ratio;
 				
-				bounds[0] = Math.min(bounds[0], screenX);
+				//bounds[0] = Math.min(bounds[0], screenX);
 				bounds[1] = Math.min(bounds[1], screenY);
-				bounds[2] = Math.max(bounds[2], screenX);
-				bounds[3] = Math.max(bounds[3], screenY);
+				//bounds[2] = Math.max(bounds[2], screenX);
+				//bounds[3] = Math.max(bounds[3], screenY);
 			}
 		}
 		

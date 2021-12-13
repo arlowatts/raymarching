@@ -53,10 +53,13 @@ public class Screen {
 			for (int y = 0; y < height; y++) {
 				nearObjects.clear();
 				
+				//pixels[x + (height - y - 1) * width] = background;
+				
 				for (int i = 0; i < objects.size(); i++) {
 					final double[] bounds = objects.get(i).getBounds();
 					
 					if (bounds[0] != -1 && x - centerX >= bounds[0] && y - centerY >= bounds[1] && x - centerX <= bounds[2] && y - centerY <= bounds[3])
+						//pixels[x + (height - y - 1) * width] = objects.get(i).getColor();
 						nearObjects.add(objects.get(i));
 				}
 				
