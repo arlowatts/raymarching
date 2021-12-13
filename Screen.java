@@ -72,18 +72,18 @@ public class Screen {
 				
 				ray.getDir().rotate(camera.getAngleX(), camera.getAngleY(), 0, 0, 0);
 				
-				currentTime = System.nanoTime();
+				//currentTime = System.nanoTime();
 				int pixel = ray.march(nearObjects);
-				marchTime += System.nanoTime() - currentTime;
+				//marchTime += System.nanoTime() - currentTime;
 				
 				if (pixel != -1) pixels[x + (height - y - 1) * width] = nearObjects.get(pixel).getColor();
 				else pixels[x + (height - y - 1) * width] = background;
 			}
 		}
 		
-		currentTime = System.nanoTime();
+		//currentTime = System.nanoTime();
 		image.setRGB(0, 0, width, height, pixels, 0, width);
-		imageWritingTime += System.nanoTime() - currentTime;
+		//imageWritingTime += System.nanoTime() - currentTime;
 		
 		label.updateUI();
 		

@@ -34,6 +34,8 @@ public class Box extends Object {
 			
 			newPos.add(width * (i & 1), height * ((i >> 1) & 1), length * ((i >> 2) & 1));
 			
+			//System.out.print(newPos + "\t: ");
+			
 			newPos.rotate(getAngleX(), getAngleY(), getPos());
 			
 			newPos.subtract(camera.getPos());
@@ -48,12 +50,17 @@ public class Box extends Object {
 				double screenX = newPos.getX() * ratio;
 				double screenY = newPos.getY() * ratio;
 				
+				System.out.println(newPos + "\t: " + (double)Math.round(screenX * 100000) / 100000d + ", " + (double)Math.round(screenY * 100000) / 100000d);
+				
 				//bounds[0] = Math.min(bounds[0], screenX);
-				bounds[1] = Math.min(bounds[1], screenY);
+				bounds[1] = screenY < bounds[1] ? screenY : bounds[1];
 				//bounds[2] = Math.max(bounds[2], screenX);
 				//bounds[3] = Math.max(bounds[3], screenY);
 			}
 		}
+		
+		//for (int i = 0; i < 4; i++) System.out.println(bounds[i]);
+		//System.out.println();
 		
 		if (numInvalid == 8) {
 			bounds[0] = -1;
