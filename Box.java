@@ -36,7 +36,7 @@ public class Box extends Object {
 			
 			//System.out.print(newPos + "\t: ");
 			
-			newPos.rotate(getAngleX(), getAngleY(), getPos());
+			newPos.inverseRotate(-getAngleX(), -getAngleY(), getPos());
 			
 			newPos.subtract(camera.getPos());
 			

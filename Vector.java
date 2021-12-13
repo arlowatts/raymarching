@@ -33,9 +33,34 @@ public class Vector {
 		y += originY;
 		z += originZ;
 	}
+	public void inverseRotate(double angleX, double angleY, double originX, double originY, double originZ) {
+		double[] sincos = getSincos(-angleX, -angleY);
+		
+		x -= originX;
+		y -= originY;
+		z -= originZ;
+		
+		double t;
+		
+		t = x;
+		x = x * sincos[3] - z * sincos[1];
+		z = t * sincos[1] + z * sincos[3];
+		
+		t = y;
+		y = y * sincos[2] - z * sincos[0];
+		z = t * sincos[0] + z * sincos[2];
+		
+		x += originX;
+		y += originY;
+		z += originZ;
+	}
 	
 	public void rotate(double angleX, double angleY, Vector origin) {
 		rotate(angleX, angleY, origin.x, origin.y, origin.z);
+	}
+	
+	public void inverseRotate(double angleX, double angleY, Vector origin) {
+		inverseRotate(angleX, angleY, origin.x, origin.y, origin.z);
 	}
 	
 	public void add(double x, double y, double z) {
