@@ -11,10 +11,10 @@ public class Main {
 		ArrayList<Object> objects = new ArrayList<>();
 		
 		objects.add(new Box(-1, -2, -1, 2, 4, 2, 0x0088ff));
-		//objects.add(new Box(1, -2.5, -0.5, 1, 4, 1, 0x0077ee));
-		//objects.add(new Box(-2, -2.5, -0.5, 1, 4, 1, 0x0077ee));
-		//objects.add(new Box(0.5, -6, -0.5, 1, 4, 1, 0x0077ee));
-		//objects.add(new Box(-1.5, -6, -0.5, 1, 4, 1, 0x0077ee));
+		objects.add(new Box(1, -2.5, -0.5, 1, 4, 1, 0x0077ee));
+		objects.add(new Box(-2, -2.5, -0.5, 1, 4, 1, 0x0077ee));
+		objects.add(new Box(0.5, -6, -0.5, 1, 4, 1, 0x0077ee));
+		objects.add(new Box(-1.5, -6, -0.5, 1, 4, 1, 0x0077ee));
 		objects.add(new Sphere(0, 3.5, 0, 3, 0xffddbb));
 		
 		while (true) {
@@ -22,10 +22,8 @@ public class Main {
 			
 			for (int i = 0; i < objects.size(); i++) {
 				objects.get(i).rotate(0.1, 0.1);
-				//objects.get(i).getPos().rotate(0.1, 0.1, 0, 0, 0);
+				objects.get(i).getPos().rotate(0.1, 0.1, 0, 0, 0);
 			}
-			
-			//Thread.sleep(10);
 		}
 	}
 }

@@ -36,17 +36,9 @@ public class Ray {
 			
 			double stepSize = objects.get(nearest).getDistance(pos);
 			
-			if (stepSize < MIN_LENGTH) {
-				return nearest;
-				//Vector normal = objects.get(nearest).getNormal(pos);
-				//normal.setLength(0xff);
-				
-				//return (Math.abs((int)normal.getX()) & 0xff) << 16 +
-				//	   (Math.abs((int)normal.getY()) & 0xff) << 8 +
-				//	   (Math.abs((int)normal.getZ()) & 0xff);
-			}
-			
 			step(stepSize);
+			
+			if (stepSize < MIN_LENGTH) return nearest;
 		}
 		
 		return -1;
@@ -81,6 +73,10 @@ public class Ray {
 	public Vector getPos() {return pos;}
 	
 	public Vector getDir() {return dir;}
+	
+	public int getSteps() {return steps;}
+	
+	public double getLength() {return length;}
 	
 	// toString
 	public String toString() {

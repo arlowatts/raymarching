@@ -33,6 +33,7 @@ public class Vector {
 		y += originY;
 		z += originZ;
 	}
+	
 	public void inverseRotate(double angleX, double angleY, double originX, double originY, double originZ) {
 		double[] sincos = getSincos(-angleX, -angleY);
 		
@@ -85,6 +86,16 @@ public class Vector {
 		x *= l;
 		y *= l;
 		z *= l;
+	}
+	
+	public int toInt() {
+		Vector v = new Vector(this);
+		
+		v.setLength(255);
+		
+		return ((int)v.x & 255) << 16 +
+			   ((int)v.y & 255) << 8 +
+			   ((int)v.z & 255);
 	}
 	
 	// Getters

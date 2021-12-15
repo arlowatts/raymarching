@@ -53,13 +53,10 @@ public class Screen {
 			for (int y = 0; y < height; y++) {
 				nearObjects.clear();
 				
-				//pixels[x + (height - y - 1) * width] = background;
-				
 				for (int i = 0; i < objects.size(); i++) {
 					final double[] bounds = objects.get(i).getBounds();
 					
-					if (bounds[0] != -1 && x - centerX >= bounds[0] && y - centerY >= bounds[1] && x - centerX <= bounds[2] && y - centerY <= bounds[3])
-						//pixels[x + (height - y - 1) * width] = objects.get(i).getColor();
+					if (x >= bounds[0] && y >= bounds[1] && x <= bounds[2] && y <= bounds[3])
 						nearObjects.add(objects.get(i));
 				}
 				
@@ -72,25 +69,20 @@ public class Screen {
 				
 				ray.getDir().rotate(camera.getAngleX(), camera.getAngleY(), 0, 0, 0);
 				
-				//currentTime = System.nanoTime();
 				int pixel = ray.march(nearObjects);
-				//marchTime += System.nanoTime() - currentTime;
 				
-				if (pixel != -1) pixels[x + (height - y - 1) * width] = nearObjects.get(pixel).getColor();
-				else pixels[x + (height - y - 1) * width] = background;
+				if (pixel != -1) {
+					pixels[x + (height - y - 1) * width] = nearObjects.get(pixel).getColor();
+				}
+				else {
+					pixels[x + (height - y - 1) * width] = background;
+				}
 			}
 		}
 		
-		//currentTime = System.nanoTime();
 		image.setRGB(0, 0, width, height, pixels, 0, width);
-		//imageWritingTime += System.nanoTime() - currentTime;
 		
 		label.updateUI();
-		
-		//long totalTime = marchTime + imageWritingTime;
-		
-		//System.out.println("\nMarch time:\t\t" + 100 * marchTime / totalTime + 
-		//				   "\nImage Writing time:\t" + 100 * imageWritingTime / totalTime);
 	}
 	
 	// Getters

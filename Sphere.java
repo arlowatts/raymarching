@@ -20,25 +20,44 @@ public class Sphere extends Object{
 	public void setBounds(Object camera, Screen screen) {
 		double[] bounds = getBounds();
 		
-		Vector newPos = new Vector(getPos());
+		bounds[0] = screen.getWidth();
+		bounds[1] = screen.getHeight();
+		bounds[2] = -screen.getWidth();
+		bounds[3] = -screen.getHeight();
 		
-		newPos.subtract(camera.getPos());
+		int numInvalid = 0;
 		
-		newPos.rotate(-camera.getAngleX(), -camera.getAngleY(), 0, 0, 0);
+		for (int i = 0; i < 8; i++) {
+			Vector newPos = new Vector(getPos());
+			
+			newPos.add(radius * (((i << 1) & 2) - 1), radius * ((i & 2) - 1), radius * (((i >> 1) & 2) - 1));
+			
+			newPos.rotate(getAngleX(), getAngleY(), getPos());
+			
+			newPos.subtract(camera.getPos());
+			
+			newPos.inverseRotate(camera.getAngleX(), camera.getAngleY(), 0, 0, 0);
+			
+			if (newPos.getZ() < 1) numInvalid++;
+			
+			else {
+				double ratio = screen.getDistance() / newPos.getZ();
+				
+				double screenX = newPos.getX() * ratio + screen.getWidth() / 2;
+				double screenY = newPos.getY() * ratio + screen.getHeight() / 2;
+				
+				bounds[0] = Math.min(bounds[0], screenX);
+				bounds[1] = Math.min(bounds[1], screenY);
+				bounds[2] = Math.max(bounds[2], screenX);
+				bounds[3] = Math.max(bounds[3], screenY);
+			}
+		}
 		
-		if (newPos.getZ() < 1) {
+		if (numInvalid == 8) {
 			bounds[0] = -1;
 			bounds[1] = -1;
 			bounds[2] = -1;
 			bounds[3] = -1;
-		}
-		else {
-			double ratio = screen.getDistance() / newPos.getZ();
-			
-			bounds[0] = (newPos.getX() - radius) * ratio;
-			bounds[1] = (newPos.getY() - radius) * ratio;
-			bounds[2] = (newPos.getX() + radius) * ratio;
-			bounds[3] = (newPos.getY() + radius) * ratio;
 		}
 	}
 	
@@ -50,6 +69,8 @@ public class Sphere extends Object{
 		Vector normal = new Vector(v);
 		
 		normal.subtract(getPos());
+		
+		normal.inverseRotate(getAngleX(), getAngleY(), 0, 0, 0);
 		
 		normal.setLength(1);
 		
