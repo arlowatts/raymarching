@@ -64,6 +64,14 @@ public class Vector {
 		inverseRotate(angleX, angleY, origin.x, origin.y, origin.z);
 	}
 	
+	public double dotProduct(Vector v) {
+		return x*v.x + y*v.y + z*v.z;
+	}
+	
+	public double getDistance(Vector v) {
+		return Math.sqrt((v.x - x)*(v.x - x) + (v.y - y)*(v.y - y) + (v.z - z)*(v.z - z));
+	}
+	
 	public void add(double x, double y, double z) {
 		this.x += x;
 		this.y += y;
@@ -93,19 +101,15 @@ public class Vector {
 		
 		v.setLength(255);
 		
-		return ((int)v.x & 255) << 16 +
-			   ((int)v.y & 255) << 8 +
-			   ((int)v.z & 255);
+		return (Math.abs((int)v.x) << 16) |
+			   (Math.abs((int)v.y) << 8) |
+			   Math.abs((int)v.z);
 	}
 	
 	// Getters
 	public double getX() {return x;}
 	public double getY() {return y;}
 	public double getZ() {return z;}
-	
-	public double getDistance(Vector v) {
-		return Math.sqrt((v.x - x)*(v.x - x) + (v.y - y)*(v.y - y) + (v.z - z)*(v.z - z));
-	}
 	
 	public double getLength() {
 		return Math.sqrt(x*x + y*y + z*z);

@@ -56,10 +56,10 @@ public class Box extends Object {
 		}
 		
 		if (numInvalid == 8) {
-			bounds[0] = -1;
-			bounds[1] = -1;
-			bounds[2] = -1;
-			bounds[3] = -1;
+			bounds[0] = 0;
+			bounds[1] = 0;
+			bounds[2] = 0;
+			bounds[3] = 0;
 		}
 	}
 	
@@ -82,9 +82,21 @@ public class Box extends Object {
 		
 		normal.inverseRotate(getAngleX(), getAngleY(), 0, 0, 0);
 		
-		normal.add(-width / 2, -height / 2, -length / 2);
+		if (normal.getX() < 0) normal.setX(-1);
+		else if (normal.getX() > width) normal.setX(1);
+		else normal.setX(0);
+		
+		if (normal.getY() < 0) normal.setY(-1);
+		else if (normal.getY() > height) normal.setY(1);
+		else normal.setY(0);
+		
+		if (normal.getZ() < 0) normal.setZ(-1);
+		else if (normal.getZ() > length) normal.setZ(1);
+		else normal.setZ(0);
 		
 		normal.setLength(1);
+		
+		normal.rotate(getAngleX(), getAngleY(), 0, 0, 0);
 		
 		return normal;
 	}
@@ -96,7 +108,7 @@ public class Box extends Object {
 	
 	// Setters
 	public void setWidth(double w) {width = w;}
-	public void setHeight(double h) {height= h;}
+	public void setHeight(double h) {height = h;}
 	public void setLength(double l) {length = l;}
 	
 	public void setSize(double w, double h, double l) {

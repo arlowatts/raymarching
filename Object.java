@@ -16,10 +16,10 @@ public class Object {
 		this.angleY = angleY;
 		
 		bounds = new double[4];
-		bounds[0] = -1;
-		bounds[1] = -1;
-		bounds[2] = -1;
-		bounds[3] = -1;
+		bounds[0] = 0;
+		bounds[1] = 0;
+		bounds[2] = 0;
+		bounds[3] = 0;
 		
 		this.color = color;
 	}
@@ -37,10 +37,10 @@ public class Object {
 	}
 	
 	public void setBounds(Object camera, Screen screen) {
-		bounds[0] = -1;
-		bounds[1] = -1;
-		bounds[2] = -1;
-		bounds[3] = -1;
+		bounds[0] = 0;
+		bounds[1] = 0;
+		bounds[2] = 0;
+		bounds[3] = 0;
 	}
 	
 	public double getDistance(Vector v) {
@@ -60,6 +60,14 @@ public class Object {
 	public double[] getBounds() {return bounds;}
 	
 	public int getColor() {return color;}
+	
+	public int getColor(double shade) {
+		shade = Math.max(0, Math.min(1, Math.abs(shade)));
+		
+		return ((int)((color >> 16) * shade) << 16) |
+			   ((int)(((color >> 8) & 255) * shade) << 8) |
+			   (int)((color & 255) * shade);
+	}
 	
 	// Setters
 	public void setAngleX(double angleX) {this.angleX = angleX;}

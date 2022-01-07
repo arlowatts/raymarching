@@ -72,7 +72,9 @@ public class Screen {
 				int pixel = ray.march(nearObjects);
 				
 				if (pixel != -1) {
-					pixels[x + (height - y - 1) * width] = nearObjects.get(pixel).getColor();
+					double shade = nearObjects.get(pixel).getNormal(ray.getPos()).dotProduct(ray.getDir());
+					
+					pixels[x + (height - y - 1) * width] = nearObjects.get(pixel).getColor(shade);
 				}
 				else {
 					pixels[x + (height - y - 1) * width] = background;

@@ -54,10 +54,10 @@ public class Sphere extends Object{
 		}
 		
 		if (numInvalid == 8) {
-			bounds[0] = -1;
-			bounds[1] = -1;
-			bounds[2] = -1;
-			bounds[3] = -1;
+			bounds[0] = 0;
+			bounds[1] = 0;
+			bounds[2] = 0;
+			bounds[3] = 0;
 		}
 	}
 	
@@ -69,8 +69,6 @@ public class Sphere extends Object{
 		Vector normal = new Vector(v);
 		
 		normal.subtract(getPos());
-		
-		normal.inverseRotate(getAngleX(), getAngleY(), 0, 0, 0);
 		
 		normal.setLength(1);
 		

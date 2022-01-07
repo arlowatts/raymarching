@@ -52,8 +52,6 @@ public class Ray {
 			double distance = objects.get(i).getDistance(pos);
 			
 			if (distance < minDist) {
-				if (distance < MIN_LENGTH) return i;
-				
 				index = i;
 				minDist = distance;
 			}
