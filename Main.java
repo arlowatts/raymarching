@@ -4,30 +4,33 @@ import java.util.ArrayList;
 public class Main {
 	private Ray forSomeReasonTheRayClassDoesntRecompileOnItsOwn;
 	
-	private static final int numShapes = 2;
+	private static int frames = 0;
 	
-	public static void main(String[] args) throws InterruptedException {
-		Object camera = new Object(0, 0, -25, 0);
+	public static void main(String[] args) {
+		Shape camera = new Shape(0, 0, -10, 0, 0, 0);
 		Screen screen = new Screen(1500, 900, 500, 0xffffff, "Raymarching");
 		
-		ArrayList<Object> objects = new ArrayList<>();
+		ArrayList<Shape> objects = new ArrayList<>();
 		
-		for (int i = 0; i < numShapes; i++) {
-			Collection coll = new Collection(Math.random() * 10 - 5, Math.random() * 10 - 5, Math.random() * 10 - 5, (int)(Math.random() * 0xffffff));
-			objects.add(coll);
+		Group coll = new Group(0, 0, 0, 0, 0, 0.1, 0xf4a0e6);
+		objects.add(coll);
+		
+		for (int i = 0; i < 2; i++) {
+			coll.add(new Sphere(2, -1, 0, 1.5, 0, 0, 0));
 			
-			coll.add(new Sphere(Math.random() * 4 - 2, Math.random() * 4 - 2, Math.random() * 4 - 2, Math.random() * 2, (int)(Math.random() * 0xffffff)));
-			
-			coll.add(new Box(Math.random() * 4 - 2, Math.random() * 4 - 2, Math.random() * 4 - 2, Math.random() * 4, Math.random() * 4, Math.random() * 4, (int)(Math.random() * 0xffffff)));
+			coll.add(new Box(1, -0.5, 0.25, 2.1, 3.14, 1.23, 0, 0, 0, 0));
 		}
 		
+		Box box = new Box(-2.5, -3, -2.5, 0.8, 2.9, 3.4, 0.4, 0, 0, 0x7bc4a8);
+		objects.add(box);
+		
 		while (true) {
-			screen.update(camera, objects);
+			screen.updateScene(camera, objects);
 			
-			for (int i = 0; i < objects.size(); i++) {
-				objects.get(i).rotate(0.025, 0.05);
-				objects.get(i).getPos().rotate(0.025, 0.05, 0, 0, 0);
-			}
+			camera.getPos().rotate(0, 0.1, 0, 0, 0);
+			camera.rotate(0, 0.1);
+			
+			frames++;
 		}
 	}
 }

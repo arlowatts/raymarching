@@ -25,7 +25,7 @@ public class Ray {
 	}
 	
 	//Methods
-	public int march(ArrayList<Object> objects) {
+	public int march(ArrayList<Shape> objects) {
 		steps = 0;
 		length = 0;
 		
@@ -44,7 +44,7 @@ public class Ray {
 		return -1;
 	}
 	
-	public int getNearest(ArrayList<Object> objects) {
+	public int getNearest(ArrayList<Shape> objects) {
 		int index = -1;
 		double minDist = MAX_LENGTH;
 		

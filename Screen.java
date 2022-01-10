@@ -3,102 +3,155 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.image.BufferedImage;
 
+import java.awt.Component;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentAdapter;
+
 import java.util.ArrayList;
 
-public class Screen {
+public class Screen extends JFrame {
 	// Member variables
 	private int width, height, distance, background;
 	
-	private JFrame frame;
+	private boolean initWaiting;
+	
 	private JLabel label;
 	private BufferedImage image;
 	private int[] pixels;
 	
+	private static long startTime;
+	private static long programStart = System.nanoTime();
+	private static long checkBoundsTime = 0;
 	private static long marchTime = 0;
-	private static long imageWritingTime = 0;
-	private static long currentTime = 0;
+	private static long normalTime = 0;
+	private static long timeTime = 0;
+	private static long frameStart;
+	private static int frames = 0;
 	
 	// Constructors
 	public Screen(int w, int h, int dist, int bgnd, String title) {
-		width = w;
-		height = h;
+		super(title);
+		
+		setSize(w, h);
 		distance = dist;
 		
 		background = bgnd;
 		
-		frame = new JFrame(title);
+		addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent e) {
+				Screen c = (Screen)e.getSource();
+				
+				c.setInitWaiting(true);
+			}
+		});
 		
-		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		pixels = new int[width * height];
+		// Initializing the JLabel and BufferedImage
+		init();
 		
+		// Initializing the JFrame
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setVisible(true);
+	}
+	
+	private void init() {
+		width = getWidth();
+		height = getHeight();
+		
+		// Creating the Buffered Image and a pixels array to update individual pixels faster
+		image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+		pixels = new int[getWidth() * getHeight()];
+		
+		// Creating the label
 		label = new JLabel(new ImageIcon(image));
-		frame.getContentPane().add(label);
-		
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.pack();
-		frame.setLocationRelativeTo(null);
-		frame.setVisible(true);
+		getContentPane().removeAll();
+		getContentPane().add(label);
 	}
 	
 	// Methods
-	public void update(Object camera, ArrayList<Object> objects) {
-		int centerX = width / 2;
-		int centerY = height / 2;
+	public void updateScene(Shape camera, ArrayList<Shape> objects) {
+		frameStart = System.nanoTime();
+		int k = 0;
 		
+		// Updating the bounding boxes for all the shapes in the scene
 		for (int i = 0; i < objects.size(); i++) objects.get(i).setBounds(camera, this);
 		
-		ArrayList<Object> nearObjects = new ArrayList<>();
+		ArrayList<Shape> validShapes = new ArrayList<>();
 		
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				nearObjects.clear();
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				// Clearing the previous pixel's valid Shapes to reuse the ArrayList
+				validShapes.clear();
 				
+				startTime = System.nanoTime();
 				for (int i = 0; i < objects.size(); i++) {
-					final double[] bounds = objects.get(i).getBounds();
+					double[] bounds = objects.get(i).getBounds();
 					
-					if (x >= bounds[0] && y >= bounds[1] && x <= bounds[2] && y <= bounds[3])
-						nearObjects.add(objects.get(i));
+					// If the object's bounding box includes the current pixel, add it to the list
+					if (x > bounds[0] && y > bounds[1] && x < bounds[2] && y < bounds[3])
+						validShapes.add(objects.get(i));
 				}
+				checkBoundsTime += System.nanoTime() - startTime;
 				
-				if (nearObjects.size() == 0) {
-					pixels[x + (height - y - 1) * width] = background;
+				// If there are no objects, don't create a ray
+				if (validShapes.size() == 0) {
+					pixels[k++] = background;
 					continue;
 				}
 				
-				Ray ray = new Ray(camera.getPos(), new Vector(x - centerX, y - centerY, distance));
+				// Create a ray starting at the camera and passing through the current pixel
+				Ray ray = new Ray(camera.getPos(), new Vector(x - width / 2, y - height / 2, distance));
 				
+				// Rotate it by the camera's rotation
 				ray.getDir().rotate(camera.getAngleX(), camera.getAngleY(), 0, 0, 0);
 				
-				int pixel = ray.march(nearObjects);
+				startTime = System.nanoTime();
+				// March the ray
+				int pixel = ray.march(validShapes);
+				marchTime += System.nanoTime() - startTime;
 				
+				// If it hits something, calculate the surface normal at that point and shade the object's color by the dot product of the ray's angle and the normal
 				if (pixel != -1) {
-					double shade = nearObjects.get(pixel).getNormal(ray.getPos()).dotProduct(ray.getDir());
+					startTime = System.nanoTime();
+					double shade = validShapes.get(pixel).getNormal(ray.getPos()).dotProduct(ray.getDir());
+					normalTime += System.nanoTime() - startTime;
 					
-					pixels[x + (height - y - 1) * width] = nearObjects.get(pixel).getColor(shade);
+					pixels[k++] = validShapes.get(pixel).getColor(shade);
 				}
 				else {
-					pixels[x + (height - y - 1) * width] = background;
+					pixels[k++] = background;
 				}
 			}
 		}
 		
+		// Updating the screen
 		image.setRGB(0, 0, width, height, pixels, 0, width);
-		
 		label.updateUI();
+		
+		startTime = System.nanoTime() - programStart;
+		timeTime += System.nanoTime() - frameStart;
+		/*
+		System.out.println("\nCheck bounds:   " + (100 * checkBoundsTime) / startTime +
+						   "\nMarch:          " + (100 * marchTime) / startTime +
+						   "\nNormals:        " + (100 * normalTime) / startTime +
+						   "\nTime:           " + timeTime / (100000 * ++frames));
+		//*/
+		
+		if (initWaiting) {
+			init();
+			initWaiting = false;
+		}
 	}
 	
 	// Getters
-	public int getWidth() {return width;}
-	public int getHeight() {return height;}
 	public int getDistance() {return distance;}
 	
-	public int getBackground() {return background;}
+	public int getBgnd() {return background;}
 	
-	// toString
-	public String toString() {
-		return "Width: " + width +
-			   "\nHeight: " + height + 
-			   "\nDistance: " + distance + 
-			   "\nBackground color: " + background;
-	}
+	// Setters
+	public void setDistance(int dist) {distance = dist;}
+	
+	public void setBgnd(int bgnd) {background = bgnd;}
+	
+	public void setInitWaiting(boolean init) {initWaiting = init;}
 }

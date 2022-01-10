@@ -1,6 +1,6 @@
 import java.lang.Math;
 
-public class Sphere extends Object{
+public class Sphere extends Shape{
 	// Member variables
 	private double radius;
 	
@@ -12,12 +12,8 @@ public class Sphere extends Object{
 	
 	public Sphere(Vector v, double r, double angleX, double angleY, int color) {this(v.getX(), v.getY(), v.getZ(), r, angleX, angleY, color);}
 	
-	public Sphere(double x, double y, double z, double r, int color) {this(x, y, z, r, 0, 0, color);}
-	
-	public Sphere(Vector v, double r, int color) {this(v.getX(), v.getY(), v.getZ(), r, 0, 0, color);}
-	
 	// Methods
-	public void setBounds(Object camera, Screen screen) {
+	public void setBounds(Shape camera, Screen screen) {
 		double[] bounds = getBounds();
 		
 		bounds[0] = screen.getWidth();
@@ -63,16 +59,6 @@ public class Sphere extends Object{
 	
 	public double getDistance(Vector v) {
 		return getPos().getDistance(v) - radius;
-	}
-	
-	public Vector getNormal(Vector v) {
-		Vector normal = new Vector(v);
-		
-		normal.subtract(getPos());
-		
-		normal.setLength(1);
-		
-		return normal;
 	}
 	
 	// Getters

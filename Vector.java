@@ -143,8 +143,8 @@ public class Vector {
 	
 	// toString
 	public String toString() {
-		return "X: " + (double)Math.round(x * 100000) / 100000d +
-			   "\tY: " + (double)Math.round(y * 100000) / 100000d +
-			   "\tZ: " + (double)Math.round(z * 100000) / 100000d;
+		return "X: " + (double)Math.round(x * 100000) / 100000D +
+			   "\tY: " + (double)Math.round(y * 100000) / 100000D +
+			   "\tZ: " + (double)Math.round(z * 100000) / 100000D;
 	}
 }

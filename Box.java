@@ -1,25 +1,23 @@
 import java.lang.Math;
 
-public class Box extends Object {
+public class Box extends Shape {
 	// Member variables
-	private double width, height, length;
+	private double width, height, length, radius;
 	
 	// Constructors
-	public Box(double x, double y, double z, double w, double h, double l, double angleX, double angleY, int color) {
+	public Box(double x, double y, double z, double w, double h, double l, double r, double angleX, double angleY, int color) {
 		super(x, y, z, angleX, angleY, color);
 		width = w;
 		height = h;
 		length = l;
+		
+		radius = r;
 	}
 	
-	public Box(Vector v, double w, double h, double l, double angleX, double angleY, int color) {this(v.getX(), v.getY(), v.getZ(), w, h, l, angleX, angleY, color);}
-	
-	public Box(double x, double y, double z, double w, double h, double l, int color) {this(x, y, z, w, h, l, 0, 0, color);}
-	
-	public Box(Vector v, double w, double h, double l, int color) {this(v.getX(), v.getY(), v.getZ(), w, h, l, 0, 0, color);}
+	public Box(Vector v, double w, double h, double l, double r, double angleX, double angleY, int color) {this(v.getX(), v.getY(), v.getZ(), w, h, l, r, angleX, angleY, color);}
 	
 	// Methods
-	public void setBounds(Object camera, Screen screen) {
+	public void setBounds(Shape camera, Screen screen) {
 		double[] bounds = getBounds();
 		
 		bounds[0] = screen.getWidth();
@@ -32,12 +30,10 @@ public class Box extends Object {
 		for (int i = 0; i < 8; i++) {
 			Vector newPos = new Vector(getPos());
 			
-			newPos.add(width * (i & 1), height * ((i >> 1) & 1), length * ((i >> 2) & 1));
-			
+			newPos.add(width * ((i & 1) * 2 - 1), height * (((i >> 1) & 1) * 2 - 1), length * (((i >> 2) & 1) * 2 - 1));
 			newPos.rotate(getAngleX(), getAngleY(), getPos());
 			
 			newPos.subtract(camera.getPos());
-			
 			newPos.inverseRotate(camera.getAngleX(), camera.getAngleY(), 0, 0, 0);
 			
 			if (newPos.getZ() < 1) numInvalid++;
@@ -66,50 +62,26 @@ public class Box extends Object {
 	public double getDistance(Vector v) {
 		Vector v1 = new Vector(v);
 		
-		v1.inverseRotate(getAngleX(), getAngleY(), getPos());
+		v1.subtract(getPos());
+		v1.inverseRotate(getAngleX(), getAngleY(), 0, 0, 0);
+		v1.set(Math.abs(v1.getX()) - width + radius, Math.abs(v1.getY()) - height + radius, Math.abs(v1.getZ()) - length + radius);
 		
-		Vector nearest = new Vector(Math.max(0, Math.min(width,  v1.getX() - getPos().getX())) + getPos().getX(),
-									Math.max(0, Math.min(height, v1.getY() - getPos().getY())) + getPos().getY(),
-									Math.max(0, Math.min(length, v1.getZ() - getPos().getZ())) + getPos().getZ());
+		Vector v2 = new Vector(Math.max(v1.getX(), 0), Math.max(v1.getY(), 0), Math.max(v1.getZ(), 0));
 		
-		return v1.getDistance(nearest);
-	}
-	
-	public Vector getNormal(Vector v) {
-		Vector normal = new Vector(v);
-		
-		normal.subtract(getPos());
-		
-		normal.inverseRotate(getAngleX(), getAngleY(), 0, 0, 0);
-		
-		if (normal.getX() < 0) normal.setX(-1);
-		else if (normal.getX() > width) normal.setX(1);
-		else normal.setX(0);
-		
-		if (normal.getY() < 0) normal.setY(-1);
-		else if (normal.getY() > height) normal.setY(1);
-		else normal.setY(0);
-		
-		if (normal.getZ() < 0) normal.setZ(-1);
-		else if (normal.getZ() > length) normal.setZ(1);
-		else normal.setZ(0);
-		
-		normal.setLength(1);
-		
-		normal.rotate(getAngleX(), getAngleY(), 0, 0, 0);
-		
-		return normal;
+		return v2.getLength() + Math.min(Math.max(v1.getX(), Math.max(v1.getY(), v1.getZ())), 0) - radius;
 	}
 	
 	// Getters
 	public double getWidth() {return width;}
 	public double getHeight() {return height;}
 	public double getLength() {return length;}
+	public double getRadius() {return radius;}
 	
 	// Setters
 	public void setWidth(double w) {width = w;}
 	public void setHeight(double h) {height = h;}
 	public void setLength(double l) {length = l;}
+	public void setRadius(double r) {radius = r;}
 	
 	public void setSize(double w, double h, double l) {
 		width = w;
