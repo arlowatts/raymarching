@@ -53,10 +53,10 @@ public class Group extends Shape {
 			
 			if (shapeBound[0] == 0 && shapeBound[1] == 0 && shapeBound[2] == 0 && shapeBound[3] == 0) continue;
 			
-			bounds[0] = Math.min(bounds[0], shapeBound[0]);
-			bounds[1] = Math.min(bounds[1], shapeBound[1]);
-			bounds[2] = Math.max(bounds[2], shapeBound[2]);
-			bounds[3] = Math.max(bounds[3], shapeBound[3]);
+			bounds[0] = Math.min(bounds[0], shapeBound[0] - smoothing);
+			bounds[1] = Math.min(bounds[1], shapeBound[1] - smoothing);
+			bounds[2] = Math.max(bounds[2], shapeBound[2] + smoothing);
+			bounds[3] = Math.max(bounds[3], shapeBound[3] + smoothing);
 		}
 	}
 	

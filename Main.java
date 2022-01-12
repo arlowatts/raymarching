@@ -24,8 +24,13 @@ public class Main {
 		Box box = new Box(-2.5, -3, -2.5, 0.8, 2.9, 3.4, 0.4, 0, 0, 0x7bc4a8);
 		objects.add(box);
 		
+		Plane plane = new Plane(0, -5, 0, 4, 4, 0, 0, 0x123456);
+		objects.add(plane);
+		
 		while (true) {
 			screen.updateScene(camera, objects);
+			
+			plane.rotate(0.15, 0);
 			
 			camera.getPos().rotate(0, 0.1, 0, 0, 0);
 			camera.rotate(0, 0.1);

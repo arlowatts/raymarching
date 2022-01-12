@@ -69,31 +69,31 @@ public class Screen extends JFrame {
 	}
 	
 	// Methods
-	public void updateScene(Shape camera, ArrayList<Shape> objects) {
+	public void updateScene(Shape camera, ArrayList<Shape> shapes) {
 		frameStart = System.nanoTime();
 		int k = 0;
 		
 		// Updating the bounding boxes for all the shapes in the scene
-		for (int i = 0; i < objects.size(); i++) objects.get(i).setBounds(camera, this);
+		for (int i = 0; i < shapes.size(); i++) shapes.get(i).setBounds(camera, this);
 		
 		ArrayList<Shape> validShapes = new ArrayList<>();
 		
-		for (int y = 0; y < height; y++) {
+		for (int y = height - 1; y >= 0; y--) {
 			for (int x = 0; x < width; x++) {
 				// Clearing the previous pixel's valid Shapes to reuse the ArrayList
 				validShapes.clear();
 				
 				startTime = System.nanoTime();
-				for (int i = 0; i < objects.size(); i++) {
-					double[] bounds = objects.get(i).getBounds();
+				for (int i = 0; i < shapes.size(); i++) {
+					double[] bounds = shapes.get(i).getBounds();
 					
 					// If the object's bounding box includes the current pixel, add it to the list
 					if (x > bounds[0] && y > bounds[1] && x < bounds[2] && y < bounds[3])
-						validShapes.add(objects.get(i));
+						validShapes.add(shapes.get(i));
 				}
 				checkBoundsTime += System.nanoTime() - startTime;
 				
-				// If there are no objects, don't create a ray
+				// If there are no shapes, don't create a ray
 				if (validShapes.size() == 0) {
 					pixels[k++] = background;
 					continue;

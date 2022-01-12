@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Ray {
 	// Constants
-	private static final int MAX_STEPS = 100;
+	private static final int MAX_STEPS = 1000;
 	private static final int MAX_LENGTH = 100;
 	private static final double MIN_LENGTH = 0.01;
 	
@@ -25,16 +25,16 @@ public class Ray {
 	}
 	
 	//Methods
-	public int march(ArrayList<Shape> objects) {
+	public int march(ArrayList<Shape> shapes) {
 		steps = 0;
 		length = 0;
 		
 		while (steps < MAX_STEPS && length < MAX_LENGTH) {
-			int nearest = getNearest(objects);
+			int nearest = getNearest(shapes);
 			
 			if (nearest == -1) return -1;
 			
-			double stepSize = objects.get(nearest).getDistance(pos);
+			double stepSize = shapes.get(nearest).getDistance(pos);
 			
 			step(stepSize);
 			
@@ -44,12 +44,12 @@ public class Ray {
 		return -1;
 	}
 	
-	public int getNearest(ArrayList<Shape> objects) {
+	public int getNearest(ArrayList<Shape> shapes) {
 		int index = -1;
 		double minDist = MAX_LENGTH;
 		
-		for (int i = 0; i < objects.size(); i++) {
-			double distance = objects.get(i).getDistance(pos);
+		for (int i = 0; i < shapes.size(); i++) {
+			double distance = shapes.get(i).getDistance(pos);
 			
 			if (distance < minDist) {
 				index = i;
