@@ -54,20 +54,6 @@ public class Screen extends JFrame {
 		setVisible(true);
 	}
 	
-	private void init() {
-		width = getWidth();
-		height = getHeight();
-		
-		// Creating the Buffered Image and a pixels array to update individual pixels faster
-		image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
-		pixels = new int[getWidth() * getHeight()];
-		
-		// Creating the label
-		label = new JLabel(new ImageIcon(image));
-		getContentPane().removeAll();
-		getContentPane().add(label);
-	}
-	
 	// Methods
 	public void updateScene(Shape camera, ArrayList<Shape> shapes) {
 		frameStart = System.nanoTime();
@@ -103,7 +89,7 @@ public class Screen extends JFrame {
 				Ray ray = new Ray(camera.getPos(), new Vector(x - width / 2, y - height / 2, distance));
 				
 				// Rotate it by the camera's rotation
-				ray.getDir().rotate(camera.getAngleX(), camera.getAngleY(), 0, 0, 0);
+				ray.getDir().rotate(camera.getAngleX(), camera.getAngleY());
 				
 				startTime = System.nanoTime();
 				// March the ray
@@ -137,10 +123,7 @@ public class Screen extends JFrame {
 						   "\nTime:           " + timeTime / (100000 * ++frames));
 		//*/
 		
-		if (initWaiting) {
-			init();
-			initWaiting = false;
-		}
+		if (initWaiting) init();
 	}
 	
 	// Getters
@@ -153,5 +136,22 @@ public class Screen extends JFrame {
 	
 	public void setBgnd(int bgnd) {background = bgnd;}
 	
-	public void setInitWaiting(boolean init) {initWaiting = init;}
+	// Helpers
+	private void init() {
+		initWaiting = false;
+		
+		width = getWidth();
+		height = getHeight();
+		
+		// Creating the Buffered Image and a pixels array to update individual pixels faster
+		image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+		pixels = new int[getWidth() * getHeight()];
+		
+		// Creating the label
+		label = new JLabel(new ImageIcon(image));
+		getContentPane().removeAll();
+		getContentPane().add(label);
+	}
+	
+	private void setInitWaiting(boolean init) {initWaiting = init;}
 }

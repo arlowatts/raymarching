@@ -64,6 +64,14 @@ public class Vector {
 		inverseRotate(angleX, angleY, origin.x, origin.y, origin.z);
 	}
 	
+	public void rotate(double angleX, double angleY) {
+		rotate(angleX, angleY, 0, 0, 0);
+	}
+	
+	public void inverseRotate(double angleX, double angleY) {
+		inverseRotate(angleX, angleY, 0, 0, 0);
+	}
+	
 	public double dotProduct(Vector v) {
 		return x * v.x + y * v.y + z * v.z;
 	}

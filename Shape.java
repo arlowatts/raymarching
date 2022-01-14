@@ -1,13 +1,11 @@
 public class Shape {
-	// Constants
-	private static final double NORMAL_PRECISION = 0.001;
-	
 	// Member variables
 	private Vector pos;
 	
 	private double angleX, angleY;
 	
 	private double[] bounds;
+	private Vector[] boundCorners;
 	
 	private int color;
 	
@@ -24,39 +22,86 @@ public class Shape {
 		bounds[2] = 0;
 		bounds[3] = 0;
 		
-		this.color = color;
+		boundCorners = new Vector[8];
+		for (int i = 0; i < 8; i++) boundCorners[i] = new Vector();
+		
+		this.color = color & 0xffffff;
 	}
 	
 	public Shape(Vector pos, double angleX, double angleY, int color) {this(pos.getX(), pos.getY(), pos.getZ(), angleX, angleY, color);}
 	
 	//Methods
-	public void rotate(double angleX, double angleY) {
-		this.angleX += angleX;
-		this.angleY += angleY;
-	}
-	
-	public void setBounds(Shape camera, Screen screen) {}
-	
 	public double getDistance(Vector v) {return pos.getDistance(v);}
 	
 	public Vector getNormal(Vector v) {
-		Vector v1 = new Vector(v);
+		double distance = getDistance(v);
 		
-		double distance = getDistance(v1);
+		v.add(Ray.MIN_LENGTH, 0, 0);
+		double xDistance = getDistance(v);
 		
-		v1.add(NORMAL_PRECISION, 0, 0);
-		double xDistance = getDistance(v1);
+		v.add(-Ray.MIN_LENGTH, Ray.MIN_LENGTH, 0);
+		double yDistance = getDistance(v);
 		
-		v1.add(-NORMAL_PRECISION, NORMAL_PRECISION, 0);
-		double yDistance = getDistance(v1);
+		v.add(0, -Ray.MIN_LENGTH, Ray.MIN_LENGTH);
+		double zDistance = getDistance(v);
 		
-		v1.add(0, -NORMAL_PRECISION, NORMAL_PRECISION);
-		double zDistance = getDistance(v1);
+		v.add(0, 0, -Ray.MIN_LENGTH);
 		
 		Vector normal = new Vector(xDistance - distance, yDistance - distance, zDistance - distance);
 		normal.setLength(1);
 		
 		return normal;
+	}
+	
+	public void setBounds(Shape camera, Screen screen) {
+		double[] bounds = getBounds();
+		
+		bounds[0] = screen.getWidth();
+		bounds[1] = screen.getHeight();
+		bounds[2] = -screen.getWidth();
+		bounds[3] = -screen.getHeight();
+		
+		int numInvalid = 0;
+		
+		for (int i = 0; i < 8; i++) {
+			Vector newPos = new Vector(boundCorners[i]);
+			
+			newPos.rotate(getAngleX(), getAngleY(), getPos());
+			
+			newPos.subtract(camera.getPos());
+			newPos.inverseRotate(camera.getAngleX(), camera.getAngleY());
+			
+			if (newPos.getZ() < 1) numInvalid++;
+			else {
+				double ratio = screen.getDistance() / newPos.getZ();
+				
+				double screenX = newPos.getX() * ratio + screen.getWidth() / 2;
+				double screenY = newPos.getY() * ratio + screen.getHeight() / 2;
+				
+				bounds[0] = Math.min(bounds[0], screenX);
+				bounds[1] = Math.min(bounds[1], screenY);
+				bounds[2] = Math.max(bounds[2], screenX);
+				bounds[3] = Math.max(bounds[3], screenY);
+			}
+		}
+		
+		if (numInvalid == 8) {
+			bounds[0] = 0;
+			bounds[1] = 0;
+			bounds[2] = 0;
+			bounds[3] = 0;
+		}
+	}
+	
+	public void updateBoundCorners() {
+		for (int i = 0; i < 8; i++) {
+			boundCorners[i].set(getPos());
+		}
+	}
+	
+	public void rotate(double angleX, double angleY) {
+		this.angleX += angleX;
+		this.angleY += angleY;
 	}
 	
 	// Getters
@@ -66,6 +111,7 @@ public class Shape {
 	public double getAngleY() {return angleY;}
 	
 	public double[] getBounds() {return bounds;}
+	public Vector[] getBoundCorners() {return boundCorners;}
 	
 	public int getColor() {return color;}
 	
@@ -81,5 +127,5 @@ public class Shape {
 	public void setAngleX(double angleX) {this.angleX = angleX;}
 	public void setAngleY(double angleX) {this.angleY = angleY;}
 	
-	public void setColor(int color) {this.color = color;}
+	public void setColor(int color) {this.color = color & 0xffffff;}
 }

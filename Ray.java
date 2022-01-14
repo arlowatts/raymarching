@@ -2,9 +2,9 @@ import java.util.ArrayList;
 
 public class Ray {
 	// Constants
-	private static final int MAX_STEPS = 1000;
-	private static final int MAX_LENGTH = 100;
-	private static final double MIN_LENGTH = 0.01;
+	public static final int MAX_STEPS = 1000;
+	public static final int MAX_LENGTH = 100;
+	public static final double MIN_LENGTH = 0.01;
 	
 	// Member variables
 	private Vector pos;
@@ -69,12 +69,20 @@ public class Ray {
 	
 	// Getters
 	public Vector getPos() {return pos;}
-	
 	public Vector getDir() {return dir;}
 	
 	public int getSteps() {return steps;}
-	
 	public double getLength() {return length;}
+	
+	// Setters
+	public void setPos(Vector v) {pos = v;}
+	public void setDir(Vector v) {
+		dir = v;
+		dir.setLength(1);
+	}
+	
+	public void setSteps(int n) {steps = n;}
+	public void setLength(double l) {length = l;}
 	
 	// toString
 	public String toString() {

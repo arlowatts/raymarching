@@ -39,7 +39,7 @@ public class Group extends Shape {
 		for (int i = 0; i < objects.size(); i++) {
 			Shape object = objects.get(i);
 			
-			object.getPos().rotate(getAngleX(), getAngleY(), 0, 0, 0);
+			object.getPos().rotate(getAngleX(), getAngleY());
 			object.getPos().add(getPos());
 			object.rotate(getAngleX(), getAngleY());
 			
@@ -49,7 +49,7 @@ public class Group extends Shape {
 			
 			object.rotate(-getAngleX(), -getAngleY());
 			object.getPos().subtract(getPos());
-			object.getPos().inverseRotate(getAngleX(), getAngleY(), 0, 0, 0);
+			object.getPos().inverseRotate(getAngleX(), getAngleY());
 			
 			if (shapeBound[0] == 0 && shapeBound[1] == 0 && shapeBound[2] == 0 && shapeBound[3] == 0) continue;
 			
@@ -63,17 +63,17 @@ public class Group extends Shape {
 	public double getDistance(Vector v) {
 		if (objects.size() == 0) return getPos().getDistance(v);
 		
-		Vector v1 = new Vector(v);
+		v.subtract(getPos());
+		v.inverseRotate(getAngleX(), getAngleY());
 		
-		v1.subtract(getPos());
-		
-		v1.inverseRotate(getAngleX(), getAngleY(), 0, 0, 0);
-		
-		double minDist = objects.get(0).getDistance(v1);
+		double minDist = objects.get(0).getDistance(v);
 		
 		for (int i = 1; i < objects.size(); i++) {
-			minDist = smoothMin(minDist, objects.get(i).getDistance(v1), smoothing);
+			minDist = smoothMin(minDist, objects.get(i).getDistance(v), smoothing);
 		}
+		
+		v.rotate(getAngleX(), getAngleY());
+		v.add(getPos());
 		
 		return minDist;
 	}
