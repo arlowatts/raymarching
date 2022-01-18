@@ -76,10 +76,7 @@ public class Ray {
 	
 	// Setters
 	public void setPos(Vector v) {pos = v;}
-	public void setDir(Vector v) {
-		dir = v;
-		dir.setLength(1);
-	}
+	public void setDir(Vector v) {dir = v; dir.setLength(1);}
 	
 	public void setSteps(int n) {steps = n;}
 	public void setLength(double l) {length = l;}

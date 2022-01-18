@@ -8,58 +8,19 @@ public class Group extends Shape {
 	private double smoothing;
 	
 	// Constructors
-	public Group(double x, double y, double z, double angleX, double angleY, double smoothing, ArrayList<Shape> objects, int color) {
-		super(x, y, z, angleX, angleY, color);
-		
+	public Group(double x, double y, double z, double angleX, double angleY, double smoothing, ArrayList<Shape> objects, int color, double shine) {
+		super(x, y, z, angleX, angleY, color, shine);
 		this.smoothing = smoothing;
-		
 		this.objects = objects;
+		
+		updateBoundCorners();
 	}
 	
-	public Group(Vector v, double angleX, double angleY, double smoothing, ArrayList<Shape> objects, int color) {this(v.getX(), v.getY(), v.getZ(), angleX, angleY, smoothing, objects, color);}
+	public Group(Vector v, double angleX, double angleY, double smoothing, ArrayList<Shape> objects, int color, double shine) {this(v.getX(), v.getY(), v.getZ(), angleX, angleY, smoothing, objects, color, shine);}
 	
-	public Group(double x, double y, double z, double angleX, double angleY, double smoothing, int color) {this(x, y, z, angleX, angleY, smoothing, new ArrayList<Shape>(), color);}
+	public Group(double x, double y, double z, double angleX, double angleY, double smoothing, int color, double shine) {this(x, y, z, angleX, angleY, smoothing, new ArrayList<Shape>(), color, shine);}
 	
 	// Methods
-	public void setBounds(Shape camera, Screen screen) {
-		double[] bounds = getBounds();
-		
-		if (objects.size() == 0) {
-			bounds[0] = 0;
-			bounds[1] = 0;
-			bounds[2] = 0;
-			bounds[3] = 0;
-		}
-		
-		bounds[0] = screen.getWidth();
-		bounds[1] = screen.getHeight();
-		bounds[2] = -screen.getWidth();
-		bounds[3] = -screen.getHeight();
-		
-		for (int i = 0; i < objects.size(); i++) {
-			Shape object = objects.get(i);
-			
-			object.getPos().rotate(getAngleX(), getAngleY());
-			object.getPos().add(getPos());
-			object.rotate(getAngleX(), getAngleY());
-			
-			object.setBounds(camera, screen);
-			
-			double[] shapeBound = object.getBounds();
-			
-			object.rotate(-getAngleX(), -getAngleY());
-			object.getPos().subtract(getPos());
-			object.getPos().inverseRotate(getAngleX(), getAngleY());
-			
-			if (shapeBound[0] == 0 && shapeBound[1] == 0 && shapeBound[2] == 0 && shapeBound[3] == 0) continue;
-			
-			bounds[0] = Math.min(bounds[0], shapeBound[0]);
-			bounds[1] = Math.min(bounds[1], shapeBound[1]);
-			bounds[2] = Math.max(bounds[2], shapeBound[2]);
-			bounds[3] = Math.max(bounds[3], shapeBound[3]);
-		}
-	}
-	
 	public double getDistance(Vector v) {
 		if (objects.size() == 0) return getPos().getDistance(v);
 		
@@ -78,23 +39,45 @@ public class Group extends Shape {
 		return minDist;
 	}
 	
+	public void updateBoundCorners() {
+		for (int i = 0; i < objects.size(); i++) {
+			for (int j = 0; j < 8; j++) {
+				Vector groupCorner = getBoundCorners()[j];
+				Vector shapeCorner = objects.get(i).getBoundCorners()[j];
+				
+				groupCorner.setX(((j & 1) == 0) ? Math.min(groupCorner.getX(), shapeCorner.getX()) : Math.max(groupCorner.getX(), shapeCorner.getX()));
+				
+				groupCorner.setY(((j & 2) == 0) ? Math.min(groupCorner.getY(), shapeCorner.getY()) : Math.max(groupCorner.getY(), shapeCorner.getY()));
+				
+				groupCorner.setZ(((j & 4) == 0) ? Math.min(groupCorner.getZ(), shapeCorner.getZ()) : Math.max(groupCorner.getZ(), shapeCorner.getZ()));
+			}
+		}
+	}
+	
+	public void add(Shape object) {
+		objects.add(object);
+		
+		updateBoundCorners();
+	}
+	
+	public void remove(int i) {
+		objects.remove(i);
+		
+		updateBoundCorners();
+	}
+	
+	// Getters
+	public Shape get(int i) {
+		return objects.get(i);
+	}
+	
+	// Setters
+	public void setSmoothing(double smoothing) {this.smoothing = smoothing;}
+	
+	// Helpers
 	private double smoothMin(double a, double b, double k) {
 		double h = Math.max(k - Math.abs(a - b), 0) / k;
 		
 		return Math.min(a, b) - h * h * k * 0.25;
 	}
-	
-	public void add(Shape object) {
-		objects.add(object);
-	}
-	
-	public void remove(int i) {
-		objects.remove(i);
-	}
-	
-	public Shape get(int i) {
-		return objects.get(i);
-	}
-	
-	public void setSmoothing(double smoothing) {this.smoothing = smoothing;}
 }

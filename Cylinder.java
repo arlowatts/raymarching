@@ -5,15 +5,15 @@ public class Cylinder extends Shape {
 	private double radius, height;
 	
 	// Constructors
-	public Cylinder(double x, double y, double z, double r, double h, double angleX, double angleY, int color) {
-		super(x, y, z, angleX, angleY, color);
+	public Cylinder(double x, double y, double z, double r, double h, double angleX, double angleY, int color, double shine) {
+		super(x, y, z, angleX, angleY, color, shine);
 		radius = r;
 		height = h;
 		
 		updateBoundCorners();
 	}
 	
-	public Cylinder(Vector v, double r, double h, double angleX, double angleY, int color) {this(v.getX(), v.getY(), v.getZ(), r, h, angleX, angleY, color);}
+	public Cylinder(Vector v, double r, double h, double angleX, double angleY, int color, double shine) {this(v.getX(), v.getY(), v.getZ(), r, h, angleX, angleY, color, shine);}
 	
 	// Methods
 	public double getDistance(Vector v) {

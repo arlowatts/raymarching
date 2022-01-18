@@ -5,8 +5,8 @@ public class Box extends Shape {
 	private double width, height, length, radius;
 	
 	// Constructors
-	public Box(double x, double y, double z, double w, double h, double l, double r, double angleX, double angleY, int color) {
-		super(x, y, z, angleX, angleY, color);
+	public Box(double x, double y, double z, double w, double h, double l, double r, double angleX, double angleY, int color, double shine) {
+		super(x, y, z, angleX, angleY, color, shine);
 		width = w;
 		height = h;
 		length = l;
@@ -16,7 +16,7 @@ public class Box extends Shape {
 		updateBoundCorners();
 	}
 	
-	public Box(Vector v, double w, double h, double l, double r, double angleX, double angleY, int color) {this(v.getX(), v.getY(), v.getZ(), w, h, l, r, angleX, angleY, color);}
+	public Box(Vector v, double w, double h, double l, double r, double angleX, double angleY, int color, double shine) {this(v.getX(), v.getY(), v.getZ(), w, h, l, r, angleX, angleY, color, shine);}
 	
 	// Methods
 	public double getDistance(Vector v) {

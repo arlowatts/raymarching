@@ -71,10 +71,10 @@ public class Screen extends JFrame {
 				
 				startTime = System.nanoTime();
 				for (int i = 0; i < shapes.size(); i++) {
-					double[] bounds = shapes.get(i).getBounds();
+					int[] bounds = shapes.get(i).getBounds();
 					
 					// If the object's bounding box includes the current pixel, add it to the list
-					if (x > bounds[0] && y > bounds[1] && x < bounds[2] && y < bounds[3])
+					if (x >= bounds[0] && y >= bounds[1] && x <= bounds[2] && y <= bounds[3])
 						validShapes.add(shapes.get(i));
 				}
 				checkBoundsTime += System.nanoTime() - startTime;
@@ -98,11 +98,30 @@ public class Screen extends JFrame {
 				
 				// If it hits something, calculate the surface normal at that point and shade the object's color by the dot product of the ray's angle and the normal
 				if (pixel != -1) {
+					Shape shape = validShapes.get(pixel);
+					
+					Vector rayDir = ray.getDir();
+					
 					startTime = System.nanoTime();
-					double shade = validShapes.get(pixel).getNormal(ray.getPos()).dotProduct(ray.getDir());
+					Vector normal = shape.getNormal(ray.getPos());
+					
+					double dot = normal.dotProduct(rayDir);
 					normalTime += System.nanoTime() - startTime;
 					
-					pixels[k++] = validShapes.get(pixel).getColor(shade);
+					ray.setSteps(0);
+					ray.setLength(0);
+					rayDir.set(rayDir.getX() - 2 * dot * normal.getX(), rayDir.getY() - 2 * dot * normal.getY(), rayDir.getZ() - 2 * dot * normal.getZ());
+					
+					ray.step(2 * Ray.MIN_LENGTH);
+					pixel = ray.march(shapes);
+					
+					int secondColor = background;
+					
+					if (pixel != -1) {
+						secondColor = shapes.get(pixel).getColor(dot * shape.getShine());
+					}
+					
+					pixels[k++] = shape.getColor(dot * (1 - shape.getShine())) + secondColor;
 				}
 				else {
 					pixels[k++] = background;

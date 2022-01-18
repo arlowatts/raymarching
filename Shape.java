@@ -4,19 +4,20 @@ public class Shape {
 	
 	private double angleX, angleY;
 	
-	private double[] bounds;
+	private int[] bounds;
 	private Vector[] boundCorners;
 	
 	private int color;
+	private double shine;
 	
 	// Constructors
-	public Shape(double x, double y, double z, double angleX, double angleY, int color) {
+	public Shape(double x, double y, double z, double angleX, double angleY, int color, double shine) {
 		pos = new Vector(x, y, z);
 		
 		this.angleX = angleX;
 		this.angleY = angleY;
 		
-		bounds = new double[4];
+		bounds = new int[4];
 		bounds[0] = 0;
 		bounds[1] = 0;
 		bounds[2] = 0;
@@ -26,9 +27,11 @@ public class Shape {
 		for (int i = 0; i < 8; i++) boundCorners[i] = new Vector();
 		
 		this.color = color & 0xffffff;
+		
+		this.shine = shine;
 	}
 	
-	public Shape(Vector pos, double angleX, double angleY, int color) {this(pos.getX(), pos.getY(), pos.getZ(), angleX, angleY, color);}
+	public Shape(Vector pos, double angleX, double angleY, int color, double shine) {this(pos.getX(), pos.getY(), pos.getZ(), angleX, angleY, color, shine);}
 	
 	//Methods
 	public double getDistance(Vector v) {return pos.getDistance(v);}
@@ -54,8 +57,6 @@ public class Shape {
 	}
 	
 	public void setBounds(Shape camera, Screen screen) {
-		double[] bounds = getBounds();
-		
 		bounds[0] = screen.getWidth();
 		bounds[1] = screen.getHeight();
 		bounds[2] = -screen.getWidth();
@@ -75,8 +76,8 @@ public class Shape {
 			else {
 				double ratio = screen.getDistance() / newPos.getZ();
 				
-				double screenX = newPos.getX() * ratio + screen.getWidth() / 2;
-				double screenY = newPos.getY() * ratio + screen.getHeight() / 2;
+				int screenX = (int)(newPos.getX() * ratio + screen.getWidth() / 2);
+				int screenY = (int)(newPos.getY() * ratio + screen.getHeight() / 2);
 				
 				bounds[0] = Math.min(bounds[0], screenX);
 				bounds[1] = Math.min(bounds[1], screenY);
@@ -110,7 +111,7 @@ public class Shape {
 	public double getAngleX() {return angleX;}
 	public double getAngleY() {return angleY;}
 	
-	public double[] getBounds() {return bounds;}
+	public int[] getBounds() {return bounds;}
 	public Vector[] getBoundCorners() {return boundCorners;}
 	
 	public int getColor() {return color;}
@@ -123,9 +124,13 @@ public class Shape {
 			   (int)((color & 255) * shade);
 	}
 	
+	public double getShine() {return shine;}
+	
 	// Setters
 	public void setAngleX(double angleX) {this.angleX = angleX;}
 	public void setAngleY(double angleX) {this.angleY = angleY;}
 	
 	public void setColor(int color) {this.color = color & 0xffffff;}
+	
+	public void setShine(double shine) {this.shine = shine;}
 }
