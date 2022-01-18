@@ -115,7 +115,7 @@ public class Screen extends JFrame {
 					ray.step(2 * Ray.MIN_LENGTH);
 					pixel = ray.march(shapes);
 					
-					int secondColor = background;
+					int secondColor = getBgnd(dot * shape.getShine());
 					
 					if (pixel != -1) {
 						secondColor = shapes.get(pixel).getColor(dot * shape.getShine());
@@ -149,6 +149,14 @@ public class Screen extends JFrame {
 	public int getDistance() {return distance;}
 	
 	public int getBgnd() {return background;}
+	
+	public int getBgnd(double shade) {
+		shade = Math.max(0, Math.min(1, Math.abs(shade)));
+		
+		return ((int)((background >> 16) * shade) << 16) |
+			   ((int)(((background >> 8) & 255) * shade) << 8) |
+			   (int)((background & 255) * shade);
+	}
 	
 	// Setters
 	public void setDistance(int dist) {distance = dist;}
