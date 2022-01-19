@@ -56,13 +56,11 @@ public class Group extends Shape {
 	
 	public void add(Shape object) {
 		objects.add(object);
-		
 		updateBoundCorners();
 	}
 	
 	public void remove(int i) {
 		objects.remove(i);
-		
 		updateBoundCorners();
 	}
 	
