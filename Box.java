@@ -7,9 +7,9 @@ public class Box extends Shape {
 	// Constructors
 	public Box(double x, double y, double z, double w, double h, double l, double r, double angleX, double angleY, int color, double shine) {
 		super(x, y, z, angleX, angleY, color, shine);
-		width = w;
-		height = h;
-		length = l;
+		width = Math.max(w, Main.MIN_LENGTH);
+		height = Math.max(h, Main.MIN_LENGTH);
+		length = Math.max(l, Main.MIN_LENGTH);
 		
 		radius = r;
 		
@@ -35,8 +35,7 @@ public class Box extends Shape {
 		Vector[] boundCorners = getBoundCorners();
 		
 		for (int i = 0; i < 8; i++) {
-			boundCorners[i].set(getPos());
-			boundCorners[i].add(width * (((i << 1) & 2) - 1), height * ((i & 2) - 1), length * (((i >> 1) & 2) - 1));
+			boundCorners[i].set(width * (((i << 1) & 2) - 1), height * ((i & 2) - 1), length * (((i >> 1) & 2) - 1));
 		}
 	}
 	

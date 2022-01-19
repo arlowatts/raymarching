@@ -7,7 +7,7 @@ public class Sphere extends Shape{
 	// Constructors
 	public Sphere(double x, double y, double z, double r, double angleX, double angleY, int color, double shine) {
 		super(x, y, z, angleX, angleY, color, shine);
-		radius = r;
+		radius = Math.max(r, Main.MIN_LENGTH);
 		
 		updateBoundCorners();
 	}
@@ -19,12 +19,21 @@ public class Sphere extends Shape{
 		return getPos().getDistance(v) - radius;
 	}
 	
+	public Vector getNormal(Vector v) {
+		Vector normal = new Vector(getPos());
+		
+		normal.subtract(v);
+		
+		normal.setLength(-1);
+		
+		return normal;
+	}
+	
 	public void updateBoundCorners() {
 		Vector[] boundCorners = getBoundCorners();
 		
 		for (int i = 0; i < 8; i++) {
-			boundCorners[i].set(getPos());
-			boundCorners[i].add(radius * (((i << 1) & 2) - 1), radius * ((i & 2) - 1), radius * (((i >> 1) & 2) - 1));
+			boundCorners[i].set(radius * (((i << 1) & 2) - 1), radius * ((i & 2) - 1), radius * (((i >> 1) & 2) - 1));
 		}
 	}
 	

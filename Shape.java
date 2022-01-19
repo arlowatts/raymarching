@@ -28,7 +28,7 @@ public class Shape {
 		
 		this.color = color & 0xffffff;
 		
-		this.shine = shine;
+		this.shine = Math.min(Math.max(shine, 0), 1);
 	}
 	
 	public Shape(Vector pos, double angleX, double angleY, int color, double shine) {this(pos.getX(), pos.getY(), pos.getZ(), angleX, angleY, color, shine);}
@@ -39,16 +39,16 @@ public class Shape {
 	public Vector getNormal(Vector v) {
 		double distance = getDistance(v);
 		
-		v.add(Ray.MIN_LENGTH, 0, 0);
+		v.add(Main.MIN_LENGTH, 0, 0);
 		double xDistance = getDistance(v);
 		
-		v.add(-Ray.MIN_LENGTH, Ray.MIN_LENGTH, 0);
+		v.add(-Main.MIN_LENGTH, Main.MIN_LENGTH, 0);
 		double yDistance = getDistance(v);
 		
-		v.add(0, -Ray.MIN_LENGTH, Ray.MIN_LENGTH);
+		v.add(0, -Main.MIN_LENGTH, Main.MIN_LENGTH);
 		double zDistance = getDistance(v);
 		
-		v.add(0, 0, -Ray.MIN_LENGTH);
+		v.add(0, 0, -Main.MIN_LENGTH);
 		
 		Vector normal = new Vector(xDistance - distance, yDistance - distance, zDistance - distance);
 		normal.setLength(1);
@@ -67,7 +67,8 @@ public class Shape {
 		for (int i = 0; i < 8; i++) {
 			Vector newPos = new Vector(boundCorners[i]);
 			
-			newPos.rotate(getAngleX(), getAngleY(), getPos());
+			newPos.rotate(getAngleX(), getAngleY());
+			newPos.add(getPos());
 			
 			newPos.subtract(camera.getPos());
 			newPos.inverseRotate(camera.getAngleX(), camera.getAngleY());
@@ -96,7 +97,7 @@ public class Shape {
 	
 	public void updateBoundCorners() {
 		for (int i = 0; i < 8; i++) {
-			boundCorners[i].set(getPos());
+			boundCorners[i].set(0, 0, 0);
 		}
 	}
 	

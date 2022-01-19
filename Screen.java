@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class Screen extends JFrame {
 	// Member variables
-	private int width, height, distance, background;
+	private int width, height, distance, background, maxReflections;
 	
 	private boolean initWaiting;
 	
@@ -29,13 +29,15 @@ public class Screen extends JFrame {
 	private static int frames = 0;
 	
 	// Constructors
-	public Screen(int w, int h, int dist, int bgnd, String title) {
+	public Screen(int w, int h, int dist, int bgnd, int maxReflections, String title) {
 		super(title);
 		
 		setSize(w, h);
 		distance = dist;
 		
 		background = bgnd;
+		
+		this.maxReflections = maxReflections;
 		
 		addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
@@ -60,15 +62,15 @@ public class Screen extends JFrame {
 		int k = 0;
 		
 		// Updating the bounding boxes for all the shapes in the scene
-		for (int i = 0; i < shapes.size(); i++) shapes.get(i).setBounds(camera, this);
+		//for (int i = 0; i < shapes.size(); i++) shapes.get(i).setBounds(camera, this);
 		
-		ArrayList<Shape> validShapes = new ArrayList<>();
+		//ArrayList<Shape> validShapes = new ArrayList<>();
 		
 		for (int y = height - 1; y >= 0; y--) {
 			for (int x = 0; x < width; x++) {
 				// Clearing the previous pixel's valid Shapes to reuse the ArrayList
-				validShapes.clear();
-				
+				//validShapes.clear();
+				/*
 				startTime = System.nanoTime();
 				for (int i = 0; i < shapes.size(); i++) {
 					int[] bounds = shapes.get(i).getBounds();
@@ -84,13 +86,16 @@ public class Screen extends JFrame {
 					pixels[k++] = background;
 					continue;
 				}
-				
+				//*/
 				// Create a ray starting at the camera and passing through the current pixel
 				Ray ray = new Ray(camera.getPos(), new Vector(x - width / 2, y - height / 2, distance));
 				
 				// Rotate it by the camera's rotation
 				ray.getDir().rotate(camera.getAngleX(), camera.getAngleY());
 				
+				pixels[k++] = castRay(ray, shapes);
+				
+				/*
 				startTime = System.nanoTime();
 				// March the ray
 				int pixel = ray.march(validShapes);
@@ -112,7 +117,7 @@ public class Screen extends JFrame {
 					ray.setLength(0);
 					rayDir.set(rayDir.getX() - 2 * dot * normal.getX(), rayDir.getY() - 2 * dot * normal.getY(), rayDir.getZ() - 2 * dot * normal.getZ());
 					
-					ray.step(2 * Ray.MIN_LENGTH);
+					ray.step(2 * Main.MIN_LENGTH);
 					pixel = ray.march(shapes);
 					
 					int secondColor = getBgnd(dot * shape.getShine());
@@ -126,6 +131,7 @@ public class Screen extends JFrame {
 				else {
 					pixels[k++] = background;
 				}
+				//*/
 			}
 		}
 		
@@ -143,6 +149,29 @@ public class Screen extends JFrame {
 		//*/
 		
 		if (initWaiting) init();
+	}
+	
+	public int castRay(Ray ray, ArrayList<Shape> shapes) {
+		return castRay(ray, shapes, 1, 0);
+	}
+	
+	private int castRay(Ray ray, ArrayList<Shape> shapes, double shade, int reflections) {
+		int hit = ray.march(shapes);
+		if (hit == -1 || reflections++ >= maxReflections) return getBgnd(shade);
+		
+		Shape shape = shapes.get(hit);
+		Vector rayDir = ray.getDir();
+		
+		Vector normal = shape.getNormal(ray.getPos());
+		double dot = normal.dotProduct(rayDir);
+		
+		ray.setSteps(0);
+		rayDir.set(rayDir.getX() - 2 * dot * normal.getX(), rayDir.getY() - 2 * dot * normal.getY(), rayDir.getZ() - 2 * dot * normal.getZ());
+		ray.step(2 * Main.MIN_LENGTH);
+		
+		int reflectionColor = castRay(ray, shapes, shade * dot * shape.getShine(), reflections);
+		
+		return shape.getColor(shade * dot * (1 - shape.getShine())) + reflectionColor;
 	}
 	
 	// Getters

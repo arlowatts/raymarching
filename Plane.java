@@ -22,17 +22,24 @@ public class Plane extends Shape {
 		v1.subtract(getPos());
 		v1.inverseRotate(getAngleX(), getAngleY());
 		
-		Vector v2 = new Vector(Math.min(Math.max(-width, v1.getX()), width), 0, Math.min(Math.max(-length, v1.getZ()), length));
+		v1.add(-Math.min(Math.max(-width, v1.getX()), width), 0, -Math.min(Math.max(-length, v1.getZ()), length));
 		
-		return v2.getDistance(v1);
+		return v1.getLength();
+	}
+	
+	public Vector getNormal(Vector v) {
+		Vector normal = new Vector(0, 1, 0);
+		
+		normal.rotate(getAngleX(), getAngleY());
+		
+		return normal;
 	}
 	
 	public void updateBoundCorners() {
 		Vector[] boundCorners = getBoundCorners();
 		
 		for (int i = 0; i < 8; i++) {
-			boundCorners[i].set(getPos());
-			boundCorners[i].add(width * (((i << 1) & 2) - 1), 0, length * ((i & 2) - 1));
+			boundCorners[i].set(width * (((i << 1) & 2) - 1), 0, length * ((i & 2) - 1));
 		}
 	}
 	

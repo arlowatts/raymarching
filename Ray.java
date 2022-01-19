@@ -1,11 +1,6 @@
 import java.util.ArrayList;
 
 public class Ray {
-	// Constants
-	public static final int MAX_STEPS = 1000;
-	public static final int MAX_LENGTH = 100;
-	public static final double MIN_LENGTH = 0.01;
-	
 	// Member variables
 	private Vector pos;
 	private Vector dir;
@@ -29,7 +24,7 @@ public class Ray {
 		steps = 0;
 		length = 0;
 		
-		while (steps < MAX_STEPS && length < MAX_LENGTH) {
+		while (steps < Main.MAX_STEPS && length < Main.MAX_LENGTH) {
 			int nearest = getNearest(shapes);
 			
 			if (nearest == -1) return -1;
@@ -38,7 +33,7 @@ public class Ray {
 			
 			step(stepSize);
 			
-			if (stepSize < MIN_LENGTH) return nearest;
+			if (stepSize < Main.MIN_LENGTH) return nearest;
 		}
 		
 		return -1;
@@ -46,7 +41,7 @@ public class Ray {
 	
 	public int getNearest(ArrayList<Shape> shapes) {
 		int index = -1;
-		double minDist = MAX_LENGTH;
+		double minDist = Main.MAX_LENGTH;
 		
 		for (int i = 0; i < shapes.size(); i++) {
 			double distance = shapes.get(i).getDistance(pos);
