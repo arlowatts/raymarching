@@ -20,11 +20,11 @@ public class Sphere extends Shape{
 	}
 	
 	public Vector getNormal(Vector v) {
-		Vector normal = new Vector(getPos());
+		Vector normal = new Vector(v);
 		
-		normal.subtract(v);
+		normal.subtract(getPos());
 		
-		normal.setLength(-1);
+		normal.setLength(1);
 		
 		return normal;
 	}

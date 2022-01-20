@@ -1,15 +1,16 @@
 public class Light extends Vector {
 	// Member variables
-	private int brightness, color;
+	private double brightness;
+	private int color;
 	
-	public Light(double x, double y, double z, int brightness, int color) {
+	public Light(double x, double y, double z, double brightness, int color) {
 		super(x, y, z);
 		this.brightness = brightness;
 		this.color = color;
 	}
 	
 	// Getters
-	public int getBrightness() {return brightness;}
+	public double getBrightness() {return brightness;}
 	public int getColor() {return color;}
 	
 	public int getColor(double shade) {
@@ -21,6 +22,6 @@ public class Light extends Vector {
 	}
 	
 	// Setters
-	public void setBrightness(int brightness) {this.brightness = brightness;}
+	public void setBrightness(double brightness) {this.brightness = brightness;}
 	public void setColor(int color) {this.color = color;}
 }

@@ -11,7 +11,8 @@ import java.util.ArrayList;
 
 public class Screen extends JFrame {
 	// Member variables
-	private int width, height, distance, background, maxReflections, ambientLight;
+	private int width, height, distance, background, maxReflections;
+	private double ambientLight;
 	
 	private boolean initWaiting;
 	
@@ -29,7 +30,7 @@ public class Screen extends JFrame {
 	private static int frames = 0;
 	
 	// Constructors
-	public Screen(int w, int h, int dist, int bgnd, int ambientLight, int maxReflections, String title) {
+	public Screen(int w, int h, int dist, int bgnd, double ambientLight, int maxReflections, String title) {
 		super(title);
 		
 		setSize(w, h);
@@ -131,15 +132,18 @@ public class Screen extends JFrame {
 			   (int)((background & 255) * shade);
 	}
 	
+	public double getAmbientLight() {return ambientLight;}
+	
 	// Setters
 	public void setDistance(int dist) {distance = dist;}
 	
 	public void setBgnd(int bgnd) {background = bgnd;}
+	public void setAmbientLight(double ambientLight) {this.ambientLight = ambientLight;}
 	
 	// Helpers
 	private int castRay(Ray ray, ArrayList<Shape> shapes, ArrayList<Light> lights, double shade, int reflections) {
 		int hit = ray.march(shapes);
-		if (hit == -1 || reflections++ >= maxReflections) return getBgnd(shade);
+		if (hit == -1 || reflections++ >= maxReflections) return getBgnd(shade * ambientLight);
 		
 		Shape shape = shapes.get(hit);
 		Vector rayDir = ray.getDir();
@@ -151,7 +155,7 @@ public class Screen extends JFrame {
 		rayDir.set(rayDir.getX() - 2 * dot * normal.getX(), rayDir.getY() - 2 * dot * normal.getY(), rayDir.getZ() - 2 * dot * normal.getZ());
 		ray.step(2 * Main.MIN_LENGTH);
 		
-		double totalBrightness = 1 + ambientLight;
+		double totalBrightness = 1;
 		
 		for (int i = 0; i < lights.size(); i++) {
 			Vector lightRayDir = new Vector(lights.get(i));
@@ -161,11 +165,14 @@ public class Screen extends JFrame {
 			
 			lightRay.step(2 * Main.MIN_LENGTH);
 			
-			if (lightRay.march(shapes) == -1)
-				totalBrightness += lights.get(i).getBrightness() * Math.abs(normal.dotProduct(lightRay.getDir()));
+			if (lightRay.march(shapes) == -1) {
+				totalBrightness *= (1 - lights.get(i).getBrightness() * Math.max(normal.dotProduct(lightRay.getDir()), 0));
+				
+				//shade *= Math.abs(normal.dotProduct(lightRay.getDir()));
+			}
 		}
 		
-		shade *= (1 - 1.0 / totalBrightness);
+		shade *= Math.min(1 + ambientLight - totalBrightness, 1);
 		
 		int reflectionColor = castRay(ray, shapes, lights, shade * shape.getShine(), reflections);
 		

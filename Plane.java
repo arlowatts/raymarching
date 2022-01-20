@@ -28,7 +28,11 @@ public class Plane extends Shape {
 	}
 	
 	public Vector getNormal(Vector v) {
-		Vector normal = new Vector(0, 1, 0);
+		v.inverseRotate(getAngleX(), getAngleY(), getPos());
+		
+		Vector normal = new Vector(0, v.getY() > getPos().getY() ? 1 : -1, 0);
+		
+		v.rotate(getAngleX(), getAngleY(), getPos());
 		
 		normal.rotate(getAngleX(), getAngleY());
 		
