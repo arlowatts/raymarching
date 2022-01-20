@@ -134,6 +134,8 @@ public class Screen extends JFrame {
 	
 	public double getAmbientLight() {return ambientLight;}
 	
+	public BufferedImage getImage() {return image;}
+	
 	// Setters
 	public void setDistance(int dist) {distance = dist;}
 	

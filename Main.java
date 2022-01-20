@@ -1,6 +1,12 @@
 import java.lang.Math;
 import java.util.ArrayList;
 
+import java.awt.image.BufferedImage;
+
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
+
 public class Main {
 	private Ray forSomeReasonTheRayClassDoesntRecompileOnItsOwn;
 	
@@ -12,9 +18,12 @@ public class Main {
 	private static int frames = 0;
 	
 	// Main
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Shape camera = new Shape(0, 0, -10, 0, 0, 0, 0);
 		Screen screen = new Screen(500, 750, 500, 0xffffff, 0.25, 10, "Raymarching");
+		
+		File outputFile = new File("H:\\Documents\\..Programming\\Render3D\\Java\\Output.gif");
+		GifSequenceWriter gifWriter = new GifSequenceWriter(ImageIO.createImageOutputStream(outputFile), BufferedImage.TYPE_INT_RGB, 1000 / 60, true);
 		
 		ArrayList<Shape> shapes = new ArrayList<>();
 		ArrayList<Light> lights = new ArrayList<>();
@@ -50,6 +59,14 @@ public class Main {
 		
 		while (true) {
 			screen.updateScene(camera, shapes, lights);
+			
+			gifWriter.writeToSequence(screen.getImage());
+			
+			if (camera.getAngleY() > Math.PI * 2) {
+				gifWriter.close();
+				System.out.println("GIF saved.");
+				break;
+			}
 			
 			torus.rotate(0.15, 0);
 			
