@@ -1,3 +1,5 @@
+import java.lang.Math;
+
 public class Shape {
 	// Member variables
 	private Vector pos;
@@ -102,7 +104,7 @@ public class Shape {
 	}
 	
 	public void rotate(double angleX, double angleY) {
-		this.angleX += angleX;
+		this.angleX += angleX + this.angleX > Math.PI * 2 ? -Math.PI * 2 : 0;
 		this.angleY += angleY;
 	}
 	

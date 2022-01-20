@@ -19,12 +19,15 @@ public class Main {
 	
 	// Main
 	public static void main(String[] args) throws IOException {
+		// Creating the main camera and screen
 		Shape camera = new Shape(0, 0, -10, 0, 0, 0, 0);
 		Screen screen = new Screen(500, 750, 500, 0xffffff, 0.25, 10, "Raymarching");
 		
+		// Creating the output file and GIF writer
 		File outputFile = new File("H:\\Documents\\..Programming\\Render3D\\Java\\Output.gif");
 		GifSequenceWriter gifWriter = new GifSequenceWriter(ImageIO.createImageOutputStream(outputFile), BufferedImage.TYPE_INT_RGB, 1000 / 60, true);
 		
+		// Creating the arrays to contain the shapes and lights
 		ArrayList<Shape> shapes = new ArrayList<>();
 		ArrayList<Light> lights = new ArrayList<>();
 		
@@ -32,7 +35,7 @@ public class Main {
 		Group coll = new Group(0, 0, 0, 0, 0, 0.9, 0xf4a0e6, 0.8);
 		shapes.add(coll);
 		
-		coll.add(new Sphere(2, -1, 0, 1.5, 0, 0.4, 0, 0));
+		coll.add(new Sphere(2, -1, 0, 1.5, 0, 0));
 		coll.add(new Box(1, -0.5, 0.25, 2.1, 3.14, 1.23, 0.1, 0, 0, 0, 0));
 		
 		Box box = new Box(-2.5, -3, -2.5, 0.8, 2.9, 3.4, 1, 0.2, 0, 0x7bc4a8, 0.5);
@@ -47,19 +50,22 @@ public class Main {
 		Torus torus = new Torus(0, 0, 0, 2, 0.2, 0, 0, 0x554433, 0.2);
 		coll.add(torus);
 		
-		Sphere sphere = new Sphere(0, -2, 21, 10, 0, 0, 0xf4a0e6, 0.5);
+		Sphere sphere = new Sphere(0, -2, 21, 10, 0xf4a0e6, 0.5);
 		//shapes.add(sphere);
 		
 		// Add lights
-		Light lightA = new Light(-10, 0, 0, 1, 0xffffff);
+		Light lightA = new Light(-10, 0, 0, 1, 0xffffff, new Sphere(-10, 0, 0, 1, 0xffffff, 0));
 		lights.add(lightA);
+		shapes.add(lightA.getLinkedShape());
 		
-		Light lightB = new Light(3, -3, -3, 1, 0xffffff);
+		Light lightB = new Light(5, -5, 3, 1, 0xffffff, new Sphere(3, -3, -3, 1, 0xffffff, 0));
 		lights.add(lightB);
+		shapes.add(lightB.getLinkedShape());
 		
+		// The main loop
 		while (true) {
+			// Update and save the current frame
 			screen.updateScene(camera, shapes, lights);
-			
 			gifWriter.writeToSequence(screen.getImage());
 			
 			if (camera.getAngleY() > Math.PI * 2) {
@@ -71,7 +77,9 @@ public class Main {
 			torus.rotate(0.15, 0);
 			
 			lightA.rotate(0, 0.1);
+			lightA.getLinkedShape().getPos().rotate(0, 0.1);
 			lightB.rotate(0, 0.1);
+			lightB.getLinkedShape().getPos().rotate(0, 0.1);
 			
 			camera.getPos().rotate(0, 0.1);
 			camera.rotate(0, 0.1);

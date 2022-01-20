@@ -166,12 +166,10 @@ public class Screen extends JFrame {
 			Ray lightRay = new Ray(ray.getPos(), lightRayDir);
 			
 			lightRay.step(2 * Main.MIN_LENGTH);
+			int lightRayHit = shape == lights.get(i).getLinkedShape() ? hit : lightRay.march(shapes);
 			
-			if (lightRay.march(shapes) == -1) {
+			if (lightRayHit != -1 && shapes.get(lightRayHit) == lights.get(i).getLinkedShape())
 				totalBrightness *= (1 - lights.get(i).getBrightness() * Math.max(normal.dotProduct(lightRay.getDir()), 0));
-				
-				//shade *= Math.abs(normal.dotProduct(lightRay.getDir()));
-			}
 		}
 		
 		shade *= Math.min(1 + ambientLight - totalBrightness, 1);

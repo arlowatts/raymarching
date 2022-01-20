@@ -5,14 +5,14 @@ public class Sphere extends Shape{
 	private double radius;
 	
 	// Constructors
-	public Sphere(double x, double y, double z, double r, double angleX, double angleY, int color, double shine) {
-		super(x, y, z, angleX, angleY, color, shine);
+	public Sphere(double x, double y, double z, double r, int color, double shine) {
+		super(x, y, z, 0, 0, color, shine);
 		radius = Math.max(r, Main.MIN_LENGTH);
 		
 		updateBoundCorners();
 	}
 	
-	public Sphere(Vector v, double r, double angleX, double angleY, int color, double shine) {this(v.getX(), v.getY(), v.getZ(), r, angleX, angleY, color, shine);}
+	public Sphere(Vector v, double r, int color, double shine) {this(v.getX(), v.getY(), v.getZ(), r, color, shine);}
 	
 	// Methods
 	public double getDistance(Vector v) {
