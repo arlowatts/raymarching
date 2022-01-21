@@ -104,7 +104,7 @@ public class Shape {
 	}
 	
 	public void rotate(double angleX, double angleY) {
-		this.angleX += angleX + this.angleX > Math.PI * 2 ? -Math.PI * 2 : 0;
+		this.angleX += angleX;
 		this.angleY += angleY;
 	}
 	

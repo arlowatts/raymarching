@@ -160,19 +160,19 @@ public class Screen extends JFrame {
 		double totalBrightness = 1;
 		
 		for (int i = 0; i < lights.size(); i++) {
-			Vector lightRayDir = new Vector(lights.get(i));
+			Vector lightRayDir = new Vector(lights.get(i).getPos());
 			lightRayDir.subtract(ray.getPos());
 			
 			Ray lightRay = new Ray(ray.getPos(), lightRayDir);
-			
 			lightRay.step(2 * Main.MIN_LENGTH);
-			int lightRayHit = shape == lights.get(i).getLinkedShape() ? hit : lightRay.march(shapes);
 			
-			if (lightRayHit != -1 && shapes.get(lightRayHit) == lights.get(i).getLinkedShape())
-				totalBrightness *= (1 - lights.get(i).getBrightness() * Math.max(normal.dotProduct(lightRay.getDir()), 0));
+			int lightRayHit = lightRay.march(shapes);
+			
+			if (lightRayHit != -1 && shapes.get(lightRayHit) == lights.get(i))
+				totalBrightness *= (1 - lights.get(i).getBrightness() * Math.max(normal.dotProduct(lightRay.getDir()) * (shape == lights.get(i) ? -1 : 1), 0));
 		}
 		
-		shade *= Math.min(1 + ambientLight - totalBrightness, 1);
+		shade *= Math.min(1 - totalBrightness + ambientLight, 1);
 		
 		int reflectionColor = castRay(ray, shapes, lights, shade * shape.getShine(), reflections);
 		

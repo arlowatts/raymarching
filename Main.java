@@ -33,7 +33,7 @@ public class Main {
 		
 		// Add shapes
 		Group coll = new Group(0, 0, 0, 0, 0, 0.9, 0xf4a0e6, 0.8);
-		shapes.add(coll);
+		//shapes.add(coll);
 		
 		coll.add(new Sphere(2, -1, 0, 1.5, 0, 0));
 		coll.add(new Box(1, -0.5, 0.25, 2.1, 3.14, 1.23, 0.1, 0, 0, 0, 0));
@@ -45,7 +45,7 @@ public class Main {
 		shapes.add(plane);
 		
 		Cylinder cylinder = new Cylinder(-1, -2, 3, 1, 3, 0.4, -2.9, 0, 0x4f7a42, 0.4);
-		shapes.add(cylinder);
+		//shapes.add(cylinder);
 		
 		Torus torus = new Torus(0, 0, 0, 2, 0.2, 0, 0, 0x554433, 0.2);
 		coll.add(torus);
@@ -54,13 +54,13 @@ public class Main {
 		//shapes.add(sphere);
 		
 		// Add lights
-		Light lightA = new Light(-10, 0, 0, 1, 0xffffff, new Sphere(-10, 0, 0, 1, 0xffffff, 0));
+		Light lightA = new Light(-3, 3, 0, 0.5, 1, 0xffffff);
 		lights.add(lightA);
-		shapes.add(lightA.getLinkedShape());
+		shapes.add(lightA);
 		
-		Light lightB = new Light(5, -5, 3, 1, 0xffffff, new Sphere(3, -3, -3, 1, 0xffffff, 0));
-		lights.add(lightB);
-		shapes.add(lightB.getLinkedShape());
+		Light lightB = new Light(3, 0, -3, 0.5, 1, 0xffffff);
+		//lights.add(lightB);
+		//shapes.add(lightB);
 		
 		// The main loop
 		while (true) {
@@ -74,12 +74,13 @@ public class Main {
 				break;
 			}
 			
-			torus.rotate(0.15, 0);
+			coll.rotate(0.2, 0);
+			torus.rotate(-0.3, 0);
 			
-			lightA.rotate(0, 0.1);
-			lightA.getLinkedShape().getPos().rotate(0, 0.1);
-			lightB.rotate(0, 0.1);
-			lightB.getLinkedShape().getPos().rotate(0, 0.1);
+			lightA.getPos().rotate(0.4, -0.1);
+			lightB.getPos().rotate(-0.15, 0);
+			
+			plane.setAngleY(Math.sin(frames / 10.0));
 			
 			camera.getPos().rotate(0, 0.1);
 			camera.rotate(0, 0.1);
