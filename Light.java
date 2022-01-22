@@ -5,7 +5,7 @@ public class Light extends Sphere {
 	// Constructors
 	public Light(double x, double y, double z, double r, double brightness, int color) {
 		super(x, y, z, r, color, 0);
-		this.brightness = brightness;
+		this.brightness = Math.min(Math.max(brightness, 0), 1);
 	}
 	
 	// Getters

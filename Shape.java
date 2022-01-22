@@ -127,11 +127,17 @@ public class Shape {
 			   (int)((color & 255) * shade);
 	}
 	
+	public int getColor(double shadeR, double shadeG, double shadeB) {
+		return ((int)((color >> 16) * Math.max(0, Math.min(1, Math.abs(shadeR)))) << 16) |
+			   ((int)(((color >> 8) & 255) * Math.max(0, Math.min(1, Math.abs(shadeG)))) << 8) |
+			   (int)((color & 255) * Math.max(0, Math.min(1, Math.abs(shadeB))));
+	}
+	
 	public double getShine() {return shine;}
 	
 	// Setters
 	public void setAngleX(double angleX) {this.angleX = angleX;}
-	public void setAngleY(double angleX) {this.angleY = angleY;}
+	public void setAngleY(double angleY) {this.angleY = angleY;}
 	
 	public void setColor(int color) {this.color = color & 0xffffff;}
 	
