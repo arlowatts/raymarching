@@ -107,11 +107,9 @@ public class Vector {
 	public int toInt() {
 		Vector v = new Vector(this);
 		
-		v.setLength(255);
-		
-		return (Math.abs((int)v.x) << 16) |
-			   (Math.abs((int)v.y) << 8) |
-			   Math.abs((int)v.z);
+		return ((Math.abs((int)v.x) & 255) << 16) |
+			   ((Math.abs((int)v.y) & 255) << 8) |
+			   (Math.abs((int)v.z) & 255);
 	}
 	
 	// Getters

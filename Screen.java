@@ -57,7 +57,7 @@ public class Screen extends JFrame {
 	}
 	
 	// Methods
-	public void updateScene(Shape camera, ArrayList<Shape> shapes, ArrayList<Light> lights) {
+	public void updateScene(Shape camera, ArrayList<Shape> shapes, ArrayList<Shape> lights) {
 		if (initWaiting) init();
 		
 		frameStart = System.nanoTime();
@@ -113,13 +113,8 @@ public class Screen extends JFrame {
 		//*/
 	}
 	
-	// The 'starter' method for the recursive castRay method
-	public int castRay(Ray ray, ArrayList<Shape> shapes, ArrayList<Light> lights) {
-		return castRay(ray, shapes, lights, 1, 1, 1, 0);
-	}
-	
 	// The recursive method to cast and reflect a light ray
-	private int castRay(Ray ray, ArrayList<Shape> shapes, ArrayList<Light> lights, double rShade, double gShade, double bShade, int reflections) {
+	private int castRay(Ray ray, ArrayList<Shape> shapes, ArrayList<Shape> lights, double rShade, double gShade, double bShade, int reflections) {
 		// Marches a ray
 		int hit = ray.march(shapes);
 		if (hit == -1 || reflections++ >= maxReflections) return getBgnd(rShade * ambientLight, gShade * ambientLight, bShade * ambientLight);
@@ -146,9 +141,9 @@ public class Screen extends JFrame {
 			
 			// If the ray is already at the light source, add its brightness
 			if (shape == lights.get(i)) {
-				rBrightness *= 1 - (lights.get(i).getColor(lights.get(i).getBrightness(), 0, 0) >> 16) * colorFactor;
-				gBrightness *= 1 - ((lights.get(i).getColor(0, lights.get(i).getBrightness(), 0) >> 8) & 255) * colorFactor;
-				bBrightness *= 1 - (lights.get(i).getColor(0, 0, lights.get(i).getBrightness()) & 255) * colorFactor;
+				rBrightness *= 1 - (lights.get(i).getColor() >> 16) * colorFactor;
+				gBrightness *= 1 - ((lights.get(i).getColor() >> 8) & 255) * colorFactor;
+				bBrightness *= 1 - (lights.get(i).getColor() & 255) * colorFactor;
 				
 				continue;
 			}
@@ -166,9 +161,9 @@ public class Screen extends JFrame {
 			if (lightRayHit != -1 && shapes.get(lightRayHit) == lights.get(i)) {
 				colorFactor *= Math.max(normal.dotProduct(lightRay.getDir()), 0);
 				
-				rBrightness *= 1 - (lights.get(i).getColor(lights.get(i).getBrightness(), 0, 0) >> 16) * colorFactor;
-				gBrightness *= 1 - ((lights.get(i).getColor(0, lights.get(i).getBrightness(), 0) >> 8) & 255) * colorFactor;
-				bBrightness *= 1 - (lights.get(i).getColor(0, 0, lights.get(i).getBrightness()) & 255) * colorFactor;
+				rBrightness *= 1 - (lights.get(i).getColor() >> 16) * colorFactor;
+				gBrightness *= 1 - ((lights.get(i).getColor() >> 8) & 255) * colorFactor;
+				bBrightness *= 1 - (lights.get(i).getColor() & 255) * colorFactor;
 			}
 		}
 		
@@ -181,6 +176,11 @@ public class Screen extends JFrame {
 		int reflectionColor = castRay(ray, shapes, lights, rShade * shape.getShine(), gShade * shape.getShine(), bShade * shape.getShine(), reflections);
 		
 		return shape.getColor(rShade * (1 - shape.getShine()), gShade * (1 - shape.getShine()), bShade * (1 - shape.getShine())) + reflectionColor;
+	}
+	
+	// The 'starter' method for the recursive castRay method
+	public int castRay(Ray ray, ArrayList<Shape> shapes, ArrayList<Shape> lights) {
+		return castRay(ray, shapes, lights, 1, 1, 1, 0);
 	}
 	
 	// Getters

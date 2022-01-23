@@ -29,7 +29,7 @@ public class Main {
 		
 		// Creating the arrays to contain the shapes and lights
 		ArrayList<Shape> shapes = new ArrayList<>();
-		ArrayList<Light> lights = new ArrayList<>();
+		ArrayList<Shape> lights = new ArrayList<>();
 		
 		// Add shapes
 		Group coll = new Group(0, 0, 0, 0, 0, 0.9, 0xf4a0e6, 0.8);
@@ -51,19 +51,19 @@ public class Main {
 		coll.add(torus);
 		
 		// Add lights
-		Light lightA = new Light(0, 3, 3, 0.1, 0.8, 0xff0000);
+		Sphere lightA = new Sphere(0, 3, 3, 0.1, 0xff0000, 0);
 		lights.add(lightA);
 		shapes.add(lightA);
 		
-		Light lightB = new Light(0, -3, -3, 0.1, 0.8, 0x0000ff);
+		Sphere lightB = new Sphere(0, -3, -3, 0.1, 0x0000ff, 0);
 		lights.add(lightB);
 		shapes.add(lightB);
 		
-		Light lightC = new Light(0, -3, 3, 0.1, 0.8, 0x00ff00);
+		Sphere lightC = new Sphere(0, -3, 3, 0.1, 0x00ff00, 0);
 		lights.add(lightC);
 		shapes.add(lightC);
 		
-		Light lightD = new Light(0, 3, -3, 0.1, 0.8, 0xffffff);
+		Sphere lightD = new Sphere(0, 3, -3, 0.1, 0xffffff, 0);
 		lights.add(lightD);
 		shapes.add(lightD);
 		
@@ -75,8 +75,6 @@ public class Main {
 			gifWriter.writeToSequence(screen.getImage());
 			
 			torus.rotate(-0.15, 0);
-			
-			plane.setAngleY(Math.sin(frames / 10.0));
 			
 			lightA.getPos().rotate(0.1, 0);
 			lightB.getPos().rotate(0.1, 0);
