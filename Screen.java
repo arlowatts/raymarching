@@ -111,78 +111,9 @@ public class Screen extends JFrame {
 		//*/
 	}
 	
-	// The recursive method to cast and reflect a light ray
-	private int castRay(Ray ray, ArrayList<Shape> shapes, ArrayList<Shape> lights, Vector shade, int reflections) {
-		// Marches a ray
-		int hit = ray.march(shapes);
-		if (hit == -1 || reflections++ >= maxReflections) return Color.shade(getBgnd(), shade.getX(), shade.getY(), shade.getZ());
-		
-		// Gets the surface normal of the hit object
-		Vector normal = shapes.get(hit).getNormal(ray.getPos());
-		double dot = normal.dotProduct(ray.getDir());
-		
-		// Assumes the object is at least partly reflective and reflects the ray
-		ray.setSteps(0);
-		ray.getDir().add(-2 * dot * normal.getX(), -2 * dot * normal.getY(), -2 * dot * normal.getZ());
-		ray.step(2 * Main.MIN_LENGTH);
-		
-		Vector brightness = new Vector(1, 1, 1);
-		
-		// Iterates over all the lights and marches to them
-		for (int i = 0; i < lights.size(); i++) {
-			// If the ray is already at the light source, add its brightness
-			if (shapes.get(hit) == lights.get(i)) {
-				int lightColor = lights.get(i).getColor();
-				
-				brightness.stretch(1 - Color.getR(lightColor) * Color.SCALE,
-								   1 - Color.getG(lightColor) * Color.SCALE,
-								   1 - Color.getB(lightColor) * Color.SCALE);
-				
-				continue;
-			}
-			
-			// Marches a new ray to the light
-			Vector lightRayDir = new Vector(lights.get(i).getPos());
-			lightRayDir.subtract(ray.getPos());
-			
-			Ray lightRay = new Ray(ray.getPos(), lightRayDir);
-			lightRay.step(2 * Main.MIN_LENGTH);
-			
-			int lightRayHit = lightRay.march(shapes);
-			
-			// If it hits the light, add brightness proportional to the light's brightness and the dot product of the normal and the ray direction
-			if (lightRayHit != -1 && shapes.get(lightRayHit) == lights.get(i)) {
-				double lightShade = Math.max(normal.dotProduct(lightRay.getDir()), 0) * Color.SCALE;
-				int lightColor = lights.get(i).getColor();
-				
-				brightness.stretch(1 - Color.getR(lightColor) * lightShade,
-								   1 - Color.getG(lightColor) * lightShade,
-								   1 - Color.getB(lightColor) * lightShade);
-			}
-		}
-		
-		// Multiply the shade of the pixel by the total brightness and add ambient light
-		shade.stretch(Math.min(1 - brightness.getX() + Color.getR(getBgnd()) * Color.SCALE, 1),
-					  Math.min(1 - brightness.getY() + Color.getG(getBgnd()) * Color.SCALE, 1),
-					  Math.min(1 - brightness.getZ() + Color.getB(getBgnd()) * Color.SCALE, 1));
-		
-		double shine = shapes.get(hit).getShine();
-		
-		int reflectionColor = 0;
-		
-		// Casts the reflected ray
-		if (shine > 0) {
-			shade.multiply(shine);
-			reflectionColor = castRay(ray, shapes, lights, shade, reflections);
-			shade.multiply(1 / shine - 1);
-		}
-		
-		return Color.shade(shapes.get(hit).getColor(), shade.getX(), shade.getY(), shade.getZ()) + reflectionColor;
-	}
-	
 	// The 'starter' method for the recursive castRay method
 	public int castRay(Ray ray, ArrayList<Shape> shapes, ArrayList<Shape> lights) {
-		return castRay(ray, shapes, lights, new Vector(1, 1, 1), 0);
+		return ray.cast(this, shapes, lights, new Vector(1, 1, 1), maxReflections);
 	}
 	
 	// Getters

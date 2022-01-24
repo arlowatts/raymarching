@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class Main {
 	private Ray forSomeReasonTheRayClassDoesntRecompileOnItsOwn;
@@ -30,6 +32,8 @@ public class Main {
 		// Creating the arrays to contain the shapes and lights
 		ArrayList<Shape> shapes = new ArrayList<>();
 		ArrayList<Shape> lights = new ArrayList<>();
+		
+		loadSetup(".\\setup.txt", shapes, lights, camera, screen);
 		
 		// Add shapes
 		Group coll = new Group(new ArrayList<Shape>(), 0, 0, 0, 0, 0, 0.5, 0.8, 0xf436a0);
@@ -74,10 +78,10 @@ public class Main {
 			
 			torus.rotate(-0.15, 0);
 			
-			lightA.getPos().rotate(0.1, 0.1);
-			lightB.getPos().rotate(0.1, 0.1);
-			lightC.getPos().rotate(0.1, 0.1);
-			lightD.getPos().rotate(0.1, 0.1);
+			lightA.getPos().rotate(0.2, 0.1);
+			lightB.getPos().rotate(0.1, 0.2);
+			lightC.getPos().rotate(0.2, 0.1);
+			lightD.getPos().rotate(0.1, 0.2);
 			
 			camera.getPos().rotate(0, 0.1);
 			camera.rotate(0, 0.1);
@@ -90,6 +94,19 @@ public class Main {
 		gifWriter.close();
 		System.out.println("GIF saved.");
 		screen.dispose();
+	}
+	
+	public static void loadSetup(String path, ArrayList<Shape> shapes, ArrayList<Shape> lights, Shape camera, Screen screen) throws FileNotFoundException {
+		File setup = new File(path);
+		
+		Scanner scanner = new Scanner(setup);
+		
+		while (scanner.hasNextLine()) {
+			String line = scanner.nextLine();
+			System.out.println(line);
+		}
+		
+		scanner.close();
 	}
 	
 	// Getters
