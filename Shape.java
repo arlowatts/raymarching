@@ -13,7 +13,7 @@ public class Shape {
 	private double shine;
 	
 	// Constructors
-	public Shape(double x, double y, double z, double angleX, double angleY, int color, double shine) {
+	public Shape(double x, double y, double z, double angleX, double angleY, double shine, int color) {
 		pos = new Vector(x, y, z);
 		
 		this.angleX = angleX;
@@ -32,8 +32,6 @@ public class Shape {
 		
 		this.shine = Math.min(Math.max(shine, 0), 1);
 	}
-	
-	public Shape(Vector pos, double angleX, double angleY, int color, double shine) {this(pos.getX(), pos.getY(), pos.getZ(), angleX, angleY, color, shine);}
 	
 	//Methods
 	public double getDistance(Vector v) {return pos.getDistance(v);}
@@ -118,28 +116,12 @@ public class Shape {
 	public Vector[] getBoundCorners() {return boundCorners;}
 	
 	public int getColor() {return color;}
-	
-	public int getColor(double shade) {
-		shade = Math.max(0, Math.min(1, Math.abs(shade)));
-		
-		return ((int)((color >> 16) * shade) << 16) |
-			   ((int)(((color >> 8) & 255) * shade) << 8) |
-			   (int)((color & 255) * shade);
-	}
-	
-	public int getColor(double shadeR, double shadeG, double shadeB) {
-		return ((int)((color >> 16) * Math.max(0, Math.min(1, Math.abs(shadeR)))) << 16) |
-			   ((int)(((color >> 8) & 255) * Math.max(0, Math.min(1, Math.abs(shadeG)))) << 8) |
-			   (int)((color & 255) * Math.max(0, Math.min(1, Math.abs(shadeB))));
-	}
-	
 	public double getShine() {return shine;}
 	
 	// Setters
 	public void setAngleX(double angleX) {this.angleX = angleX;}
 	public void setAngleY(double angleY) {this.angleY = angleY;}
 	
-	public void setColor(int color) {this.color = color & 0xffffff;}
-	
+	public void setColor(int color) {this.color = color;}
 	public void setShine(double shine) {this.shine = shine;}
 }

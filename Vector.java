@@ -104,12 +104,10 @@ public class Vector {
 		z *= l;
 	}
 	
-	public int toInt() {
-		Vector v = new Vector(this);
-		
-		return ((Math.abs((int)v.x) & 255) << 16) |
-			   ((Math.abs((int)v.y) & 255) << 8) |
-			   (Math.abs((int)v.z) & 255);
+	public void stretch(double lx, double ly, double lz) {
+		x *= lx;
+		y *= ly;
+		z *= lz;
 	}
 	
 	// Getters

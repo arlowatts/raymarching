@@ -5,15 +5,13 @@ public class Plane extends Shape {
 	private double width, length;
 	
 	// Constructors
-	public Plane(double x, double y, double z, double w, double l, double angleX, double angleY, int color, double shine) {
-		super(x, y, z, angleX, angleY, color, shine);
+	public Plane(double w, double l, double x, double y, double z, double angleX, double angleY, double shine, int color) {
+		super(x, y, z, angleX, angleY, shine, color);
 		width = w;
 		length = l;
 		
 		updateBoundCorners();
 	}
-	
-	public Plane(Vector v, double w, double l, double angleX, double angleY, int color, double shine) {this(v.getX(), v.getY(), v.getZ(), w, l, angleX, angleY, color, shine);}
 	
 	// Methods
 	public double getDistance(Vector v) {

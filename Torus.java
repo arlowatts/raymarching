@@ -5,15 +5,13 @@ public class Torus extends Shape{
 	private double largeRadius, smallRadius;
 	
 	// Constructors
-	public Torus(double x, double y, double z, double R, double r, double angleX, double angleY, int color, double shine) {
-		super(x, y, z, angleX, angleY, color, shine);
+	public Torus(double R, double r, double x, double y, double z, double angleX, double angleY, double shine, int color) {
+		super(x, y, z, angleX, angleY, shine, color);
 		largeRadius = Math.max(R, Main.MIN_LENGTH);
 		smallRadius = Math.max(r, Main.MIN_LENGTH);
 		
 		updateBoundCorners();
 	}
-	
-	public Torus(Vector v, double R, double r, double angleX, double angleY, int color, double shine) {this(v.getX(), v.getY(), v.getZ(), R, r, angleX, angleY, color, shine);}
 	
 	// Methods
 	public double getDistance(Vector v) {

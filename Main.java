@@ -20,8 +20,8 @@ public class Main {
 	// Main
 	public static void main(String[] args) throws IOException {
 		// Creating the main camera and screen
-		Shape camera = new Shape(-10, 0, 0, 0, -Math.PI / 2, 0, 0);
-		Screen screen = new Screen(500, 750, 500, 0xffffff, 0.2, 10, "Raymarching");
+		Shape camera = new Shape(0, 0, -10, 0, 0, 0, 0);
+		Screen screen = new Screen(500, 750, 500, 0x303030, 10, "Raymarching");
 		
 		// Creating the output file and GIF writer
 		File outputFile = new File(".\\gifs\\Output.gif");
@@ -32,40 +32,38 @@ public class Main {
 		ArrayList<Shape> lights = new ArrayList<>();
 		
 		// Add shapes
-		Group coll = new Group(0, 0, 0, 0, 0, 0.9, 0xf4a0e6, 0.8);
+		Group coll = new Group(new ArrayList<Shape>(), 0, 0, 0, 0, 0, 0.5, 0.8, 0xf436a0);
 		shapes.add(coll);
 		
-		coll.add(new Sphere(2, -1, 0, 1.5, 0, 0));
-		coll.add(new Box(1, -0.5, 0.25, 2.1, 3.14, 1.23, 0.1, 0, 0, 0, 0));
+		coll.add(new Sphere(1.5, 2, -1, 0, 0, 0));
+		coll.add(new Box(2.1, 3.14, 1.23, 0.1, 1, -0.5, 0.25, 0, 0, 0, 0));
 		
-		Box box = new Box(-1.5, -2, -1.5, 0.8, 1.9, 2.4, 0.4, 0.2, 0, 0x7bc4a8, 0.5);
+		Box box = new Box(0.8, 1.9, 2.4, 0.4, -1.5, -2, -1.5, 0.2, 0, 0.5, 0x7bc4a8);
 		shapes.add(box);
 		
-		Plane plane = new Plane(0, -5, 0, 4, 4, 1, 0, 0xe69a3b, 0.7);
+		Plane plane = new Plane(4, 4, 0, -5, 0, -1, 0, 0.3, 0xe69a3b);
 		shapes.add(plane);
 		
-		Cylinder cylinder = new Cylinder(-1, -2, 3, 1, 3, 0.4, -2.9, 0, 0x4f7a42, 0.4);
+		Cylinder cylinder = new Cylinder(1, 3, 0.4, -1, -2, 3, -2.9, 0, 0.4, 0x4f7a42);
 		shapes.add(cylinder);
 		
-		Torus torus = new Torus(0, 0, 0, 2, 0.2, 0, 0, 0x554433, 0.2);
+		Torus torus = new Torus(2, 0.2, 0, 0, 0, 0, 0, 0.2, 0x554433);
 		coll.add(torus);
 		
 		// Add lights
-		Sphere lightA = new Sphere(0, 3, 3, 0.1, 0xff0000, 0);
+		Sphere lightA = new Sphere(0.1, 0, 3, 3, 0, 0xffff00);
 		lights.add(lightA);
-		shapes.add(lightA);
 		
-		Sphere lightB = new Sphere(0, -3, -3, 0.1, 0x0000ff, 0);
+		Sphere lightB = new Sphere(0.1, 0, -3, -3, 0, 0xff00ff);
 		lights.add(lightB);
-		shapes.add(lightB);
 		
-		Sphere lightC = new Sphere(0, -3, 3, 0.1, 0x00ff00, 0);
+		Sphere lightC = new Sphere(0.1, 0, -3, 3, 0, 0x00ffff);
 		lights.add(lightC);
-		shapes.add(lightC);
 		
-		Sphere lightD = new Sphere(0, 3, -3, 0.1, 0xffffff, 0);
+		Sphere lightD = new Sphere(0.1, 0, 3, -3, 0, 0xffffff);
 		lights.add(lightD);
-		shapes.add(lightD);
+		
+		shapes.addAll(lights);
 		
 		// The main loop
 		while (true) {
@@ -76,10 +74,10 @@ public class Main {
 			
 			torus.rotate(-0.15, 0);
 			
-			lightA.getPos().rotate(0.1, 0);
-			lightB.getPos().rotate(0.1, 0);
-			lightC.getPos().rotate(0.1, 0);
-			lightD.getPos().rotate(0.1, 0);
+			lightA.getPos().rotate(0.1, 0.1);
+			lightB.getPos().rotate(0.1, 0.1);
+			lightC.getPos().rotate(0.1, 0.1);
+			lightD.getPos().rotate(0.1, 0.1);
 			
 			camera.getPos().rotate(0, 0.1);
 			camera.rotate(0, 0.1);

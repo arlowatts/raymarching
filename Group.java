@@ -8,17 +8,13 @@ public class Group extends Shape {
 	private double smoothing;
 	
 	// Constructors
-	public Group(double x, double y, double z, double angleX, double angleY, double smoothing, ArrayList<Shape> objects, int color, double shine) {
-		super(x, y, z, angleX, angleY, color, shine);
+	public Group(ArrayList<Shape> objects, double x, double y, double z, double angleX, double angleY, double smoothing, double shine, int color) {
+		super(x, y, z, angleX, angleY, shine, color);
 		this.smoothing = smoothing;
 		this.objects = objects;
 		
 		updateBoundCorners();
 	}
-	
-	public Group(Vector v, double angleX, double angleY, double smoothing, ArrayList<Shape> objects, int color, double shine) {this(v.getX(), v.getY(), v.getZ(), angleX, angleY, smoothing, objects, color, shine);}
-	
-	public Group(double x, double y, double z, double angleX, double angleY, double smoothing, int color, double shine) {this(x, y, z, angleX, angleY, smoothing, new ArrayList<Shape>(), color, shine);}
 	
 	// Methods
 	public double getDistance(Vector v) {
