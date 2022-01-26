@@ -5,8 +5,8 @@ public class Torus extends Shape{
 	private double largeRadius, smallRadius;
 	
 	// Constructors
-	public Torus(double R, double r, double x, double y, double z, double angleX, double angleY, double shine, int color) {
-		super(x, y, z, angleX, angleY, shine, color);
+	public Torus(double R, double r, double x, double y, double z, double angleX, double angleY, double shine, int color, int modifiers) {
+		super(x, y, z, angleX, angleY, shine, color, modifiers);
 		largeRadius = Math.max(R, Main.MIN_LENGTH);
 		smallRadius = Math.max(r, Main.MIN_LENGTH);
 		

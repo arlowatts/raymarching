@@ -8,8 +8,8 @@ public class Group extends Shape {
 	private double smoothing;
 	
 	// Constructors
-	public Group(ArrayList<Shape> objects, double x, double y, double z, double angleX, double angleY, double smoothing, double shine, int color) {
-		super(x, y, z, angleX, angleY, shine, color);
+	public Group(ArrayList<Shape> objects, double x, double y, double z, double angleX, double angleY, double smoothing, double shine, int color, int modifiers) {
+		super(x, y, z, angleX, angleY, shine, color, modifiers);
 		this.smoothing = smoothing;
 		this.objects = objects;
 		

@@ -97,7 +97,7 @@ public class Ray {
 			
 			if (nearest == -1) return -1;
 			
-			double stepSize = shapes.get(nearest).getDistance(pos);
+			double stepSize = shapes.get(nearest).distanceTo(pos);
 			
 			step(stepSize);
 			
@@ -112,7 +112,7 @@ public class Ray {
 		double minDist = Main.MAX_LENGTH;
 		
 		for (int i = 0; i < shapes.size(); i++) {
-			double distance = shapes.get(i).getDistance(pos);
+			double distance = shapes.get(i).distanceTo(pos);
 			
 			if (distance < minDist) {
 				index = i;

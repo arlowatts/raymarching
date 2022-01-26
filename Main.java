@@ -22,7 +22,7 @@ public class Main {
 	// Main
 	public static void main(String[] args) throws IOException {
 		// Creating the main camera and screen
-		Shape camera = new Shape(0, 0, -10, 0, 0, 0, 0);
+		Shape camera = new Shape(0, 0, -10, 0, 0, 0, 0, 0);
 		Screen screen = new Screen(500, 750, 500, 0x303030, 10, "Raymarching");
 		
 		// Creating the output file and GIF writer
@@ -33,38 +33,39 @@ public class Main {
 		ArrayList<Shape> shapes = new ArrayList<>();
 		ArrayList<Shape> lights = new ArrayList<>();
 		
-		loadSetup(".\\setup.txt", shapes, lights, camera, screen);
+		//loadSetup(".\\setup.txt", shapes, lights, camera, screen);
 		
 		// Add shapes
-		Group coll = new Group(new ArrayList<Shape>(), 0, 0, 0, 0, 0, 0.5, 0.8, 0xf436a0);
-		shapes.add(coll);
+		Group coll = new Group(new ArrayList<Shape>(), 0, 0, 0, 0, 0, 0.5, 0.8, 0xf436a0, 0);
+		//shapes.add(coll);
 		
-		coll.add(new Sphere(1.5, 2, -1, 0, 0, 0));
-		coll.add(new Box(2.1, 3.14, 1.23, 0.1, 1, -0.5, 0.25, 0, 0, 0, 0));
+		coll.add(new Sphere(1.5, 2, -1, 0, 0, 0, 0));
+		coll.add(new Box(2.1, 3.14, 1.23, 0.1, 1, -0.5, 0.25, 0, 0, 0, 0, 0));
 		
-		Box box = new Box(0.8, 1.9, 2.4, 0.4, -1.5, -2, -1.5, 0.2, 0, 0.5, 0x7bc4a8);
+		Box box = new Box(0.8, 1.9, 2.4, 0.4, -1.5, -2, -1.5, 0.2, 0, 0, 0x7bc4a8, Shape.IS_REPEATING);
+		box.setRepeatUnit(10);
 		shapes.add(box);
 		
-		Plane plane = new Plane(4, 4, 0, -5, 0, -1, 0, 0.3, 0xe69a3b);
-		shapes.add(plane);
+		Plane plane = new Plane(4, 4, 0, -5, 0, -1, 0, 0.3, 0xe69a3b, 0);
+		//shapes.add(plane);
 		
-		Cylinder cylinder = new Cylinder(1, 3, 0.4, -1, -2, 3, -2.9, 0, 0.4, 0x4f7a42);
-		shapes.add(cylinder);
+		Cylinder cylinder = new Cylinder(1, 3, 0.4, -1, -2, 3, -2.9, 0, 0.4, 0x4f7a42, 0);
+		//shapes.add(cylinder);
 		
-		Torus torus = new Torus(2, 0.2, 0, 0, 0, 0, 0, 0.2, 0x554433);
-		coll.add(torus);
+		Torus torus = new Torus(2, 0.2, 0, 0, 0, 0, 0, 0.2, 0x5544330, 0);
+		//coll.add(torus);
 		
 		// Add lights
-		Sphere lightA = new Sphere(0.1, 0, 3, 3, 0, 0xffff00);
+		Sphere lightA = new Sphere(0.1, 0, 3, 3, 0, 0xffff00, 0);
 		lights.add(lightA);
 		
-		Sphere lightB = new Sphere(0.1, 0, -3, -3, 0, 0xff00ff);
+		Sphere lightB = new Sphere(0.1, 0, -3, -3, 0, 0xff00ff, 0);
 		lights.add(lightB);
 		
-		Sphere lightC = new Sphere(0.1, 0, -3, 3, 0, 0x00ffff);
+		Sphere lightC = new Sphere(0.1, 0, -3, 3, 0, 0x00ffff, 0);
 		lights.add(lightC);
 		
-		Sphere lightD = new Sphere(0.1, 0, 3, -3, 0, 0xffffff);
+		Sphere lightD = new Sphere(0.1, 0, 3, -3, 0, 0xffffff, 0);
 		lights.add(lightD);
 		
 		shapes.addAll(lights);

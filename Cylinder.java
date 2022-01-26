@@ -5,8 +5,8 @@ public class Cylinder extends Shape {
 	private double radius, height, edgeRadius;
 	
 	// Constructors
-	public Cylinder(double r, double h, double eR, double x, double y, double z, double angleX, double angleY, double shine, int color) {
-		super(x, y, z, angleX, angleY, shine, color);
+	public Cylinder(double r, double h, double eR, double x, double y, double z, double angleX, double angleY, double shine, int color, int modifiers) {
+		super(x, y, z, angleX, angleY, shine, color, modifiers);
 		radius = Math.max(r, Main.MIN_LENGTH);
 		height = Math.max(h, Main.MIN_LENGTH);
 		edgeRadius = eR;
@@ -42,10 +42,12 @@ public class Cylinder extends Shape {
 	// Getters
 	public double getRadius() {return radius;}
 	public double getHeight() {return height;}
+	public double getEdgeRadius() {return edgeRadius;}
 	
 	// Setters
 	public void setRadius(double r) {radius = r;}
 	public void setHeight(double h) {height = h;}
+	public void setEdgeRadius(double eR) {edgeRadius = eR;}
 	
 	public void setSize(double r, double h) {
 		radius = r;

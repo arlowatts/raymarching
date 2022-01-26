@@ -5,8 +5,8 @@ public class Plane extends Shape {
 	private double width, length;
 	
 	// Constructors
-	public Plane(double w, double l, double x, double y, double z, double angleX, double angleY, double shine, int color) {
-		super(x, y, z, angleX, angleY, shine, color);
+	public Plane(double w, double l, double x, double y, double z, double angleX, double angleY, double shine, int color, int modifiers) {
+		super(x, y, z, angleX, angleY, shine, color, modifiers);
 		width = w;
 		length = l;
 		

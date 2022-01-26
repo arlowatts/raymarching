@@ -5,8 +5,8 @@ public class Box extends Shape {
 	private double width, height, length, radius;
 	
 	// Constructors
-	public Box(double w, double h, double l, double r, double x, double y, double z, double angleX, double angleY, double shine, int color) {
-		super(x, y, z, angleX, angleY, shine, color);
+	public Box(double w, double h, double l, double r, double x, double y, double z, double angleX, double angleY, double shine, int color, int modifiers) {
+		super(x, y, z, angleX, angleY, shine, color, modifiers);
 		width = Math.max(w, Main.MIN_LENGTH);
 		height = Math.max(h, Main.MIN_LENGTH);
 		length = Math.max(l, Main.MIN_LENGTH);

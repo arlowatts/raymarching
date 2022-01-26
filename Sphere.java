@@ -5,8 +5,8 @@ public class Sphere extends Shape{
 	private double radius;
 	
 	// Constructors
-	public Sphere(double r, double x, double y, double z, double shine, int color) {
-		super(x, y, z, 0, 0, shine, color);
+	public Sphere(double r, double x, double y, double z, double shine, int color, int modifiers) {
+		super(x, y, z, 0, 0, shine, color, modifiers);
 		radius = Math.max(r, Main.MIN_LENGTH);
 		
 		updateBoundCorners();
