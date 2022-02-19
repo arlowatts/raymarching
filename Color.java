@@ -1,7 +1,7 @@
 import java.lang.Math;
 
 public class Color {
-	public static final double SCALE = 1.0 / 255.0;
+	public static final double RATIO = 1.0 / 255.0;
 	
 	public static int getR(int color) {return (color >> 16) & 0xff;}
 	public static int getG(int color) {return (color >>  8) & 0xff;}
@@ -23,9 +23,9 @@ public class Color {
 	}
 	
 	public static int shade(int color, int shade) {
-		return ((int)((double)(getR(color) * getR(shade)) * SCALE) << 16) |
-			   ((int)((double)(getG(color) * getG(shade)) * SCALE) << 8) |
-			   (int)((double)(getB(color) * getB(shade)) * SCALE);
+		return ((int)((double)(getR(color) * getR(shade)) * RATIO) << 16) |
+			   ((int)((double)(getG(color) * getG(shade)) * RATIO) << 8) |
+			   (int)((double)(getB(color) * getB(shade)) * RATIO);
 	}
 	
 	public static int invert(int color) {return 0xffffff - color;}

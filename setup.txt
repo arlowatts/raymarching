@@ -1,8 +1,22 @@
-// This is a comment
-Camera c 0 0 -10 0 0
-Screen s 500 750 500 0x303030 10 Raymarching
+// The camera and screen are required
+Camera 0 0 -10 0 0 0
+Screen 750 500 500 0x303030 Raymarching
 
-Sphere sphere1 1 1.5 2 -1 0 0 0
-Box box1 2.1 3.14 1.23 0.1 1 -0.5 0.25 0 0 0 0
+Light 0 3 3 0xffff00
+Light 0 -3 3 0xff00ff
+Light 0 -3 -3 0x00ffff
+Light 0 3 -3 0xffffff
 
-Group group1 (sphere1 box1) 0 0 0 0 0 0.5 0.8 0xf436a0
+Sphere - 1 0 0 -5 0.3 0xa09f50
+
+Sphere sphere1 1 1.5 2 -1 0 0
+Box box1 2.1 3.14 1.23 0.1 1 -0.5 0.25 0 0 0.1 0 0
+Torus torus1 2 0.2 0 0 0 0 0 0 0.2 0x554433
+
+Group - sphere1,box1,torus1 0 0 0 0 0 0 0.5 0.8 0xf436a0
+
+Box - 0.8 1.9 2.4 0.4 -1.5 -2 -1.5 -0.2 0 0.2 0.5 0x7bc4a8
+
+Plane - 4 4 0 -5 0 -1 0 -1 0.3 0xe69a3b
+
+Cylinder - 1 3 0.4 -1 -2 3 -2.9 0 -0.1 0.4 0x4f7a42
