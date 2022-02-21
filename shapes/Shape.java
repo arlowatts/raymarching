@@ -4,22 +4,27 @@ import java.lang.Math;
 
 public class Shape {
 	// Constants
-	public static final double MIN_LENGTH = 0.01;
+	public static final String[] DEFAULT_PARAMS = {"x", "y", "z", "phi", "theta", "psi", "shine", "transparency", "refrIndex", "color"};
+	
+	public static final double MIN_LENGTH = 0.001;
 	
 	// Member variables
 	private Vector pos, angle;
 	
 	private int color;
-	private double shine;
+	private double shine, transparency, refrIndex;
 	
 	// Constructors
-	public Shape(double x, double y, double z, double phi, double theta, double psi, double shine, int color) {
-		pos = new Vector(x, y, z);
-		angle = new Vector(phi, theta, psi);
+	public Shape(double... args) {
+		pos = new Vector(args[0], args[1], args[2]);
+		angle = new Vector(args[3], args[4], args[5]);
 		
-		this.color = color & 0xffffff;
+		this.shine = Math.min(Math.max(args[6], 0), 1);
 		
-		this.shine = Math.min(Math.max(shine, 0), 1);
+		this.transparency = Math.min(Math.max(args[7], 0), 1);
+		this.refrIndex = Math.max(args[8], 1);
+		
+		this.color = (int)args[9] & 0xffffff;
 	}
 	
 	//Methods

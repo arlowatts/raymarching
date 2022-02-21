@@ -3,12 +3,16 @@ package shapes;
 import java.lang.Math;
 
 public class Plane extends Shape {
+	// Constants
+	public static final String[] PARAMS = {"width", "length"};
+	
 	// Member variables
 	private double width, length;
 	
 	// Constructors
-	public Plane(double w, double l, double x, double y, double z, double phi, double theta, double psi, double shine, int color) {
-		super(x, y, z, phi, theta, psi, shine, color);
+	public Plane(double w, double l, double[] args) {
+		super(args);
+		
 		width = w;
 		length = l;
 	}

@@ -3,12 +3,16 @@ package shapes;
 import java.lang.Math;
 
 public class Torus extends Shape{
+	// Constants
+	public static final String[] PARAMS = {"largeRadius", "smallRadius"};
+	
 	// Member variables
 	private double largeRadius, smallRadius;
 	
 	// Constructors
-	public Torus(double R, double r, double x, double y, double z, double phi, double theta, double psi, double shine, int color) {
-		super(x, y, z, phi, theta, psi, shine, color);
+	public Torus(double R, double r, double[] args) {
+		super(args);
+		
 		largeRadius = Math.max(R, Shape.MIN_LENGTH);
 		smallRadius = Math.max(r, Shape.MIN_LENGTH);
 	}

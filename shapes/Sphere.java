@@ -3,12 +3,16 @@ package shapes;
 import java.lang.Math;
 
 public class Sphere extends Shape{
+	// Constants
+	public static final String[] PARAMS = {"radius"};
+	
 	// Member variables
 	private double radius;
 	
 	// Constructors
-	public Sphere(double r, double x, double y, double z, double shine, int color) {
-		super(x, y, z, 0, 0, 0, shine, color);
+	public Sphere(double r, double[] args) {
+		super(args);
+		
 		radius = Math.max(r, Shape.MIN_LENGTH);
 	}
 	

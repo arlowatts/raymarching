@@ -4,14 +4,17 @@ import java.lang.Math;
 import java.util.ArrayList;
 
 public class Group extends Shape {
+	// Constants
+	public static final String[] PARAMS = {"objectList", "smoothingVal"};
+	
 	// Member variables
 	private ArrayList<Shape> objects;
 	
 	private double smoothing;
 	
 	// Constructors
-	public Group(ArrayList<Shape> objects, double x, double y, double z, double phi, double theta, double psi, double smoothing, double shine, int color) {
-		super(x, y, z, phi, theta, psi, shine, color);
+	public Group(ArrayList<Shape> objects, double smoothing, double[] args) {
+		super(args);
 		this.smoothing = smoothing;
 		this.objects = objects;
 	}

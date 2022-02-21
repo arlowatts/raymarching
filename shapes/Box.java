@@ -3,12 +3,15 @@ package shapes;
 import java.lang.Math;
 
 public class Box extends Shape {
+	// Constants
+	public static final String[] PARAMS = {"width", "height", "length", "edgeRadius"};
+	
 	// Member variables
 	private double width, height, length, radius;
 	
 	// Constructors
-	public Box(double w, double h, double l, double r, double x, double y, double z, double phi, double theta, double psi, double shine, int color) {
-		super(x, y, z, phi, theta, psi, shine, color);
+	public Box(double w, double h, double l, double r, double[] args) {
+		super(args);
 		
 		width = Math.max(w, Shape.MIN_LENGTH);
 		height = Math.max(h, Shape.MIN_LENGTH);

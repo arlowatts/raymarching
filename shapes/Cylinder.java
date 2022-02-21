@@ -3,15 +3,19 @@ package shapes;
 import java.lang.Math;
 
 public class Cylinder extends Shape {
+	// Constants
+	public static final String[] PARAMS = {"radius", "height", "edgeRadius"};
+	
 	// Member variables
 	private double radius, height, edgeRadius;
 	
 	// Constructors
-	public Cylinder(double r, double h, double eR, double x, double y, double z, double phi, double theta, double psi, double shine, int color) {
-		super(x, y, z, phi, theta, psi, shine, color);
+	public Cylinder(double r, double h, double eR, double[] args) {
+		super(args);
 		
 		radius = Math.max(r, Shape.MIN_LENGTH);
 		height = Math.max(h, Shape.MIN_LENGTH);
+		
 		edgeRadius = eR;
 	}
 	
