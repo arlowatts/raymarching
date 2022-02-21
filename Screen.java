@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class Screen extends JFrame {
 	// Constants
-	public static final int MAX_REFLECTIONS = 0;
+	public static final int MAX_REFLECTIONS = 10;
 	
 	// Member variables
 	private int width, height, distance, background;

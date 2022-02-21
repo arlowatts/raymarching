@@ -29,7 +29,7 @@ public class Ray {
 	//Methods
 	// The recursive method to cast and reflect a light ray
 	public int cast(Scene scene, Vector shade, int reflections) {
-		int hit = march(scene.getShapes());
+		int hit = march(scene.getShapes(), -1);
 		if (hit == -1) return Color.shade(scene.getScreen().getBgnd(), shade.getX(), shade.getY(), shade.getZ());
 		
 		// Gets the surface normal of the hit object
@@ -37,7 +37,6 @@ public class Ray {
 		double dot = normal.dotProduct(dir);
 		
 		// Assumes the object is at least partly reflective and reflects the ray
-		setSteps(0);
 		getDir().add(-2 * dot * normal.getX(), -2 * dot * normal.getY(), -2 * dot * normal.getZ());
 		step(2 * MIN_LENGTH);
 		
@@ -61,7 +60,7 @@ public class Ray {
 				Ray lightRay = new Ray(pos, lightRayDir);
 				lightRay.step(2 * MIN_LENGTH);
 				
-				int lightRayHit = lightRay.march(scene.getShapes());
+				int lightRayHit = lightRay.march(scene.getShapes(), -1);
 				
 				// If it hits the light, add brightness proportional to the light's brightness and the dot product of the normal and the ray direction
 				if (lightRayHit != -1 && scene.getShapes().get(lightRayHit) == scene.getLights().get(i)) {
@@ -94,39 +93,31 @@ public class Ray {
 		return Color.shade(scene.getShapes().get(hit).getColor(), shade.getX(), shade.getY(), shade.getZ()) + reflectionColor;
 	}
 	
-	public int march(ArrayList<Shape> shapes) {
+	public int march(ArrayList<Shape> shapes, int inverted) {
 		steps = 0;
 		length = 0;
 		
 		while (steps < MAX_STEPS && length < MAX_LENGTH) {
-			int nearest = getNearest(shapes);
+			int nearest = -1;
+			double minDist = MAX_LENGTH;
+			
+			for (int i = 0; i < shapes.size(); i++) {
+				double distance = shapes.get(i).getDistance(pos) * (i == inverted ? -1 : 1);
+				
+				if (distance < minDist) {
+					nearest = i;
+					minDist = distance;
+				}
+			}
 			
 			if (nearest == -1) return -1;
 			
-			double stepSize = shapes.get(nearest).getDistance(pos);
+			step(minDist);
 			
-			step(stepSize);
-			
-			if (stepSize < MIN_LENGTH) return nearest;
+			if (minDist < MIN_LENGTH) return nearest;
 		}
 		
 		return -1;
-	}
-	
-	public int getNearest(ArrayList<Shape> shapes) {
-		int index = -1;
-		double minDist = MAX_LENGTH;
-		
-		for (int i = 0; i < shapes.size(); i++) {
-			double distance = shapes.get(i).getDistance(pos);
-			
-			if (distance < minDist) {
-				index = i;
-				minDist = distance;
-			}
-		}
-		
-		return index;
 	}
 	
 	public void step(double len) {

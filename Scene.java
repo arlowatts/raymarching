@@ -15,7 +15,7 @@ public class Scene {
 	private ArrayList<Shape> lights;
 	
 	// Constructors
-	public Scene(String path) throws FileNotFoundException, InvalidSetupException {
+	public Scene(String path) throws FileNotFoundException {
 		File setup = new File(path);
 		Scanner scanner = new Scanner(setup);
 		
@@ -26,47 +26,26 @@ public class Scene {
 		ArrayList<String> savedNames = new ArrayList<>();
 		
 		for (int i = 1; scanner.hasNextLine(); i++) {
-			String rawLine = scanner.nextLine();
-			String[] line = rawLine.split(" ");
+			String[] line = (i + " " + scanner.nextLine()).split(" ");
 			
-			if (line.length < 2 || line[0].substring(0, 2).equals("\\\\") || line[0].equals("\n")) continue;
+			if (line.length < 3 || line[1].substring(0, 2).equals("\\\\") || line[1].equals("\n")) continue;
 			
-			switch (line[0].toLowerCase()) {
+			switch (line[1].toLowerCase()) {
 				case "camera":
-				parseCamera(i, rawLine, line);
+				parseCamera(line);
 				break;
 				
 				case "screen":
-				parseScreen(i, rawLine, line);
+				parseScreen(line);
 				break;
 				
 				case "light":
-				parseLight(i, rawLine, line);
+				parseLight(line);
 				break;
 				
-				case "group":
-				parseGroup(i, rawLine, line, savedShapes, savedNames);
-				break;
-				
-				case "sphere":
-				parseSphere(i, rawLine, line, savedShapes, savedNames);
-				break;
-				
-				case "box":
-				parseBox(i, rawLine, line, savedShapes, savedNames);
-				break;
-				
-				case "plane":
-				parsePlane(i, rawLine, line, savedShapes, savedNames);
-				break;
-				
-				case "cylinder":
-				parseCylinder(i, rawLine, line, savedShapes, savedNames);
-				break;
-				
-				case "torus":
-				parseTorus(i, rawLine, line, savedShapes, savedNames);
-				break;
+				default:
+				try {parseShape(line, savedShapes, savedNames);}
+				catch (InvalidSetupException e) {System.out.println(e);}
 			}
 		}
 		
@@ -79,120 +58,103 @@ public class Scene {
 	}
 	
 	// Parsing methods
-	public void parseCamera(int i, String rawLine, String[] line) throws InvalidSetupException {
-		if (line.length != 7) throw new InvalidSetupException(i, "Camera", rawLine, "x, y, z, phi, theta, psi");
-		
-		int k = 1;
-		camera = new Shape(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), 0, 0);
+	private void parseCamera(String[] line) {
+		int k = 2;
+		camera = new Shape(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]),
+						   Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), 0, 0, 0, 0);
 	}
 	
-	public void parseScreen(int i, String rawLine, String[] line) throws InvalidSetupException {
-		if (line.length != 6) throw new InvalidSetupException(i, "Screen", rawLine, "width, height, distance, backgroundColor, title");
-		
-		int k = 1;
-		screen = new Screen(Integer.parseInt(line[k++]), Integer.parseInt(line[k++]), Integer.parseInt(line[k++]), Integer.decode(line[k++]), line[k++]);
+	private void parseScreen(String[] line) {
+		int k = 2;
+		screen = new Screen(Integer.parseInt(line[k++]), Integer.parseInt(line[k++]), Integer.parseInt(line[k++]),
+							Integer.decode(line[k++]), line[k++]);
 	}
 	
-	public void parseLight(int i, String rawLine, String[] line) throws InvalidSetupException {
-		if (line.length != 5) throw new InvalidSetupException(i, "Light", rawLine, "x, y, z, color");
-		
-		int k = 1;
-		Shape light = new Shape(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), 0, 0, 0, 0, Integer.decode(line[k++]));
+	private void parseLight(String[] line) {
+		int k = 2;
+		Shape light = new Shape(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]),
+								0, 0, 0, 0, 0, 0, Integer.decode(line[k++]));
 		
 		lights.add(light);
 		shapes.add(light);
 	}
 	
-	public void parseGroup(int i, String rawLine, String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
-		if (line.length != 12) throw new InvalidSetupException(i, "Group", rawLine, "shapeList, x, y, z, phi, theta, psi, smoothing, shine, color");
+	private Group parseGroup(String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
+		Group shape = new Group(new ArrayList<Shape>(), Double.parseDouble(line[4]), getDefaultParams(line, 5));
+		
+		String[] groupShapes = line[3].split(",");
+		
+		for (int i = 0; i < groupShapes.length; i++) {
+			int index = savedNames.indexOf(groupShapes[i]);
+			
+			if (index != -1) shape.add(savedShapes.get(index));
+			else System.out.println("\"" + groupShapes[i] + "\" is referenced at line " + line[0] + " but does not exist");
+		}
+		
+		return shape;
+	}
+	
+	private void parseShape(String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
+		Shape shape;
 		
 		int k = 3;
-		Group group = new Group(new ArrayList<Shape>(), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Integer.decode(line[k++]));
 		
-		String[] groupShapes = line[2].split(",");
-		
-		for (int j = 0; j < groupShapes.length; j++) {
-			int index = savedNames.indexOf(groupShapes[j]);
+		switch (line[1].toLowerCase()) {
+			case "group":
+			shape = parseGroup(line, savedShapes, savedNames);
+			break;
 			
-			if (index != -1) group.add(savedShapes.get(index));
-			else System.out.println("\"" + groupShapes[j] + "\" does not exist\n " + i + "\t" + rawLine);
+			case "sphere":
+			shape = new Sphere(Double.parseDouble(line[k++]), getDefaultParams(line, k));
+			break;
+			
+			case "box":
+			shape = new Box(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]),
+							Double.parseDouble(line[k++]), getDefaultParams(line, k));
+			break;
+			
+			case "cylinder":
+			shape = new Cylinder(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]),
+								 getDefaultParams(line, k));
+			break;
+			
+			case "plane":
+			shape = new Plane(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), getDefaultParams(line, k));
+			break;
+			
+			case "torus":
+			shape = new Torus(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), getDefaultParams(line, k));
+			break;
+			
+			default:
+			return;
 		}
 		
-		if (line[1].equals("-")) shapes.add(group);
+		if (line[2].equals(".")) shapes.add(shape);
 		else {
-			savedShapes.add(group);
-			savedNames.add(line[1]);
+			savedShapes.add(shape);
+			savedNames.add(line[2]);
 		}
 	}
 	
-	public void parseSphere(int i, String rawLine, String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
-		if (line.length != 8) throw new InvalidSetupException(i, "Sphere", rawLine, "radius, x, y, z, shine, color");
+	private double[] getDefaultParams(String[] line, int offset) throws InvalidSetupException {
+		if (line.length != Shape.DEFAULT_PARAMS.length + offset) throw new InvalidSetupException(line);
 		
-		int k = 2;
-		Sphere sphere = new Sphere(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Integer.decode(line[k++]));
+		double[] params = new double[Shape.DEFAULT_PARAMS.length];
 		
-		if (line[1].equals("-")) shapes.add(sphere);
-		else {
-			savedShapes.add(sphere);
-			savedNames.add(line[1]);
-		}
-	}
-	
-	public void parseBox(int i, String rawLine, String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
-		if (line.length != 14) throw new InvalidSetupException(i, "Box", rawLine, "width, height, length, radius, x, y, z, phi, theta, psi, shine, color");
+		int i;
+		for (i = 0; i < Shape.DEFAULT_PARAMS.length - 1; i++)
+			params[i] = Double.parseDouble(line[i + offset]);
 		
-		int k = 2;
-		Box box = new Box(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Integer.decode(line[k++]));
+		params[i] = Integer.decode(line[i + offset]);
 		
-		if (line[1].equals("-")) shapes.add(box);
-		else {
-			savedShapes.add(box);
-			savedNames.add(line[1]);
-		}
-	}
-	
-	public void parsePlane(int i, String rawLine, String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
-		if (line.length != 12) throw new InvalidSetupException(i, "Plane", rawLine, "width, length, x, y, z, phi, theta, psi, shine, color");
-		
-		int k = 2;
-		Plane plane = new Plane(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Integer.decode(line[k++]));
-		
-		if (line[1].equals("-")) shapes.add(plane);
-		else {
-			savedShapes.add(plane);
-			savedNames.add(line[1]);
-		}
-	}
-	
-	public void parseCylinder(int i, String rawLine, String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
-		if (line.length != 13) throw new InvalidSetupException(i, "Cylinder", rawLine, "radius, height, edgeRadius, x, y, z, phi, theta, psi, shine, color");
-		
-		int k = 2;
-		Cylinder cylinder = new Cylinder(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Integer.decode(line[k++]));
-		
-		if (line[1].equals("-")) shapes.add(cylinder);
-		else {
-			savedShapes.add(cylinder);
-			savedNames.add(line[1]);
-		}
-	}
-	
-	public void parseTorus(int i, String rawLine, String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
-		if (line.length != 12) throw new InvalidSetupException(i, "Torus", rawLine, "largeRadius, smallRadius, x, y, z, phi, theta, psi, shine, color");
-		
-		int k = 2;
-		Torus torus = new Torus(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Integer.decode(line[k++]));
-		
-		if (line[1].equals("-")) shapes.add(torus);
-		else {
-			savedShapes.add(torus);
-			savedNames.add(line[1]);
-		}
+		return params;
 	}
 	
 	// Getters
 	public Shape getCamera() {return camera;}
 	public Screen getScreen() {return screen;}
+	
 	public ArrayList<Shape> getShapes() {return shapes;}
 	public ArrayList<Shape> getLights() {return lights;}
 }
