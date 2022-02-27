@@ -29,15 +29,51 @@ public class Ray {
 	//Methods
 	// The recursive method to cast and reflect a light ray
 	public int cast(Scene scene, Vector shade, int reflections) {
-		int hit = march(scene.getShapes(), -1);
+		int hit = march(scene.getShapes());
 		if (hit == -1) return Color.shade(scene.getScreen().getBgnd(), shade.getX(), shade.getY(), shade.getZ());
 		
 		// Gets the surface normal of the hit object
 		Vector normal = scene.getShapes().get(hit).getNormal(pos);
 		double dot = normal.dotProduct(dir);
 		
-		// Assumes the object is at least partly reflective and reflects the ray
-		getDir().add(-2 * dot * normal.getX(), -2 * dot * normal.getY(), -2 * dot * normal.getZ());
+		double transparency = scene.getShapes().get(hit).getTransparency();
+		double refrIndex = scene.getShapes().get(hit).getRefrIndex();
+		int refractionColor = 0;
+		
+		if (transparency > 0 && reflections > 0) {
+			double mu = 1 / refrIndex;
+			
+			Vector refrRayDir = new Vector(dir);
+			
+			// Implementing Snell's Law in vector form as t = sqrt(1 - u^2(1 - (n.i)^2)) * n + u(i - (n.i)n)
+			double root = -Math.sqrt(1 - mu*mu * (1 - dot*dot));
+			refrRayDir.add(-dot * normal.getX(), -dot * normal.getY(), -dot * normal.getZ());
+			refrRayDir.multiply(mu);
+			refrRayDir.add(root * normal.getX(), root * normal.getY(), root * normal.getZ());
+			
+			Ray refrRay = new Ray(pos, refrRayDir);
+			
+			refrRay.marchThrough(scene.getShapes(), hit);
+			
+			// Refracting again on the other side
+			Vector newNormal = scene.getShapes().get(hit).getNormal(refrRay.getPos());
+			double newDot = newNormal.dotProduct(refrRayDir);
+			
+			// Implementing Snell's Law again
+			root = Math.sqrt(1 - refrIndex*refrIndex * (1 - newDot*newDot));
+			refrRayDir.add(-root * newNormal.getX(), -root * newNormal.getY(), -root * newNormal.getZ());
+			refrRayDir.multiply(refrIndex);
+			refrRayDir.add(newDot * newNormal.getX(), newDot * newNormal.getY(), newDot * newNormal.getZ());
+			
+			refrRay.setDir(refrRayDir);
+			
+			shade.multiply(transparency);
+			refractionColor = refrRay.cast(scene, shade, reflections - 1);
+			shade.multiply(1 / transparency - 1);
+		}
+		
+		// Reflects the ray
+		dir.add(-2 * dot * normal.getX(), -2 * dot * normal.getY(), -2 * dot * normal.getZ());
 		step(2 * MIN_LENGTH);
 		
 		Vector brightness = new Vector(1, 1, 1);
@@ -60,9 +96,9 @@ public class Ray {
 				Ray lightRay = new Ray(pos, lightRayDir);
 				lightRay.step(2 * MIN_LENGTH);
 				
-				int lightRayHit = lightRay.march(scene.getShapes(), -1);
+				int lightRayHit = lightRay.march(scene.getShapes());
 				
-				// If it hits the light, add brightness proportional to the light's brightness and the dot product of the normal and the ray direction
+				// If it hits the light, add brightness proportional to the light's brightness and the dot product of the normal
 				if (lightRayHit != -1 && scene.getShapes().get(lightRayHit) == scene.getLights().get(i)) {
 					double lightShade = Math.max(normal.dotProduct(lightRay.getDir()), 0) * Color.RATIO;
 					int lightColor = scene.getLights().get(i).getColor();
@@ -80,7 +116,6 @@ public class Ray {
 					  Math.min(1 - brightness.getZ() + Color.getB(scene.getScreen().getBgnd()) * Color.RATIO, 1));
 		
 		double shine = scene.getShapes().get(hit).getShine();
-		
 		int reflectionColor = 0;
 		
 		// Casts the reflected ray
@@ -90,10 +125,10 @@ public class Ray {
 			shade.multiply(1 / shine - 1);
 		}
 		
-		return Color.shade(scene.getShapes().get(hit).getColor(), shade.getX(), shade.getY(), shade.getZ()) + reflectionColor;
+		return Color.shade(scene.getShapes().get(hit).getColor(), shade.getX(), shade.getY(), shade.getZ()) + reflectionColor + refractionColor;
 	}
 	
-	public int march(ArrayList<Shape> shapes, int inverted) {
+	public int march(ArrayList<Shape> shapes) {
 		steps = 0;
 		length = 0;
 		
@@ -102,7 +137,36 @@ public class Ray {
 			double minDist = MAX_LENGTH;
 			
 			for (int i = 0; i < shapes.size(); i++) {
-				double distance = shapes.get(i).getDistance(pos) * (i == inverted ? -1 : 1);
+				double distance = shapes.get(i).getDistance(pos);
+				
+				if (distance < minDist) {
+					nearest = i;
+					minDist = distance;
+				}
+			}
+			
+			if (nearest == -1) return -1;
+			
+			step(minDist);
+			
+			if (minDist < MIN_LENGTH) return nearest;
+		}
+		
+		return -1;
+	}
+	
+	public int marchThrough(ArrayList<Shape> shapes, int shape) {
+		steps = 0;
+		length = 0;
+		
+		while (steps < MAX_STEPS && length < MAX_LENGTH) {
+			int nearest = -1;
+			double minDist = MAX_LENGTH;
+			
+			for (int i = 0; i < shapes.size(); i++) {
+				double distance = shapes.get(i).getDistance(pos);
+				
+				if (i == shape) distance = 2 * MIN_LENGTH - distance;
 				
 				if (distance < minDist) {
 					nearest = i;

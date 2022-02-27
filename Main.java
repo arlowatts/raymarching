@@ -24,19 +24,17 @@ public class Main {
 		File outputFile = new File("gifs\\Output.gif");
 		GifSequenceWriter gifWriter = new GifSequenceWriter(ImageIO.createImageOutputStream(outputFile), BufferedImage.TYPE_INT_RGB, 1000 / 60, true);
 		
-		scene.getCamera().getAngle().setX(-Math.PI / 2);
-		scene.getCamera().getAngle().setZ(Math.PI / 2);
-		
 		// The main loop
 		while (true) {
 			// Update and save the current frame
 			scene.updateScreen();
 			gifWriter.writeToSequence(scene.getScreen().getImage());
 			
-			scene.getCamera().getPos().rotate(-Math.PI / 2, 0.1, Math.PI / 2);
-			scene.getCamera().getAngle().add(0, 0.1, 0);
+			scene.getCamera().getPos().rotate(-Math.PI / 2, -0.1, Math.PI / 2);
+			scene.getCamera().getAngle().add(0, -0.1, 0);
 			
 			scene.getShapes().get(4).getPos().rotate(-Math.PI / 2, -0.1, Math.PI / 2);
+			scene.getShapes().get(4).getAngle().add(0, -0.1, 0);
 			
 			frames++;
 			

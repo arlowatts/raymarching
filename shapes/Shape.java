@@ -58,6 +58,9 @@ public class Shape {
 	public int getColor() {return color;}
 	public double getShine() {return shine;}
 	
+	public double getTransparency() {return transparency;}
+	public double getRefrIndex() {return refrIndex;}
+	
 	// Setters
 	public void setColor(int color) {this.color = color;}
 	public void setShine(double shine) {this.shine = shine;}
