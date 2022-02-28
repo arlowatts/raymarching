@@ -19,14 +19,16 @@ public class Torus extends Shape{
 	
 	// Methods
 	public double getDistance(Vector v) {
-		Vector v1 = new Vector(v);
+		v.subtract(getPos());
+		v.inverseRotate(getAngle());
 		
-		v1.subtract(getPos());
-		v1.inverseRotate(getAngle());
+		double a = Math.sqrt(v.getX()*v.getX() + v.getZ()*v.getZ()) - largeRadius;
+		double distance = Math.sqrt(a*a + v.getY()*v.getY()) - smallRadius;
 		
-		double a = Math.sqrt(v1.getX()*v1.getX() + v1.getZ()*v1.getZ()) - largeRadius;
+		v.rotate(getAngle());
+		v.add(getPos());
 		
-		return Math.sqrt(a*a + v1.getY()*v1.getY()) - smallRadius;
+		return distance;
 	}
 	
 	// Getters

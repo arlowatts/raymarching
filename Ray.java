@@ -6,7 +6,7 @@ public class Ray {
 	// Constants
 	public static final int MAX_STEPS = 1000;
 	public static final int MAX_LENGTH = 100;
-	public static final double MIN_LENGTH = 0.01;
+	public static final double MIN_LENGTH = 0.001;
 	
 	// Member variables
 	private Vector pos;

@@ -21,19 +21,20 @@ public class Cylinder extends Shape {
 	
 	// Methods
 	public double getDistance(Vector v) {
-		Vector v1 = new Vector(v);
+		v.subtract(getPos());
+		v.inverseRotate(getAngle());
 		
-		v1.subtract(getPos());
-		v1.inverseRotate(getAngle());
+		Vector v1 = new Vector(Math.sqrt(v.getX()*v.getX() + v.getZ()*v.getZ()) - radius + edgeRadius, Math.abs(v.getY()) - height + edgeRadius, 0);
 		
-		Vector v2 = new Vector(Math.sqrt(v1.getX()*v1.getX() + v1.getZ()*v1.getZ()) - radius + edgeRadius, Math.abs(v1.getY()) - height + edgeRadius, 0);
+		double dist = Math.min(Math.max(v1.getX(), v1.getY()), 0);
 		
-		double dist = Math.min(Math.max(v2.getX(), v2.getY()), 0);
+		v1.setX(Math.max(v1.getX(), 0));
+		v1.setY(Math.max(v1.getY(), 0));
 		
-		v2.setX(Math.max(v2.getX(), 0));
-		v2.setY(Math.max(v2.getY(), 0));
+		v.rotate(getAngle());
+		v.add(getPos());
 		
-		return dist + v2.getLength() - edgeRadius;
+		return dist + v1.getLength() - edgeRadius;
 	}
 	
 	// Getters
