@@ -71,9 +71,8 @@ public class Screen extends JFrame {
 		label.updateUI();
 	}
 	
-	// The 'kickoff' method for the recursive castRay method
-	public int castRay(Ray ray, Scene scene) {
-		return ray.cast(scene, new Vector(1, 1, 1), MAX_REFLECTIONS);
+	private int castRay(Ray ray, Scene scene) {
+		return ray.cast(scene, new Vector(1, 1, 1), -1, MAX_REFLECTIONS);
 	}
 	
 	// Getters

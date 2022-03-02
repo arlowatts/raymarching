@@ -26,54 +26,44 @@ public class Ray {
 		length = 0;
 	}
 	
-	//Methods
+	public Ray(Ray ray) {
+		this(ray.pos, ray.dir);
+		
+		steps = ray.steps;
+		length = ray.length;
+	}
+	
+	// Methods
 	// The recursive method to cast and reflect a light ray
-	public int cast(Scene scene, Vector shade, int reflections) {
-		int hit = march(scene.getShapes());
+	public int cast(Scene scene, Vector shade, int medium, int reflections) {
+		int hit = march(scene.getShapes(), medium);
+		
 		if (hit == -1) return Color.shade(scene.getScreen().getBgnd(), shade.getX(), shade.getY(), shade.getZ());
 		
-		// Gets the surface normal of the hit object
-		Vector normal = scene.getShapes().get(hit).getNormal(pos);
-		double dot = normal.dotProduct(dir);
+		Shape hitShape = scene.getShapes().get(hit);
+		Shape mediumShape = medium == -1 ? null : scene.getShapes().get(medium);
 		
-		double transparency = scene.getShapes().get(hit).getTransparency();
-		double refrIndex = scene.getShapes().get(hit).getRefrIndex();
+		Vector normal = hitShape.getNormal(pos);
+		
+		double transparency = hitShape.getTransparency();
 		int refractionColor = 0;
 		
 		if (transparency > 0 && reflections > 0) {
-			double mu = 1 / refrIndex;
+			double n1 = medium == -1 ? 1 : scene.getShapes().get(medium).getRefrIndex();
+			double n2 = medium == hit ? 1 : scene.getShapes().get(hit).getRefrIndex();
 			
-			Vector refrRayDir = new Vector(dir);
+			Ray refractedRay = new Ray(this);
+			refractedRay.refract(normal, n1, n2);
 			
-			// Implementing Snell's Law in vector form as t = sqrt(1 - u^2(1 - (n.i)^2)) * n + u(i - (n.i)n)
-			double root = -Math.sqrt(1 - mu*mu * (1 - dot*dot));
-			refrRayDir.add(-dot * normal.getX(), -dot * normal.getY(), -dot * normal.getZ());
-			refrRayDir.multiply(mu);
-			refrRayDir.add(root * normal.getX(), root * normal.getY(), root * normal.getZ());
-			
-			Ray refrRay = new Ray(pos, refrRayDir);
-			
-			refrRay.marchThrough(scene.getShapes(), hit);
-			
-			// Refracting again on the other side
-			Vector newNormal = scene.getShapes().get(hit).getNormal(refrRay.getPos());
-			double newDot = newNormal.dotProduct(refrRayDir);
-			
-			// Implementing Snell's Law again
-			root = Math.sqrt(1 - refrIndex*refrIndex * (1 - newDot*newDot));
-			refrRayDir.add(-root * newNormal.getX(), -root * newNormal.getY(), -root * newNormal.getZ());
-			refrRayDir.multiply(refrIndex);
-			refrRayDir.add(newDot * newNormal.getX(), newDot * newNormal.getY(), newDot * newNormal.getZ());
-			
-			refrRay.setDir(refrRayDir);
+			//if (medium == hit) System.out.println(hitShape.getDistance(pos) + " " + hitShape.getDistance(refractedRay.pos) + " " + medium + " " + hit);
 			
 			shade.multiply(transparency);
-			refractionColor = refrRay.cast(scene, shade, reflections - 1);
+			refractionColor = refractedRay.cast(scene, shade, hit == medium ? -1 : hit, reflections - 1);
 			shade.multiply(1 / transparency - 1);
 		}
 		
 		// Reflects the ray
-		dir.add(-2 * dot * normal.getX(), -2 * dot * normal.getY(), -2 * dot * normal.getZ());
+		reflect(normal);
 		step(2 * MIN_LENGTH);
 		
 		Vector brightness = new Vector(1, 1, 1);
@@ -96,7 +86,7 @@ public class Ray {
 				Ray lightRay = new Ray(pos, lightRayDir);
 				lightRay.step(2 * MIN_LENGTH);
 				
-				int lightRayHit = lightRay.march(scene.getShapes());
+				int lightRayHit = lightRay.march(scene.getShapes(), -1);
 				
 				// If it hits the light, add brightness proportional to the light's brightness and the dot product of the normal
 				if (lightRayHit != -1 && scene.getShapes().get(lightRayHit) == scene.getLights().get(i)) {
@@ -121,41 +111,32 @@ public class Ray {
 		// Casts the reflected ray
 		if (shine > 0 && reflections > 0) {
 			shade.multiply(shine);
-			reflectionColor = cast(scene, shade, reflections - 1);
+			reflectionColor = cast(scene, shade, medium, reflections - 1);
 			shade.multiply(1 / shine - 1);
 		}
 		
 		return Color.shade(scene.getShapes().get(hit).getColor(), shade.getX(), shade.getY(), shade.getZ()) + reflectionColor + refractionColor;
 	}
 	
-	public int march(ArrayList<Shape> shapes) {
-		steps = 0;
-		length = 0;
+	private void reflect(Vector normal) {
+		double dot = normal.dotProduct(dir);
 		
-		while (steps < MAX_STEPS && length < MAX_LENGTH) {
-			int nearest = -1;
-			double minDist = MAX_LENGTH;
-			
-			for (int i = 0; i < shapes.size(); i++) {
-				double distance = shapes.get(i).getDistance(pos);
-				
-				if (distance < minDist) {
-					nearest = i;
-					minDist = distance;
-				}
-			}
-			
-			if (nearest == -1) return -1;
-			
-			step(minDist);
-			
-			if (minDist < MIN_LENGTH) return nearest;
-		}
-		
-		return -1;
+		dir.add(-2 * dot * normal.getX(), -2 * dot * normal.getY(), -2 * dot * normal.getZ());
 	}
 	
-	public int marchThrough(ArrayList<Shape> shapes, int shape) {
+	private void refract(Vector normal, double n1, double n2) {
+		double dot = normal.dotProduct(dir);
+		double mu = n1 / n2;
+		
+		double root = Math.sqrt(1 - mu*mu * (1 - dot*dot)) * (n1 < n2 ? -1 : 1);
+		
+		// Implementing Snell's Law in vector form as t = sqrt(1 - u^2(1 - (n.i)^2)) * n + u(i - (n.i)n)
+		dir.add(-dot * normal.getX(), -dot * normal.getY(), -dot * normal.getZ());
+		dir.multiply(mu);
+		dir.add(root * normal.getX(), root * normal.getY(), root * normal.getZ());
+	}
+	
+	public int march(ArrayList<Shape> shapes, int medium) {
 		steps = 0;
 		length = 0;
 		
@@ -164,9 +145,7 @@ public class Ray {
 			double minDist = MAX_LENGTH;
 			
 			for (int i = 0; i < shapes.size(); i++) {
-				double distance = shapes.get(i).getDistance(pos);
-				
-				if (i == shape) distance = 2 * MIN_LENGTH - distance;
+				double distance = (shapes.get(i).getDistance(pos) - MIN_LENGTH) * (i == medium ? -1 : 1) + MIN_LENGTH;
 				
 				if (distance < minDist) {
 					nearest = i;
