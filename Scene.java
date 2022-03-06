@@ -157,4 +157,7 @@ public class Scene {
 	
 	public ArrayList<Shape> getShapes() {return shapes;}
 	public ArrayList<Shape> getLights() {return lights;}
+	
+	public Shape getShape(int i) {return shapes.get(i);}
+	public Shape getLight(int i) {return lights.get(i);}
 }

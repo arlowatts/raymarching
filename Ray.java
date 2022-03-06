@@ -15,6 +15,8 @@ public class Ray {
 	private int steps;
 	private double length;
 	
+	private double lastStep;
+	
 	// Constructors
 	public Ray(Vector pos, Vector dir) {
 		this.pos = new Vector(pos);
@@ -24,6 +26,8 @@ public class Ray {
 		
 		steps = 0;
 		length = 0;
+		
+		lastStep = 0;
 	}
 	
 	public Ray(Ray ray) {
@@ -31,109 +35,130 @@ public class Ray {
 		
 		steps = ray.steps;
 		length = ray.length;
+		
+		lastStep = ray.lastStep;
 	}
 	
 	// Methods
 	// The recursive method to cast and reflect a light ray
 	public int cast(Scene scene, Vector shade, int medium, int reflections) {
+		// March the ray through the scene
 		int hit = march(scene.getShapes(), medium);
 		
 		if (hit == -1) return Color.shade(scene.getScreen().getBgnd(), shade.getX(), shade.getY(), shade.getZ());
 		
-		Shape hitShape = scene.getShapes().get(hit);
-		Shape mediumShape = medium == -1 ? null : scene.getShapes().get(medium);
+		Vector normal = scene.getShape(hit).getNormal(pos);
 		
-		Vector normal = hitShape.getNormal(pos);
-		
-		double transparency = hitShape.getTransparency();
+		double transparency = scene.getShape(hit).getTransparency();
 		int refractionColor = 0;
 		
+		// If the hit object is not opaque, create a new ray and refract it through the surface
 		if (transparency > 0 && reflections > 0) {
-			double n1 = medium == -1 ? 1 : scene.getShapes().get(medium).getRefrIndex();
-			double n2 = medium == hit ? 1 : scene.getShapes().get(hit).getRefrIndex();
+			// Get the refractive index of the current medium, or 1 if the medium is -1 (no object)
+			double n1 = medium == -1  ? 1 : scene.getShape(medium).getRefrIndex();
+			// Get the refractive index of the object the ray is refracting into, or 1 if it hit the same surface (it is refracting into space)
+			double n2 = medium == hit ? 1 : scene.getShape(hit).getRefrIndex();
 			
 			Ray refractedRay = new Ray(this);
 			refractedRay.refract(normal, n1, n2);
 			
-			//if (medium == hit) System.out.println(hitShape.getDistance(pos) + " " + hitShape.getDistance(refractedRay.pos) + " " + medium + " " + hit);
+			//System.out.println(n1 + " " + n2 + " " + refractedRay.dir + "\t" + dir);
 			
+			// Shade the current color by the refracted ray
 			shade.multiply(transparency);
 			refractionColor = refractedRay.cast(scene, shade, hit == medium ? -1 : hit, reflections - 1);
 			shade.multiply(1 / transparency - 1);
 		}
 		
-		// Reflects the ray
-		reflect(normal);
-		step(2 * MIN_LENGTH);
-		
-		Vector brightness = new Vector(1, 1, 1);
-		
-		// Iterates over all the lights and marches to them
-		for (int i = 0; i < scene.getLights().size(); i++) {
-			// If the ray is already at the light source, add its brightness
-			if (scene.getShapes().get(hit) == scene.getLights().get(i)) {
-				int lightColor = scene.getLights().get(i).getColor();
-				
-				brightness.stretch(1 - Color.getR(lightColor) * Color.RATIO,
-								   1 - Color.getG(lightColor) * Color.RATIO,
-								   1 - Color.getB(lightColor) * Color.RATIO);
-			}
-			else {
-				// Marches a new ray to the light
-				Vector lightRayDir = new Vector(scene.getLights().get(i).getPos());
-				lightRayDir.subtract(pos);
-				
-				Ray lightRay = new Ray(pos, lightRayDir);
-				lightRay.step(2 * MIN_LENGTH);
-				
-				int lightRayHit = lightRay.march(scene.getShapes(), -1);
-				
-				// If it hits the light, add brightness proportional to the light's brightness and the dot product of the normal
-				if (lightRayHit != -1 && scene.getShapes().get(lightRayHit) == scene.getLights().get(i)) {
-					double lightShade = Math.max(normal.dotProduct(lightRay.getDir()), 0) * Color.RATIO;
-					int lightColor = scene.getLights().get(i).getColor();
-					
-					brightness.stretch(1 - Color.getR(lightColor) * lightShade,
-									   1 - Color.getG(lightColor) * lightShade,
-									   1 - Color.getB(lightColor) * lightShade);
-				}
-			}
-		}
-		
-		// Multiply the shade of the pixel by the total brightness and add ambient light
-		shade.stretch(Math.min(1 - brightness.getX() + Color.getR(scene.getScreen().getBgnd()) * Color.RATIO, 1),
-					  Math.min(1 - brightness.getY() + Color.getG(scene.getScreen().getBgnd()) * Color.RATIO, 1),
-					  Math.min(1 - brightness.getZ() + Color.getB(scene.getScreen().getBgnd()) * Color.RATIO, 1));
-		
-		double shine = scene.getShapes().get(hit).getShine();
+		double shine = scene.getShape(hit).getShine();
 		int reflectionColor = 0;
 		
-		// Casts the reflected ray
+		// If the hit object is reflective, create a new ray and reflect it
 		if (shine > 0 && reflections > 0) {
+			Ray reflectedRay = new Ray(this);
+			reflectedRay.reflect(normal);
+			reflectedRay.step(lastStep);
+			
+			// Shade the current color by the reflected ray
 			shade.multiply(shine);
 			reflectionColor = cast(scene, shade, medium, reflections - 1);
 			shade.multiply(1 / shine - 1);
 		}
 		
-		return Color.shade(scene.getShapes().get(hit).getColor(), shade.getX(), shade.getY(), shade.getZ()) + reflectionColor + refractionColor;
-	}
-	
-	private void reflect(Vector normal) {
-		double dot = normal.dotProduct(dir);
+		Vector brightness = new Vector(1, 1, 1);
 		
-		dir.add(-2 * dot * normal.getX(), -2 * dot * normal.getY(), -2 * dot * normal.getZ());
+		// Iterates over all the lights and marches to them
+		for (int i = 0; i < scene.getLights().size(); i++) {
+			if (scene.getShape(hit) == scene.getLight(i)) continue;
+			
+			getBrightness(scene, scene.getLight(i), normal, brightness);
+		}
+		
+		// Multiply the shade of the pixel by the total brightness and add ambient light
+		shade.stretch(Math.min(1 - brightness.getX() + (double)Color.getR(scene.getScreen().getBgnd()) * Color.RATIO, 1),
+					  Math.min(1 - brightness.getY() + (double)Color.getG(scene.getScreen().getBgnd()) * Color.RATIO, 1),
+					  Math.min(1 - brightness.getZ() + (double)Color.getB(scene.getScreen().getBgnd()) * Color.RATIO, 1));
+		
+		return Color.shade(scene.getShapes().get(hit).getColor(), shade.getX(), shade.getY(), shade.getZ()) + reflectionColor + refractionColor;
 	}
 	
 	private void refract(Vector normal, double n1, double n2) {
 		double dot = normal.dotProduct(dir);
 		double mu = n1 / n2;
 		
-		double root = Math.sqrt(1 - mu*mu * (1 - dot*dot)) * (n1 < n2 ? -1 : 1);
+		double root = Math.sqrt(1 - mu*mu * (1 - dot*dot)) * (dot < 0 ? -1 : 1);
 		
-		// Implementing Snell's Law in vector form as t = sqrt(1 - u^2(1 - (n.i)^2)) * n + u(i - (n.i)n)
+		//System.out.print(dot + "\t" + root + "\t" + dir + "\t");
+		
+		/* 
+		 * Implementing Snell's Law in vector form as t = sqrt(1 - (u^2)(1 - (n.i)^2)) * n + u(i - (n.i)n)
+		 * i = the initial vector,
+		 * t = the resultant vector,
+		 * n = the normal vector,
+		 * u = the ratio of refractive indices n1/n2
+		 */
 		dir.add(-dot * normal.getX(), -dot * normal.getY(), -dot * normal.getZ());
+		//System.out.print(dir + "\t");
 		dir.multiply(mu);
 		dir.add(root * normal.getX(), root * normal.getY(), root * normal.getZ());
+		
+		//System.out.println(dir);
+	}
+	
+	private void reflect(Vector normal) {
+		double dot = normal.dotProduct(dir);
+		
+		/*
+		 * Reflecting the vector by the formula t = i - 2(n.i)(n)
+		 * i = the initial vector,
+		 * t = the resultant vector,
+		 * n = the normal vector
+		 */
+		dir.add(-2 * dot * normal.getX(), -2 * dot * normal.getY(), -2 * dot * normal.getZ());
+	}
+	
+	private void getBrightness(Scene scene, Shape light, Vector normal, Vector brightness) {
+		Ray lightRay = new Ray(this);
+		
+		// Stepping away from the current surface
+		lightRay.pos.add(2 * MIN_LENGTH * normal.getX(), 2 * MIN_LENGTH * normal.getY(), 2 * MIN_LENGTH * normal.getZ());
+		
+		// Pointing it at the light
+		lightRay.dir.set(light.getPos());
+		lightRay.dir.subtract(lightRay.pos);
+		lightRay.dir.setLength(1);
+		
+		int hit = lightRay.march(scene.getShapes(), -1);
+		
+		// If it hits the light, add brightness proportional to the light's brightness and the dot product of the normal
+		if (hit != -1 && scene.getShape(hit) == light) {
+			double lightShade = Math.max(normal.dotProduct(lightRay.dir), 0) * Color.RATIO;
+			int lightColor = light.getColor();
+			
+			brightness.stretch(1 - Color.getR(lightColor) * lightShade,
+							   1 - Color.getG(lightColor) * lightShade,
+							   1 - Color.getB(lightColor) * lightShade);
+		}
 	}
 	
 	public int march(ArrayList<Shape> shapes, int medium) {
@@ -144,7 +169,9 @@ public class Ray {
 			int nearest = -1;
 			double minDist = MAX_LENGTH;
 			
+			// Finding the smallest distance to a shape in the scene
 			for (int i = 0; i < shapes.size(); i++) {
+				// If the ray is traveling through an object, the distance is inverted
 				double distance = (shapes.get(i).getDistance(pos) - MIN_LENGTH) * (i == medium ? -1 : 1) + MIN_LENGTH;
 				
 				if (distance < minDist) {
@@ -166,6 +193,7 @@ public class Ray {
 	public void step(double len) {
 		steps++;
 		length += len;
+		lastStep = len;
 		
 		pos.add(dir.getX() * len, dir.getY() * len, dir.getZ() * len);
 	}
