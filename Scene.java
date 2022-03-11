@@ -67,7 +67,7 @@ public class Scene {
 	private void parseScreen(String[] line) {
 		int k = 2;
 		screen = new Screen(Integer.parseInt(line[k++]), Integer.parseInt(line[k++]), Integer.parseInt(line[k++]),
-							Integer.decode(line[k++]), line[k++]);
+							Integer.decode(line[k++]), Integer.parseInt(line[k++]), line[k++]);
 	}
 	
 	private void parseLight(String[] line) {

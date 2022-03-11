@@ -34,7 +34,6 @@ public class Main {
 			scene.getCamera().getAngle().add(0, -0.1, 0);
 			
 			scene.getShapes().get(4).getPos().rotate(-Math.PI / 2, -0.1, Math.PI / 2);
-			scene.getShapes().get(4).getAngle().add(0, -0.1, 0);
 			
 			frames++;
 			

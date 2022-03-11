@@ -12,12 +12,8 @@ import java.awt.event.ComponentAdapter;
 import java.util.ArrayList;
 
 public class Screen extends JFrame {
-	// Constants
-	public static final int MAX_REFLECTIONS = 3;
-	public static final int RESOLUTION = 1;
-	
 	// Member variables
-	private int width, height, distance, background;
+	private int width, height, distance, background, maxReflections;
 	
 	private boolean initWaiting;
 	
@@ -26,13 +22,15 @@ public class Screen extends JFrame {
 	private int[] pixels;
 	
 	// Constructors
-	public Screen(int w, int h, int dist, int bgnd, String title) {
+	public Screen(int w, int h, int dist, int bgnd, int maxReflections, String title) {
 		super(title);
 		
 		setSize(w, h);
 		distance = dist;
 		
 		background = bgnd;
+		
+		this.maxReflections = maxReflections;
 		
 		// Adding a listener to know when the user resizes the window
 		addComponentListener(new ComponentAdapter() {
@@ -73,7 +71,7 @@ public class Screen extends JFrame {
 	}
 	
 	private int castRay(Ray ray, Scene scene) {
-		return ray.cast(scene, new Vector(1, 1, 1), -1, MAX_REFLECTIONS);
+		return ray.cast(scene, new Vector(1, 1, 1), -1, maxReflections);
 	}
 	
 	// Getters

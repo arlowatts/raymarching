@@ -30,15 +30,6 @@ public class Ray {
 		lastStep = 0;
 	}
 	
-	public Ray(Ray ray) {
-		this(ray.pos, ray.dir);
-		
-		steps = ray.steps;
-		length = ray.length;
-		
-		lastStep = ray.lastStep;
-	}
-	
 	// Methods
 	// The recursive method to cast and reflect a light ray
 	public int cast(Scene scene, Vector shade, int medium, int reflections) {
@@ -59,10 +50,8 @@ public class Ray {
 			// Get the refractive index of the object the ray is refracting into, or 1 if it hit the same surface (it is refracting into space)
 			double n2 = medium == hit ? 1 : scene.getShape(hit).getRefrIndex();
 			
-			Ray refractedRay = new Ray(this);
+			Ray refractedRay = new Ray(this.pos, this.dir);
 			refractedRay.refract(normal, n1, n2);
-			
-			//System.out.println(n1 + " " + n2 + " " + refractedRay.dir + "\t" + dir);
 			
 			// Shade the current color by the refracted ray
 			shade.multiply(transparency);
@@ -75,13 +64,15 @@ public class Ray {
 		
 		// If the hit object is reflective, create a new ray and reflect it
 		if (shine > 0 && reflections > 0) {
-			Ray reflectedRay = new Ray(this);
+			Ray reflectedRay = new Ray(this.pos, this.dir);
 			reflectedRay.reflect(normal);
-			reflectedRay.step(lastStep);
+			
+			// Stepping away from the current surface
+			reflectedRay.pos.add(2 * MIN_LENGTH * normal.getX(), 2 * MIN_LENGTH * normal.getY(), 2 * MIN_LENGTH * normal.getZ());
 			
 			// Shade the current color by the reflected ray
 			shade.multiply(shine);
-			reflectionColor = cast(scene, shade, medium, reflections - 1);
+			reflectionColor = reflectedRay.cast(scene, shade, medium, reflections - 1);
 			shade.multiply(1 / shine - 1);
 		}
 		
@@ -108,8 +99,6 @@ public class Ray {
 		
 		double root = Math.sqrt(1 - mu*mu * (1 - dot*dot)) * (dot < 0 ? -1 : 1);
 		
-		//System.out.print(dot + "\t" + root + "\t" + dir + "\t");
-		
 		/* 
 		 * Implementing Snell's Law in vector form as t = sqrt(1 - (u^2)(1 - (n.i)^2)) * n + u(i - (n.i)n)
 		 * i = the initial vector,
@@ -118,15 +107,12 @@ public class Ray {
 		 * u = the ratio of refractive indices n1/n2
 		 */
 		dir.add(-dot * normal.getX(), -dot * normal.getY(), -dot * normal.getZ());
-		//System.out.print(dir + "\t");
 		dir.multiply(mu);
 		dir.add(root * normal.getX(), root * normal.getY(), root * normal.getZ());
-		
-		//System.out.println(dir);
 	}
 	
 	private void reflect(Vector normal) {
-		double dot = normal.dotProduct(dir);
+		double dot = -2 * normal.dotProduct(dir);
 		
 		/*
 		 * Reflecting the vector by the formula t = i - 2(n.i)(n)
@@ -134,11 +120,11 @@ public class Ray {
 		 * t = the resultant vector,
 		 * n = the normal vector
 		 */
-		dir.add(-2 * dot * normal.getX(), -2 * dot * normal.getY(), -2 * dot * normal.getZ());
+		dir.add(dot * normal.getX(), dot * normal.getY(), dot * normal.getZ());
 	}
 	
 	private void getBrightness(Scene scene, Shape light, Vector normal, Vector brightness) {
-		Ray lightRay = new Ray(this);
+		Ray lightRay = new Ray(this.pos, this.dir);
 		
 		// Stepping away from the current surface
 		lightRay.pos.add(2 * MIN_LENGTH * normal.getX(), 2 * MIN_LENGTH * normal.getY(), 2 * MIN_LENGTH * normal.getZ());
