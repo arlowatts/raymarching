@@ -18,7 +18,7 @@ public class Main {
 	// Main
 	public static void main(String[] args) throws IOException, InvalidSetupException {
 		// Creates and loads the scene
-		scene = new Scene("setup.txt");
+		scene = new Scene(args.length > 0 ? args[0] + ".txt" : "setup.txt");
 		
 		// Creating the output file and GIF writer
 		File outputFile = new File("gifs\\Output.gif");
@@ -33,7 +33,7 @@ public class Main {
 			scene.getCamera().getPos().rotate(-Math.PI / 2, -0.1, Math.PI / 2);
 			scene.getCamera().getAngle().add(0, -0.1, 0);
 			
-			scene.getShapes().get(4).getPos().rotate(-Math.PI / 2, -0.1, Math.PI / 2);
+			//scene.getShapes().get(4).getPos().rotate(-Math.PI / 2, -0.1, Math.PI / 2);
 			
 			frames++;
 			

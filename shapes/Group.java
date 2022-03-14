@@ -9,14 +9,17 @@ public class Group extends Shape {
 	
 	// Member variables
 	private ArrayList<Shape> objects;
+	private ArrayList<Character> modifiers;
 	
 	private double smoothing;
 	
 	// Constructors
-	public Group(ArrayList<Shape> objects, double smoothing, double[] args) {
+	public Group(ArrayList<Shape> objects, ArrayList<Character> modifiers, double smoothing, double[] args) {
 		super(args);
+		
 		this.smoothing = smoothing;
 		this.objects = objects;
+		this.modifiers = modifiers;
 	}
 	
 	// Methods
@@ -29,7 +32,19 @@ public class Group extends Shape {
 		double minDist = objects.get(0).getDistance(v);
 		
 		for (int i = 1; i < objects.size(); i++) {
-			minDist = smoothMin(minDist, objects.get(i).getDistance(v), smoothing);
+			switch (modifiers.get(i)) {
+				case '|':
+				minDist = smoothUnion(minDist, objects.get(i).getDistance(v));
+				break;
+				
+				case '!':
+				minDist = smoothDifference(minDist, objects.get(i).getDistance(v));
+				break;
+				
+				case '&':
+				minDist = smoothIntersection(minDist, objects.get(i).getDistance(v));
+				break;
+			}
 		}
 		
 		v.rotate(getAngle());
@@ -38,17 +53,23 @@ public class Group extends Shape {
 		return minDist;
 	}
 	
-	public void add(Shape object) {
+	public void add(Shape object, char modifier) {
 		objects.add(object);
+		modifiers.add(modifier);
 	}
 	
-	public void remove(int i) {
-		objects.remove(i);
+	public Shape remove(int i) {
+		modifiers.remove(i);
+		return objects.remove(i);
 	}
 	
 	// Getters
 	public Shape get(int i) {
 		return objects.get(i);
+	}
+	
+	public int getMod(int i) {
+		return modifiers.get(i);
 	}
 	
 	// Setters
@@ -59,5 +80,17 @@ public class Group extends Shape {
 		double h = Math.max(k - Math.abs(a - b), 0) / k;
 		
 		return Math.min(a, b) - h * h * k * 0.25;
+	}
+	
+	private double smoothUnion(double a, double b) {
+		return Math.min(a, b);
+	}
+	
+	private double smoothDifference(double a, double b) {
+		return Math.max(a, -b);
+	}
+	
+	private double smoothIntersection(double a, double b) {
+		return Math.max(a, b);
 	}
 }

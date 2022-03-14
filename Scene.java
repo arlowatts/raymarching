@@ -25,10 +25,17 @@ public class Scene {
 		ArrayList<Shape> savedShapes = new ArrayList<>();
 		ArrayList<String> savedNames = new ArrayList<>();
 		
+		boolean commented = false;
+		
 		for (int i = 1; scanner.hasNextLine(); i++) {
 			String[] line = (i + " " + scanner.nextLine()).split(" ");
 			
-			if (line.length < 3 || line[1].substring(0, 2).equals("\\\\") || line[1].equals("\n")) continue;
+			if (line.length < 2) continue;
+			
+			if (line[1].equals("/*")) commented = true;
+			if (line[1].equals("*/")) commented = false;
+			
+			if (commented || line[1].substring(0, 2).equals("//") || line[1].equals("\n")) continue;
 			
 			switch (line[1].toLowerCase()) {
 				case "camera":
@@ -80,14 +87,20 @@ public class Scene {
 	}
 	
 	private Group parseGroup(String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
-		Group shape = new Group(new ArrayList<Shape>(), Double.parseDouble(line[4]), getDefaultParams(line, 5));
+		Group shape = new Group(new ArrayList<Shape>(), new ArrayList<Character>(), Double.parseDouble(line[4]), getDefaultParams(line, 5));
 		
 		String[] groupShapes = line[3].split(",");
 		
 		for (int i = 0; i < groupShapes.length; i++) {
+			char modifier = groupShapes[i].charAt(0);
+			
+			if (modifier == '&' || modifier == '|' || modifier == '!')
+				groupShapes[i] = groupShapes[i].substring(1, groupShapes[i].length());
+			else modifier = '|';
+			
 			int index = savedNames.indexOf(groupShapes[i]);
 			
-			if (index != -1) shape.add(savedShapes.get(index));
+			if (index != -1) shape.add(savedShapes.get(index), modifier);
 			else System.out.println("\"" + groupShapes[i] + "\" is referenced at line " + line[0] + " but does not exist");
 		}
 		
