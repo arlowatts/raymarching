@@ -34,6 +34,8 @@ public class Sphere extends Shape{
 	// Getters
 	public double getRadius() {return radius;}
 	
+	public double getBoundRadius() {return radius;}
+	
 	// Setters
 	public void setRadius(double r) {radius = r;}
 }

@@ -15,6 +15,8 @@ public class Plane extends Shape {
 		
 		width = w;
 		length = l;
+		
+		setBoundRadius();
 	}
 	
 	// Methods
@@ -52,5 +54,10 @@ public class Plane extends Shape {
 	public void setSize(double w, double l) {
 		width = w;
 		length = l;
+	}
+	
+	// Helpers
+	private void setBoundRadius() {
+		setBoundRadius(Math.sqrt(width*width + length*length));
 	}
 }

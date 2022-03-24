@@ -33,22 +33,24 @@ public class Ray {
 	// Methods
 	// The recursive method to cast and reflect a light ray
 	public int cast(Scene scene, Vector shade, int medium, int reflections) {
+		ArrayList<Shape> shapes = scene.getVisible(this);
+		
 		// March the ray through the scene
-		int hit = march(scene.getShapes(), medium);
+		int hit = march(shapes, medium);
 		
-		if (hit == -1) return Color.shade(scene.getScreen().getBgnd(), shade.getX(), shade.getY(), shade.getZ());
+		if (hit == -1) return Color.shade(scene.getScreen().getBgnd(), shade);
 		
-		Vector normal = scene.getShape(hit).getNormal(pos);
+		Vector normal = shapes.get(hit).getNormal(pos);
 		
-		double transparency = scene.getShape(hit).getTransparency();
+		double transparency = shapes.get(hit).getTransparency();
 		int refractionColor = 0;
 		
 		// If the hit object is not opaque, create a new ray and refract it through the surface
 		if (transparency > 0 && reflections > 0) {
 			// Get the refractive index of the current medium, or 1 if the medium is -1 (no object)
-			double n1 = medium == -1  ? 1 : scene.getShape(medium).getRefrIndex();
+			double n1 = medium == -1  ? 1 : shapes.get(medium).getRefrIndex();
 			// Get the refractive index of the object the ray is refracting into, or 1 if it hit the same surface (it is refracting into space)
-			double n2 = medium == hit ? 1 : scene.getShape(hit).getRefrIndex();
+			double n2 = medium == hit ? 1 : shapes.get(hit).getRefrIndex();
 			
 			Ray refractedRay = new Ray(this.pos, this.dir);
 			refractedRay.refract(normal, n1, n2);
@@ -59,7 +61,7 @@ public class Ray {
 			shade.multiply(1 / transparency - 1);
 		}
 		
-		double shine = scene.getShape(hit).getShine();
+		double shine = shapes.get(hit).getShine();
 		int reflectionColor = 0;
 		
 		// If the hit object is reflective, create a new ray and reflect it
@@ -80,7 +82,7 @@ public class Ray {
 		
 		// Iterates over all the lights and marches to them
 		for (int i = 0; i < scene.getLights().size(); i++) {
-			if (scene.getShape(hit) == scene.getLight(i)) continue;
+			if (shapes.get(hit) == scene.getLight(i)) continue;
 			
 			getBrightness(scene, scene.getLight(i), normal, brightness);
 		}
@@ -90,7 +92,8 @@ public class Ray {
 					  Math.min(1 - brightness.getY() + (double)Color.getG(scene.getScreen().getBgnd()) * Color.RATIO, 1),
 					  Math.min(1 - brightness.getZ() + (double)Color.getB(scene.getScreen().getBgnd()) * Color.RATIO, 1));
 		
-		return Color.shade(scene.getShapes().get(hit).getColor(), shade.getX(), shade.getY(), shade.getZ()) + reflectionColor + refractionColor;
+		// Add together all of the colors and return the result
+		return Color.shade(shapes.get(hit).getColor(), shade) + reflectionColor + refractionColor;
 	}
 	
 	private void refract(Vector normal, double n1, double n2) {
@@ -115,7 +118,7 @@ public class Ray {
 		double dot = -2 * normal.dotProduct(dir);
 		
 		/*
-		 * Reflecting the vector by the formula t = i - 2(n.i)(n)
+		 * Reflecting the ray by the formula t = i - 2(n.i)(n)
 		 * i = the initial vector,
 		 * t = the resultant vector,
 		 * n = the normal vector
@@ -134,10 +137,12 @@ public class Ray {
 		lightRay.dir.subtract(lightRay.pos);
 		lightRay.dir.setLength(1);
 		
-		int hit = lightRay.march(scene.getShapes(), -1);
+		ArrayList<Shape> shapes = scene.getVisible(lightRay);
+		
+		int hit = lightRay.march(shapes, -1);
 		
 		// If it hits the light, add brightness proportional to the light's brightness and the dot product of the normal
-		if (hit != -1 && scene.getShape(hit) == light) {
+		if (hit != -1 && shapes.get(hit) == light) {
 			double lightShade = Math.max(normal.dotProduct(lightRay.dir), 0) * Color.RATIO;
 			int lightColor = light.getColor();
 			
@@ -145,6 +150,15 @@ public class Ray {
 							   1 - Color.getG(lightColor) * lightShade,
 							   1 - Color.getB(lightColor) * lightShade);
 		}
+	}
+	
+	public double distToPoint(Vector v) {
+		Vector r = new Vector(pos);
+		
+		double gamma = v.dotProduct(dir) - pos.dotProduct(dir);
+		r.add(gamma * dir.getX(), gamma * dir.getY(), gamma * dir.getZ());
+		
+		return v.getDistance(r);
 	}
 	
 	public int march(ArrayList<Shape> shapes, int medium) {

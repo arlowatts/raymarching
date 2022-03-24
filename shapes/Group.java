@@ -8,41 +8,43 @@ public class Group extends Shape {
 	public static final String[] PARAMS = {"objectList", "smoothingVal"};
 	
 	// Member variables
-	private ArrayList<Shape> objects;
+	private ArrayList<Shape> shapes;
 	private ArrayList<Character> modifiers;
 	
 	private double smoothing;
 	
 	// Constructors
-	public Group(ArrayList<Shape> objects, ArrayList<Character> modifiers, double smoothing, double[] args) {
+	public Group(ArrayList<Shape> shapes, ArrayList<Character> modifiers, double smoothing, double[] args) {
 		super(args);
 		
 		this.smoothing = smoothing;
-		this.objects = objects;
+		this.shapes = shapes;
 		this.modifiers = modifiers;
+		
+		setBoundRadius();
 	}
 	
 	// Methods
 	public double getDistance(Vector v) {
-		if (objects.size() == 0) return getPos().getDistance(v);
+		if (shapes.size() == 0) return getPos().getDistance(v);
 		
 		v.subtract(getPos());
 		v.inverseRotate(getAngle());
 		
-		double minDist = objects.get(0).getDistance(v);
+		double minDist = shapes.get(0).getDistance(v);
 		
-		for (int i = 1; i < objects.size(); i++) {
+		for (int i = 1; i < shapes.size(); i++) {
 			switch (modifiers.get(i)) {
 				case '|':
-				minDist = smoothUnion(minDist, objects.get(i).getDistance(v));
+				minDist = smoothUnion(minDist, shapes.get(i).getDistance(v));
 				break;
 				
 				case '!':
-				minDist = smoothDifference(minDist, objects.get(i).getDistance(v));
+				minDist = smoothDifference(minDist, shapes.get(i).getDistance(v));
 				break;
 				
 				case '&':
-				minDist = smoothIntersection(minDist, objects.get(i).getDistance(v));
+				minDist = smoothIntersection(minDist, shapes.get(i).getDistance(v));
 				break;
 			}
 		}
@@ -54,18 +56,20 @@ public class Group extends Shape {
 	}
 	
 	public void add(Shape object, char modifier) {
-		objects.add(object);
+		shapes.add(object);
 		modifiers.add(modifier);
+		setBoundRadius();
 	}
 	
 	public Shape remove(int i) {
 		modifiers.remove(i);
-		return objects.remove(i);
+		setBoundRadius();
+		return shapes.remove(i);
 	}
 	
 	// Getters
 	public Shape get(int i) {
-		return objects.get(i);
+		return shapes.get(i);
 	}
 	
 	public int getMod(int i) {
@@ -76,6 +80,16 @@ public class Group extends Shape {
 	public void setSmoothing(double smoothing) {this.smoothing = smoothing;}
 	
 	// Helpers
+	private void setBoundRadius() {
+		setBoundRadius(0);
+		
+		for (int i = 0; i < shapes.size(); i++) {
+			if (modifiers.get(i) == '|') {
+				setBoundRadius(Math.max(shapes.get(i).getPos().getLength() + shapes.get(i).getBoundRadius(), getBoundRadius()));
+			}
+		}
+	}
+	
 	private double smoothMin(double a, double b, double k) {
 		double h = Math.max(k - Math.abs(a - b), 0) / k;
 		

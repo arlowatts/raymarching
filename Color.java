@@ -1,4 +1,4 @@
-package shapes;
+import shapes.*;
 
 import java.lang.Math;
 
@@ -28,6 +28,12 @@ public class Color {
 		return ((int)((double)(getR(color) * getR(shade)) * RATIO) << 16) |
 			   ((int)((double)(getG(color) * getG(shade)) * RATIO) << 8) |
 			   (int)((double)(getB(color) * getB(shade)) * RATIO);
+	}
+	
+	public static int shade(int color, Vector shade) {
+		return ((int)((double)getR(color) * shade.getX()) << 16) |
+			   ((int)((double)getG(color) * shade.getY()) << 8) |
+			   (int)((double)getB(color) * shade.getZ());
 	}
 	
 	public static int invert(int color) {return 0xffffff - color;}

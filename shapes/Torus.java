@@ -35,6 +35,8 @@ public class Torus extends Shape{
 	public double getLargeRadius() {return largeRadius;}
 	public double getSmallRadius() {return smallRadius;}
 	
+	public double getBoundRadius() {return largeRadius + smallRadius;}
+	
 	// Setters
 	public void setLargeRadius(double r) {largeRadius = r;}
 	public void setSmallRadius(double r) {smallRadius = r;}

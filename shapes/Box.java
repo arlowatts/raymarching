@@ -18,6 +18,8 @@ public class Box extends Shape {
 		length = Math.max(l, Shape.MIN_LENGTH);
 		
 		radius = r;
+		
+		setBoundRadius();
 	}
 	
 	// Methods
@@ -40,14 +42,32 @@ public class Box extends Shape {
 	public double getRadius() {return radius;}
 	
 	// Setters
-	public void setWidth(double w) {width = w;}
-	public void setHeight(double h) {height = h;}
-	public void setLength(double l) {length = l;}
+	public void setWidth(double w) {
+		width = w;
+		setBoundRadius();
+	}
+	
+	public void setHeight(double h) {
+		height = h;
+		setBoundRadius();
+	}
+	
+	public void setLength(double l) {
+		length = l;
+		setBoundRadius();
+	}
+	
 	public void setRadius(double r) {radius = r;}
 	
 	public void setSize(double w, double h, double l) {
 		width = w;
 		height = h;
 		length = l;
+		setBoundRadius();
+	}
+	
+	// Helpers
+	private void setBoundRadius() {
+		setBoundRadius(Math.sqrt(width*width + height*height + length*length));
 	}
 }

@@ -64,6 +64,17 @@ public class Scene {
 		screen.updateImage(this);
 	}
 	
+	public ArrayList<Shape> getVisible(Ray ray) {
+		ArrayList<Shape> visible = new ArrayList<>();
+		
+		for (int i = 0; i < shapes.size(); i++) {
+			if (ray.distToPoint(shapes.get(i).getPos()) < shapes.get(i).getBoundRadius() + Ray.MIN_LENGTH)
+				visible.add(shapes.get(i));
+		}
+		
+		return visible;
+	}
+	
 	// Parsing methods
 	private void parseCamera(String[] line) {
 		int k = 2;

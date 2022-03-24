@@ -14,17 +14,19 @@ public class Shape {
 	private int color;
 	private double shine, transparency, refrIndex;
 	
+	private double boundRadius;
+	
 	// Constructors
 	public Shape(double... args) {
 		pos = new Vector(args[0], args[1], args[2]);
 		angle = new Vector(args[3], args[4], args[5]);
 		
-		this.shine = Math.min(Math.max(args[6], 0), 1);
+		shine = Math.min(Math.max(args[6], 0), 1);
 		
-		this.transparency = Math.min(Math.max(args[7], 0), 1);
-		this.refrIndex = Math.max(args[8], 1);
+		transparency = Math.min(Math.max(args[7], 0), 1);
+		refrIndex = Math.max(args[8], 1);
 		
-		this.color = (int)args[9] & 0xffffff;
+		color = (int)args[9] & 0xffffff;
 	}
 	
 	//Methods
@@ -61,7 +63,12 @@ public class Shape {
 	public double getTransparency() {return transparency;}
 	public double getRefrIndex() {return refrIndex;}
 	
+	public double getBoundRadius() {return boundRadius;}
+	
 	// Setters
 	public void setColor(int color) {this.color = color;}
 	public void setShine(double shine) {this.shine = shine;}
+	
+	// Setters
+	public void setBoundRadius(double r) {boundRadius = r;}
 }

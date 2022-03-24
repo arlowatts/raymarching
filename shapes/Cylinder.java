@@ -17,6 +17,8 @@ public class Cylinder extends Shape {
 		height = Math.max(h, Shape.MIN_LENGTH);
 		
 		edgeRadius = eR;
+		
+		setBoundRadius();
 	}
 	
 	// Methods
@@ -42,11 +44,24 @@ public class Cylinder extends Shape {
 	public double getHeight() {return height;}
 	
 	// Setters
-	public void setRadius(double r) {radius = r;}
-	public void setHeight(double h) {height = h;}
+	public void setRadius(double r) {
+		radius = r;
+		setBoundRadius();
+	}
+	
+	public void setHeight(double h) {
+		height = h;
+		setBoundRadius();
+	}
 	
 	public void setSize(double r, double h) {
 		radius = r;
 		height = h;
+		setBoundRadius();
+	}
+	
+	// Helpers
+	private void setBoundRadius() {
+		setBoundRadius(Math.sqrt(radius*radius + height*height));
 	}
 }
