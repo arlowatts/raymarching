@@ -18,10 +18,11 @@ public class Main {
 	// Main
 	public static void main(String[] args) throws IOException, InvalidSetupException {
 		// Creates and loads the scene
-		scene = new Scene(args.length > 0 ? args[0] + ".txt" : "setup.txt");
+		String sceneName = args.length > 0 ? args[0] : "setup";
+		scene = new Scene(sceneName + ".txt");
 		
 		// Creating the output file and GIF writer
-		File outputFile = new File("gifs\\Output.gif");
+		File outputFile = new File("gifs\\" + sceneName + ".gif");
 		GifSequenceWriter gifWriter = new GifSequenceWriter(ImageIO.createImageOutputStream(outputFile), BufferedImage.TYPE_INT_RGB, 1000 / 60, true);
 		
 		// The main loop
