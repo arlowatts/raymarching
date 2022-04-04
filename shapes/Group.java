@@ -17,7 +17,7 @@ public class Group extends Shape {
 	public Group(ArrayList<Shape> shapes, ArrayList<Character> modifiers, double smoothing, double[] args) {
 		super(args);
 		
-		this.smoothing = smoothing;
+		this.smoothing = Math.min(Math.max(smoothing, 0), 1);
 		this.shapes = shapes;
 		this.modifiers = modifiers;
 		
@@ -35,11 +35,11 @@ public class Group extends Shape {
 		
 		for (int i = 1; i < shapes.size(); i++) {
 			switch (modifiers.get(i)) {
-				case '|':
+				case '+':
 				minDist = smoothUnion(minDist, shapes.get(i).getDistance(v));
 				break;
 				
-				case '!':
+				case '-':
 				minDist = smoothDifference(minDist, shapes.get(i).getDistance(v));
 				break;
 				
@@ -84,27 +84,33 @@ public class Group extends Shape {
 		setBoundRadius(0);
 		
 		for (int i = 0; i < shapes.size(); i++) {
-			if (modifiers.get(i) == '|') {
+			if (modifiers.get(i) == '+') {
 				setBoundRadius(Math.max(shapes.get(i).getPos().getLength() + shapes.get(i).getBoundRadius(), getBoundRadius()));
 			}
 		}
 	}
 	
-	private double smoothMin(double a, double b, double k) {
-		double h = Math.max(k - Math.abs(a - b), 0) / k;
-		
-		return Math.min(a, b) - h * h * k * 0.25;
-	}
+	/*private double smoothUnion(double a, double b) {
+		double h = Math.min(Math.max(0.5 + 0.5 * (b - a) / smoothing, 0), 1);
+		return lerp(a, b) - smoothing * h * (1 - h);
+	}*/
 	
 	private double smoothUnion(double a, double b) {
-		return Math.min(a, b);
+		double h = Math.min(Math.max(0.5 + 0.5 * (a - b) / smoothing, 0), 1);
+		return lerp(a, b, h) - smoothing * h * (1 - h);
 	}
 	
 	private double smoothDifference(double a, double b) {
-		return Math.max(a, -b);
+		double h = Math.min(Math.max(0.5 - 0.5 * (a + b) / smoothing, 0), 1);
+		return lerp(a, -b, h) + smoothing * h * (1 - h);
 	}
 	
 	private double smoothIntersection(double a, double b) {
-		return Math.max(a, b);
+		double h = Math.min(Math.max(0.5 - 0.5 * (a - b) / smoothing, 0), 1);
+		return lerp(a, b, h) + smoothing * h * (1 - h);
+	}
+	
+	private double lerp(double a, double b, double t) {
+		return a + t * (b - a);
 	}
 }

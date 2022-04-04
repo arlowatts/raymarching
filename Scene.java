@@ -105,9 +105,9 @@ public class Scene {
 		for (int i = 0; i < groupShapes.length; i++) {
 			char modifier = groupShapes[i].charAt(0);
 			
-			if (modifier == '&' || modifier == '|' || modifier == '!')
+			if (modifier == '+' || modifier == '-' || modifier == '&')
 				groupShapes[i] = groupShapes[i].substring(1, groupShapes[i].length());
-			else modifier = '|';
+			else modifier = '+';
 			
 			int index = savedNames.indexOf(groupShapes[i]);
 			
