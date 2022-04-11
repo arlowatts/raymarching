@@ -1,4 +1,6 @@
-import shapes.*;
+package src;
+
+import src.shapes.*;
 
 import java.lang.Math;
 
