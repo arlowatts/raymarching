@@ -73,7 +73,7 @@ public class Screen extends JFrame {
 	}
 	
 	private int castRay(Ray ray, Scene scene) {
-		return ray.cast(scene, new Vector(1, 1, 1), -1, maxReflections);
+		return ray.cast(scene, new Vector(1, 1, 1), null, maxReflections);
 	}
 	
 	// Getters

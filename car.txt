@@ -22,18 +22,18 @@ group . spoke1,spoke2,spoke3,spoke4,spoke5 0 10 3.25 -5 0 0 0 0.25 0 1 0xa0a0a0
 // The rims of the wheels
 cylinder rim 2.5 1 0 0 0 0 0 0 0 0 0 1 0xa0a0a0
 cylinder rimInside 2 1.1 0 0 0 0 0 0 0 0 0 1 0x0
-group . rim,!rimInside 0 -10 3.25 -5 0 1.5708 0 0.25 0 1 0xa0a0a0
-group . rim,!rimInside 0 -10 3.25 5 0 1.5708 0 0.25 0 1 0xa0a0a0
-group . rim,!rimInside 0 10 3.25 5 0 1.5708 0 0.25 0 1 0xa0a0a0
-group . rim,!rimInside 0 10 3.25 -5 0 1.5708 0 0.25 0 1 0xa0a0a0
+group . rim,-rimInside 0 -10 3.25 -5 0 1.5708 0 0.25 0 1 0xa0a0a0
+group . rim,-rimInside 0 -10 3.25 5 0 1.5708 0 0.25 0 1 0xa0a0a0
+group . rim,-rimInside 0 10 3.25 5 0 1.5708 0 0.25 0 1 0xa0a0a0
+group . rim,-rimInside 0 10 3.25 -5 0 1.5708 0 0.25 0 1 0xa0a0a0
 
 // The tires
 cylinder tire 3.25 1 0.25 0 0 0 0 0 0 0 0 1 0x0
 cylinder tireInside 2.5 1.1 0 0 0 0 0 0 0 0 0 1 0x0
-group . tire,!tireInside 0 -10 3.25 -5 0 1.5708 0 0 0 1 0x0
-group . tire,!tireInside 0 -10 3.25 5 0 1.5708 0 0 0 1 0x0
-group . tire,!tireInside 0 10 3.25 5 0 1.5708 0 0 0 1 0x0
-group . tire,!tireInside 0 10 3.25 -5 0 1.5708 0 0 0 1 0x0
+group . tire,-tireInside 0 -10 3.25 -5 0 1.5708 0 0 0 1 0x0
+group . tire,-tireInside 0 -10 3.25 5 0 1.5708 0 0 0 1 0x0
+group . tire,-tireInside 0 10 3.25 5 0 1.5708 0 0 0 1 0x0
+group . tire,-tireInside 0 10 3.25 -5 0 1.5708 0 0 0 1 0x0
 
 // The frame
 box frame 15 3 6.25 1 0 6.25 0 0 0 0 0.35 0 1 0xf00000
@@ -42,7 +42,7 @@ cylinder wheelWell1 3.4 1.6 0 -10 3.25 -5.5 0 1.5708 0 0 0 1 0x0
 cylinder wheelWell2 3.4 1.6 0 -10 3.25 5.5 0 1.5708 0 0 0 1 0x0
 cylinder wheelWell3 3.4 1.6 0 10 3.25 5.5 0 1.5708 0 0 0 1 0x0
 cylinder wheelWell4 3.4 1.6 0 10 3.25 -5.5 0 1.5708 0 0 0 1 0x0
-group . frame,hood,!wheelWell1,!wheelWell2,!wheelWell3,!wheelWell4 0 0 0 0 0 0 0 0.35 0 1 0xf00000
+group . frame,hood,-wheelWell1,-wheelWell2,-wheelWell3,-wheelWell4 0 0 0 0 0 0 0 0.35 0 1 0xf00000
 
 // The windows
-plane . 3 6 -2 10.75 0 1.3 0 0 1 0.85 1.5 0x101010
+plane . 3 6 -2.2 12.75 0 1.3 0 0 1 0.85 1.5 0x101010

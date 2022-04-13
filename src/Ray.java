@@ -34,36 +34,37 @@ public class Ray {
 	
 	// Methods
 	// The recursive method to cast and reflect a light ray
-	public int cast(Scene scene, Vector shade, int medium, int reflections) {
+	public int cast(Scene scene, Vector shade, Shape medium, int reflections) {
 		ArrayList<Shape> shapes = scene.getVisible(this);
 		
 		// March the ray through the scene
-		int hit = march(shapes, medium);
+		int hitIndex = march(shapes, medium);
+		if (hitIndex == -1) return Color.shade(scene.getScreen().getBgnd(), shade);
 		
-		if (hit == -1) return Color.shade(scene.getScreen().getBgnd(), shade);
+		Shape hit = shapes.get(hitIndex);
 		
-		Vector normal = shapes.get(hit).getNormal(pos);
+		Vector normal = hit.getNormal(pos);
 		
-		double transparency = shapes.get(hit).getTransparency();
+		double transparency = hit.getTransparency();
 		int refractionColor = 0;
 		
 		// If the hit object is not opaque, create a new ray and refract it through the surface
 		if (transparency > 0 && reflections > 0) {
-			// Get the refractive index of the current medium, or 1 if the medium is -1 (no object)
-			double n1 = medium == -1  ? 1 : shapes.get(medium).getRefrIndex();
+			// Get the refractive index of the current medium, or 1 if the medium is null
+			double n1 = medium == null ? 1 : medium.getRefrIndex();
 			// Get the refractive index of the object the ray is refracting into, or 1 if it hit the same surface (it is refracting into space)
-			double n2 = medium == hit ? 1 : shapes.get(hit).getRefrIndex();
+			double n2 = medium == hit ? 1 : hit.getRefrIndex();
 			
 			Ray refractedRay = new Ray(this.pos, this.dir);
 			refractedRay.refract(normal, n1, n2);
 			
 			// Shade the current color by the refracted ray
 			shade.multiply(transparency);
-			refractionColor = refractedRay.cast(scene, shade, hit == medium ? -1 : hit, reflections - 1);
+			refractionColor = refractedRay.cast(scene, shade, hit == medium ? null : hit, reflections - 1);
 			shade.multiply(1 / transparency - 1);
 		}
 		
-		double shine = shapes.get(hit).getShine();
+		double shine = hit.getShine();
 		int reflectionColor = 0;
 		
 		// If the hit object is reflective, create a new ray and reflect it
@@ -84,7 +85,7 @@ public class Ray {
 		
 		// Iterates over all the lights and marches to them
 		for (int i = 0; i < scene.getLights().size(); i++) {
-			if (shapes.get(hit) == scene.getLight(i)) continue;
+			if (hit == scene.getLight(i)) continue;
 			
 			getBrightness(scene, scene.getLight(i), normal, brightness);
 		}
@@ -95,7 +96,7 @@ public class Ray {
 					  Math.min(1 - brightness.getZ() + (double)Color.getB(scene.getScreen().getBgnd()) * Color.RATIO, 1));
 		
 		// Add together all of the colors and return the result
-		return Color.shade(shapes.get(hit).getColor(), shade) + reflectionColor + refractionColor;
+		return Color.shade(hit.getColor(), shade) + reflectionColor + refractionColor;
 	}
 	
 	private void refract(Vector normal, double n1, double n2) {
@@ -141,7 +142,7 @@ public class Ray {
 		
 		ArrayList<Shape> shapes = scene.getVisible(lightRay);
 		
-		int hit = lightRay.march(shapes, -1);
+		int hit = lightRay.march(shapes, null);
 		
 		// If it hits the light, add brightness proportional to the light's brightness and the dot product of the normal
 		if (hit != -1 && shapes.get(hit) == light) {
@@ -163,9 +164,11 @@ public class Ray {
 		return v.getDistance(r);
 	}
 	
-	public int march(ArrayList<Shape> shapes, int medium) {
+	public int march(ArrayList<Shape> shapes, Shape medium) {
 		steps = 0;
 		length = 0;
+		
+		int mediumIndex = shapes.indexOf(medium);
 		
 		while (steps < MAX_STEPS && length < MAX_LENGTH) {
 			int nearest = -1;
@@ -174,7 +177,7 @@ public class Ray {
 			// Finding the smallest distance to a shape in the scene
 			for (int i = 0; i < shapes.size(); i++) {
 				// If the ray is traveling through an object, the distance is inverted
-				double distance = (shapes.get(i).getDistance(pos) - MIN_LENGTH) * (i == medium ? -1 : 1) + MIN_LENGTH;
+				double distance = (shapes.get(i).getDistance(pos) - MIN_LENGTH) * (i == mediumIndex ? -1 : 1) + MIN_LENGTH;
 				
 				if (distance < minDist) {
 					nearest = i;
