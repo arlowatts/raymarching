@@ -1,0 +1,6 @@
+camera 0 15 0 0 1.5708 0 
+screen 700 700 500 0x0 10 Arnsdale
+
+light 0 0 0 0xffddbb
+
+torus . 0.5 0.1 0 0 7.5 0.2 0 0 0 0 1 0x88ff88
