@@ -12,8 +12,6 @@ import java.io.IOException;
 
 public class Main {
 	// Variables
-	private static int frames = 0;
-	
 	private static Scene scene;
 	
 	// Main
@@ -30,26 +28,17 @@ public class Main {
 		while (true) {
 			// Update and save the current frame
 			scene.updateScreen();
-			gifWriter.writeToSequence(scene.getScreen().getImage());
+			scene.executeActions();
 			
-			//scene.getCamera().getPos().rotate(-Math.PI / 2, -0.025, Math.PI / 2);
-			//scene.getCamera().getAngle().add(0, -0.025, 0);
-			
-			//scene.getShapes().get(4).getPos().rotate(-Math.PI / 2, -0.1, Math.PI / 2);
-			
-			scene.getShape(1).getPos().rotate(-Math.PI / 2, -0.025, Math.PI / 2);
-			scene.getShape(1).getAngle().add(0, -0.1, 0);
-			
-			frames++;
-			
-			if (frames * 0.025 > Math.PI * 2) break;
+			if (scene.getMaxFrames() != -1) {
+				gifWriter.writeToSequence(scene.getScreen().getImage());
+				
+				if (scene.getFrames() >= scene.getMaxFrames()) break;
+			}
 		}
 		
 		gifWriter.close();
 		System.out.println("GIF saved.");
 		scene.getScreen().dispose();
 	}
-	
-	// Getters
-	public static int getFrames() {return frames;}
 }

@@ -1,0 +1,37 @@
+package src;
+
+import src.shapes.*;
+
+public class Action {
+	// Member variables
+	private int type;
+	private Shape shape;
+	private Vector[] vals;
+	
+	// Constructor
+	public Action(int type, Shape shape, Vector[] vals) {
+		this.type = type;
+		this.vals = vals;
+		this.shape = shape;
+	}
+	
+	// Methods
+	public void execute() {
+		switch (type) {
+			// Translation
+			case 0:
+			shape.getPos().add(vals[0]);
+			break;
+			
+			// Rotation
+			case 1:
+			shape.getAngle().add(vals[0]);
+			break;
+			
+			// Rotation about a point
+			case 2:
+			shape.getPos().rotate(vals[0], vals[1]);
+			break;
+		}
+	}
+}

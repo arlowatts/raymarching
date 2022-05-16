@@ -9,12 +9,20 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Scene {
+	// Constants
+	private static final String[] actionTypes = {"translate", "rotate", "rotateabout"};
+	
 	// Member variables
 	private Shape camera;
 	private Screen screen;
 	
 	private ArrayList<Shape> shapes;
 	private ArrayList<Shape> lights;
+	
+	private ArrayList<Action> actions;
+	
+	private int frames;
+	private int maxFrames;
 	
 	// Constructors
 	public Scene(String path) throws FileNotFoundException {
@@ -23,9 +31,13 @@ public class Scene {
 		
 		shapes = new ArrayList<>();
 		lights = new ArrayList<>();
+		actions = new ArrayList<>();
 		
 		ArrayList<Shape> savedShapes = new ArrayList<>();
 		ArrayList<String> savedNames = new ArrayList<>();
+		
+		frames = 0;
+		maxFrames = -1;
 		
 		boolean commented = false;
 		
@@ -52,6 +64,14 @@ public class Scene {
 				parseLight(line);
 				break;
 				
+				case "gif":
+				parseGif(line);
+				break;
+				
+				case "action":
+				parseAction(line, savedShapes, savedNames);
+				break;
+				
 				default:
 				try {parseShape(line, savedShapes, savedNames);}
 				catch (InvalidSetupException e) {System.out.println(e);}
@@ -64,6 +84,12 @@ public class Scene {
 	// Methods
 	public void updateScreen() {
 		screen.updateImage(this);
+		frames++;
+	}
+	
+	public void executeActions() {
+		for (Action action : actions)
+			action.execute();
 	}
 	
 	public ArrayList<Shape> getVisible(Ray ray) {
@@ -78,6 +104,34 @@ public class Scene {
 	}
 	
 	// Parsing methods
+	private void parseAction(String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) {
+		int type = -1;
+		
+		for (int i = 0; i < actionTypes.length; i++) {
+			if (actionTypes[i].equals(line[2].toLowerCase())) {
+				type = i;
+				break;
+			}
+		}
+		
+		if (type == -1) return;
+		
+		int index = savedNames.indexOf(line[3]);
+		
+		Vector[] vals = new Vector[(line.length - 3) / 3];
+		for (int i = 0; i < vals.length; i++)
+			vals[i] = new Vector(Double.parseDouble(line[i + 4]), Double.parseDouble(line[i + 5]), Double.parseDouble(line[i + 6]));
+		
+		if (index != -1)
+			actions.add(new Action(type, savedShapes.get(index), vals));
+		
+		else if (line[3].toLowerCase().equals("camera"))
+			actions.add(new Action(type, camera, vals));
+		
+		else
+			System.out.println("\"" + line[3] + "\" is referenced at line " + line[0] + " but does not exist");
+	}
+	
 	private void parseCamera(String[] line) {
 		int k = 2;
 		camera = new Shape(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]),
@@ -97,6 +151,10 @@ public class Scene {
 		
 		lights.add(light);
 		shapes.add(light);
+	}
+	
+	private void parseGif(String[] line) {
+		maxFrames = Integer.parseInt(line[2]);
 	}
 	
 	private Group parseGroup(String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
@@ -186,4 +244,7 @@ public class Scene {
 	
 	public Shape getShape(int i) {return shapes.get(i);}
 	public Shape getLight(int i) {return lights.get(i);}
+	
+	public int getFrames() {return frames;}
+	public int getMaxFrames() {return maxFrames;}
 }
