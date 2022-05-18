@@ -37,8 +37,6 @@ public class Screen extends JFrame {
 		
 		maxReflections = args[4];
 		
-		System.out.println(args[0] + " " + args[1]);
-		
 		// Adding a listener to know when the user resizes the window
 		addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {

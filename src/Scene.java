@@ -38,7 +38,7 @@ public class Scene {
 		lights = new ArrayList<>();
 		actions = new ArrayList<>();
 		
-		ArrayList<Shape> savedShapes = new ArrayList<>();
+		ArrayList<Shape> removedShapes = new ArrayList<>();
 		ArrayList<String> savedNames = new ArrayList<>();
 		
 		frames = 0;
@@ -73,15 +73,15 @@ public class Scene {
 					break;
 					
 					case "action":
-					parseAction(line, savedShapes, savedNames);
+					parseAction(line, savedNames);
 					break;
 					
 					case "light":
-					parseLight(line);
+					parseLight(line, savedNames);
 					break;
 					
 					default:
-					parseShape(line, savedShapes, savedNames);
+					parseShape(line, removedShapes, savedNames);
 				}
 			}
 			catch (InvalidSetupException e) {System.out.println(e);}
@@ -89,6 +89,9 @@ public class Scene {
 			if (line[line.length - 1].equals("/*")) commented = true;
 			if (line[line.length - 1].equals("*/")) commented = false;
 		}
+		
+		for (Shape shape : removedShapes)
+			shapes.remove(shape);
 		
 		scanner.close();
 		
@@ -135,7 +138,7 @@ public class Scene {
 		maxFrames = Integer.parseInt(line[2]);
 	}
 	
-	private void parseAction(String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
+	private void parseAction(String[] line, ArrayList<String> savedNames) throws InvalidSetupException {
 		// Parsing the type of action
 		int type = -1;
 		
@@ -174,7 +177,7 @@ public class Scene {
 		int index = savedNames.indexOf(line[3]);
 		
 		if (index != -1)
-			actions.add(new Action(type, savedShapes.get(index), vals));
+			actions.add(new Action(type, shapes.get(index), vals));
 		
 		else if (line[3].toLowerCase().equals("camera"))
 			actions.add(new Action(type, camera, vals));
@@ -183,7 +186,7 @@ public class Scene {
 			System.out.println("\"" + line[3] + "\" is referenced at line " + line[0] + " but does not exist");
 	}
 	
-	private void parseLight(String[] line) throws InvalidSetupException {
+	private void parseLight(String[] line, ArrayList<String> savedNames) throws InvalidSetupException {
 		if (line.length != 6) throw new InvalidSetupException(line);
 		
 		int k = 2;
@@ -192,9 +195,10 @@ public class Scene {
 		
 		lights.add(light);
 		shapes.add(light);
+		savedNames.add("");
 	}
 	
-	private Group parseGroup(String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
+	private Group parseGroup(String[] line, ArrayList<Shape> removedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
 		Group shape = new Group(getDoubles(line, 1, 4), getDefaultParams(line, 5));
 		
 		String[] groupShapes = line[3].split(",");
@@ -208,19 +212,22 @@ public class Scene {
 			
 			int index = savedNames.indexOf(groupShapes[i]);
 			
-			if (index != -1) shape.add(savedShapes.get(index), modifier);
+			if (index != -1) {
+				shape.add(shapes.get(index), modifier);
+				removedShapes.add(shapes.get(index));
+			}
 			else System.out.println("\"" + groupShapes[i] + "\" is referenced at line " + line[0] + " but does not exist");
 		}
 		
 		return shape;
 	}
 	
-	private void parseShape(String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
+	private void parseShape(String[] line, ArrayList<Shape> removedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
 		Shape shape;
 		
 		switch (line[1].toLowerCase()) {
 			case "group":
-			shape = parseGroup(line, savedShapes, savedNames);
+			shape = parseGroup(line, removedShapes, savedNames);
 			break;
 			
 			case "sphere":
@@ -247,11 +254,8 @@ public class Scene {
 			return;
 		}
 		
-		if (line[2].equals(".")) shapes.add(shape);
-		else {
-			savedShapes.add(shape);
-			savedNames.add(line[2]);
-		}
+		shapes.add(shape);
+		savedNames.add(line[2]);
 	}
 	
 	// Getters
