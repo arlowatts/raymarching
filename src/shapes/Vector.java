@@ -9,6 +9,8 @@ public class Vector {
 	// Constructors
 	public Vector(double x, double y, double z) {set(x, y, z);}
 	
+	public Vector(double[] xyz) {set(xyz[0], xyz[1], xyz[2]);}
+	
 	public Vector(Vector v) {set(v);}
 	
 	public Vector() {set(0, 0, 0);}

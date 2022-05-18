@@ -8,10 +8,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+/*
+ * A Scene object contains the camera, screen, and all of the shapes and lights that are being rendered in the scene.
+ *
+ * It also stores the movements and rotations of all the shapes that are executed each frame, and the number of frames computed.
+ */
 public class Scene {
-	// Constants
-	private static final String[] actionTypes = {"translate", "rotate", "rotateabout"};
-	
 	// Member variables
 	private Shape camera;
 	private Screen screen;
@@ -25,9 +27,12 @@ public class Scene {
 	private int maxFrames;
 	
 	// Constructors
-	public Scene(String path) throws FileNotFoundException {
+	public Scene(String path) throws UndefinedException {
 		File setup = new File(path);
-		Scanner scanner = new Scanner(setup);
+		Scanner scanner = null;
+		
+		try {scanner = new Scanner(setup);}
+		catch (FileNotFoundException e) {throw new UndefinedException(path);}
 		
 		shapes = new ArrayList<>();
 		lights = new ArrayList<>();
@@ -41,6 +46,8 @@ public class Scene {
 		
 		boolean commented = false;
 		
+		// Each line of the file is parsed individually
+		// Comments, empty lines, and unfamiliar lines are skipped, and everything else is parsed
 		for (int i = 1; scanner.hasNextLine(); i++) {
 			String[] line = (i + " " + scanner.nextLine()).split(" ");
 			
@@ -51,34 +58,42 @@ public class Scene {
 			
 			if (commented || line[1].substring(0, 2).equals("//") || line[1].equals("\n")) continue;
 			
-			switch (line[1].toLowerCase()) {
-				case "camera":
-				parseCamera(line);
-				break;
-				
-				case "screen":
-				parseScreen(line);
-				break;
-				
-				case "light":
-				parseLight(line);
-				break;
-				
-				case "gif":
-				parseGif(line);
-				break;
-				
-				case "action":
-				parseAction(line, savedShapes, savedNames);
-				break;
-				
-				default:
-				try {parseShape(line, savedShapes, savedNames);}
-				catch (InvalidSetupException e) {System.out.println(e);}
+			try {
+				switch (line[1].toLowerCase()) {
+					case "camera":
+					parseCamera(line);
+					break;
+					
+					case "screen":
+					parseScreen(line);
+					break;
+					
+					case "gif":
+					parseGif(line);
+					break;
+					
+					case "action":
+					parseAction(line, savedShapes, savedNames);
+					break;
+					
+					case "light":
+					parseLight(line);
+					break;
+					
+					default:
+					parseShape(line, savedShapes, savedNames);
+				}
 			}
+			catch (InvalidSetupException e) {System.out.println(e);}
+			
+			if (line[line.length - 1].equals("/*")) commented = true;
+			if (line[line.length - 1].equals("*/")) commented = false;
 		}
 		
 		scanner.close();
+		
+		if (camera == null) throw new UndefinedException("camera");
+		if (screen == null) throw new UndefinedException("screen");
 	}
 	
 	// Methods
@@ -92,6 +107,7 @@ public class Scene {
 			action.execute();
 	}
 	
+	// Returns an ArrayList of the shapes in the scene whose bounding spheres intersect the path of the ray
 	public ArrayList<Shape> getVisible(Ray ray) {
 		ArrayList<Shape> visible = new ArrayList<>();
 		
@@ -104,23 +120,58 @@ public class Scene {
 	}
 	
 	// Parsing methods
-	private void parseAction(String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) {
+	private void parseCamera(String[] line) throws InvalidSetupException {
+		if (line.length != 8) throw new InvalidSetupException(line);
+		else camera = new Shape(getDoubles(line, 10, 2));
+	}
+	
+	private void parseScreen(String[] line) throws InvalidSetupException {
+		if (line.length != 8) throw new InvalidSetupException(line);
+		else screen = new Screen(line[7], getInts(line, 5, 2));
+	}
+	
+	private void parseGif(String[] line) throws InvalidSetupException {
+		if (line.length != 3) throw new InvalidSetupException(line);
+		maxFrames = Integer.parseInt(line[2]);
+	}
+	
+	private void parseAction(String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
+		// Parsing the type of action
 		int type = -1;
 		
-		for (int i = 0; i < actionTypes.length; i++) {
-			if (actionTypes[i].equals(line[2].toLowerCase())) {
+		for (int i = 0; i < Action.ACTION_TYPES.length; i++) {
+			if (Action.ACTION_TYPES[i].equals(line[2])) {
 				type = i;
 				break;
 			}
 		}
 		
-		if (type == -1) return;
+		if (type == -1) throw new InvalidSetupException(line);
 		
-		int index = savedNames.indexOf(line[3]);
+		// Parsing the values
+		int numVecs = 0;
+		switch (type) {
+			case 0:
+			numVecs = 1;
+			break;
+			
+			case 1:
+			numVecs = 1;
+			break;
+			
+			case 2:
+			numVecs = 2;
+			break;
+		}
 		
-		Vector[] vals = new Vector[(line.length - 3) / 3];
+		if (line.length != 4 + numVecs * 3) throw new InvalidSetupException(line);
+		
+		Vector[] vals = new Vector[numVecs];
 		for (int i = 0; i < vals.length; i++)
-			vals[i] = new Vector(Double.parseDouble(line[i + 4]), Double.parseDouble(line[i + 5]), Double.parseDouble(line[i + 6]));
+			vals[i] = new Vector(getDoubles(line, 3, 4 + i * 3));
+		
+		// Parsing the shape that is acted upon
+		int index = savedNames.indexOf(line[3]);
 		
 		if (index != -1)
 			actions.add(new Action(type, savedShapes.get(index), vals));
@@ -132,19 +183,9 @@ public class Scene {
 			System.out.println("\"" + line[3] + "\" is referenced at line " + line[0] + " but does not exist");
 	}
 	
-	private void parseCamera(String[] line) {
-		int k = 2;
-		camera = new Shape(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]),
-						   Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), 0, 0, 0, 0);
-	}
-	
-	private void parseScreen(String[] line) {
-		int k = 2;
-		screen = new Screen(Integer.parseInt(line[k++]), Integer.parseInt(line[k++]), Integer.parseInt(line[k++]),
-							Integer.decode(line[k++]), Integer.parseInt(line[k++]), line[k++]);
-	}
-	
-	private void parseLight(String[] line) {
+	private void parseLight(String[] line) throws InvalidSetupException {
+		if (line.length != 6) throw new InvalidSetupException(line);
+		
 		int k = 2;
 		Shape light = new Shape(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]),
 								0, 0, 0, 0, 0, 0, Integer.decode(line[k++]));
@@ -153,12 +194,8 @@ public class Scene {
 		shapes.add(light);
 	}
 	
-	private void parseGif(String[] line) {
-		maxFrames = Integer.parseInt(line[2]);
-	}
-	
 	private Group parseGroup(String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
-		Group shape = new Group(new ArrayList<Shape>(), new ArrayList<Character>(), Double.parseDouble(line[4]), getDefaultParams(line, 5));
+		Group shape = new Group(getDoubles(line, 1, 4), getDefaultParams(line, 5));
 		
 		String[] groupShapes = line[3].split(",");
 		
@@ -181,33 +218,29 @@ public class Scene {
 	private void parseShape(String[] line, ArrayList<Shape> savedShapes, ArrayList<String> savedNames) throws InvalidSetupException {
 		Shape shape;
 		
-		int k = 3;
-		
 		switch (line[1].toLowerCase()) {
 			case "group":
 			shape = parseGroup(line, savedShapes, savedNames);
 			break;
 			
 			case "sphere":
-			shape = new Sphere(Double.parseDouble(line[k++]), getDefaultParams(line, k));
+			shape = new Sphere(getDoubles(line, 1, 3), getDefaultParams(line, 4));
 			break;
 			
 			case "box":
-			shape = new Box(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]),
-							Double.parseDouble(line[k++]), getDefaultParams(line, k));
+			shape = new Box(getDoubles(line, 4, 3), getDefaultParams(line, 7));
 			break;
 			
 			case "cylinder":
-			shape = new Cylinder(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), Double.parseDouble(line[k++]),
-								 getDefaultParams(line, k));
+			shape = new Cylinder(getDoubles(line, 3, 3), getDefaultParams(line, 6));
 			break;
 			
 			case "plane":
-			shape = new Plane(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), getDefaultParams(line, k));
+			shape = new Plane(getDoubles(line, 2, 3), getDefaultParams(line, 5));
 			break;
 			
 			case "torus":
-			shape = new Torus(Double.parseDouble(line[k++]), Double.parseDouble(line[k++]), getDefaultParams(line, k));
+			shape = new Torus(getDoubles(line, 2, 3), getDefaultParams(line, 5));
 			break;
 			
 			default:
@@ -219,20 +252,6 @@ public class Scene {
 			savedShapes.add(shape);
 			savedNames.add(line[2]);
 		}
-	}
-	
-	private double[] getDefaultParams(String[] line, int offset) throws InvalidSetupException {
-		if (line.length != Shape.DEFAULT_PARAMS.length + offset) throw new InvalidSetupException(line);
-		
-		double[] params = new double[Shape.DEFAULT_PARAMS.length];
-		
-		int i;
-		for (i = 0; i < Shape.DEFAULT_PARAMS.length - 1; i++)
-			params[i] = Double.parseDouble(line[i + offset]);
-		
-		params[i] = Integer.decode(line[i + offset]);
-		
-		return params;
 	}
 	
 	// Getters
@@ -247,4 +266,37 @@ public class Scene {
 	
 	public int getFrames() {return frames;}
 	public int getMaxFrames() {return maxFrames;}
+	
+	// Helpers
+	private double[] getDefaultParams(String[] line, int offset) throws InvalidSetupException {
+		if (line.length != Shape.DEFAULT_PARAMS.length + offset) throw new InvalidSetupException(line);
+		
+		double[] params = new double[Shape.DEFAULT_PARAMS.length];
+		
+		int i;
+		for (i = 0; i < Shape.DEFAULT_PARAMS.length - 1; i++)
+			params[i] = Double.parseDouble(line[i + offset]);
+		
+		params[i] = Integer.decode(line[i + offset]);
+		
+		return params;
+	}
+	
+	private double[] getDoubles(String[] line, int doubles, int offset) {
+		double[] input = new double[doubles];
+		
+		for (int i = 0; i < doubles && i + offset < line.length; i++)
+			input[i] = Double.parseDouble(line[i + offset]);
+		
+		return input;
+	}
+	
+	private int[] getInts(String[] line, int ints, int offset) {
+		int[] input = new int[ints];
+		
+		for (int i = 0; i < ints && i + offset < line.length; i++)
+			input[i] = Integer.decode(line[i + offset]);
+		
+		return input;
+	}
 }

@@ -13,6 +13,9 @@ import java.awt.event.ComponentAdapter;
 
 import java.util.ArrayList;
 
+/*
+ * A Screen object extends the JFrame class and displays the rendered image each frame.
+ */
 public class Screen extends JFrame {
 	// Member variables
 	private int width, height, distance, background, maxReflections;
@@ -24,15 +27,17 @@ public class Screen extends JFrame {
 	private int[] pixels;
 	
 	// Constructors
-	public Screen(int w, int h, int dist, int bgnd, int maxReflections, String title) {
+	public Screen(String title, int[] args) {
 		super(title);
 		
-		setSize(w, h);
-		distance = dist;
+		setSize(args[0], args[1]);
+		distance = args[2];
 		
-		background = bgnd;
+		background = args[3];
 		
-		this.maxReflections = maxReflections;
+		maxReflections = args[4];
+		
+		System.out.println(args[0] + " " + args[1]);
 		
 		// Adding a listener to know when the user resizes the window
 		addComponentListener(new ComponentAdapter() {
@@ -55,6 +60,7 @@ public class Screen extends JFrame {
 		
 		int k = 0;
 		
+		// Iterating through every pixel to cast a ray through it
 		for (int y = height - 1; y >= 0; y--) {
 			for (int x = 0; x < width; x++) {
 				// Create a ray starting at the camera and passing through the current pixel

@@ -10,13 +10,11 @@ public class Plane extends Shape {
 	private double width, length;
 	
 	// Constructors
-	public Plane(double w, double l, double[] args) {
-		super(args);
+	public Plane(double[] args, double[] dargs) {
+		super(dargs);
 		
-		width = w;
-		length = l;
-		
-		setBoundRadius();
+		width = args[0];
+		length = args[1];
 	}
 	
 	// Methods
@@ -48,16 +46,24 @@ public class Plane extends Shape {
 	public double getLength() {return length;}
 	
 	// Setters
-	public void setWidth(double w) {width = w;}
-	public void setLength(double l) {length = l;}
+	public void setWidth(double w) {
+		width = w;
+		setBoundRadius();
+	}
+	public void setLength(double l) {
+		length = l;
+		setBoundRadius();
+	}
 	
 	public void setSize(double w, double l) {
 		width = w;
 		length = l;
+		setBoundRadius();
 	}
 	
 	// Helpers
-	private void setBoundRadius() {
+	@Override
+	protected void setBoundRadius() {
 		setBoundRadius(Math.sqrt(width*width + length*length));
 	}
 }

@@ -10,11 +10,11 @@ public class Torus extends Shape{
 	private double largeRadius, smallRadius;
 	
 	// Constructors
-	public Torus(double R, double r, double[] args) {
-		super(args);
+	public Torus(double[] args, double[] dargs) {
+		super(dargs);
 		
-		largeRadius = Math.max(R, Shape.MIN_LENGTH);
-		smallRadius = Math.max(r, Shape.MIN_LENGTH);
+		largeRadius = Math.max(args[0], Shape.MIN_LENGTH);
+		smallRadius = Math.max(args[1], Shape.MIN_LENGTH);
 	}
 	
 	// Methods
@@ -35,9 +35,20 @@ public class Torus extends Shape{
 	public double getLargeRadius() {return largeRadius;}
 	public double getSmallRadius() {return smallRadius;}
 	
-	public double getBoundRadius() {return largeRadius + smallRadius;}
-	
 	// Setters
-	public void setLargeRadius(double r) {largeRadius = r;}
-	public void setSmallRadius(double r) {smallRadius = r;}
+	public void setLargeRadius(double r) {
+		largeRadius = r;
+		setBoundRadius();
+	}
+	
+	public void setSmallRadius(double r) {
+		smallRadius = r;
+		setBoundRadius();
+	}
+	
+	// Helpers
+	@Override
+	protected void setBoundRadius() {
+		setBoundRadius(largeRadius + smallRadius);
+	}
 }

@@ -4,6 +4,9 @@ import src.shapes.*;
 
 import java.util.ArrayList;
 
+/*
+ * A Ray object has a position and a direction and can be cast through a scene.
+ */
 public class Ray {
 	// Constants
 	public static final int MAX_STEPS = 1000;
@@ -129,6 +132,7 @@ public class Ray {
 		dir.add(dot * normal.getX(), dot * normal.getY(), dot * normal.getZ());
 	}
 	
+	// March rays from the current point to each light source in the scene to find the total brightness of the hit point
 	private void getBrightness(Scene scene, Shape light, Vector normal, Vector brightness) {
 		Ray lightRay = new Ray(this.pos, this.dir);
 		
@@ -155,6 +159,7 @@ public class Ray {
 		}
 	}
 	
+	// Finding the distance from a point to the ray's path
 	public double distToPoint(Vector v) {
 		Vector r = new Vector(pos);
 		
@@ -164,6 +169,7 @@ public class Ray {
 		return v.getDistance(r);
 	}
 	
+	// Marching the ray through the scene until it hits a shape, exceeds the maximum number of steps, or exceeds the maximum render distance
 	public int march(ArrayList<Shape> shapes, Shape medium) {
 		steps = 0;
 		length = 0;

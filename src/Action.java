@@ -2,7 +2,13 @@ package src;
 
 import src.shapes.*;
 
+/*
+ * An Action object stores an action that can be performed on a shape.
+ */
 public class Action {
+	// Constants
+	public static final String[] ACTION_TYPES = {"translate", "rotate", "rotateabout"};
+	
 	// Member variables
 	private int type;
 	private Shape shape;
@@ -11,8 +17,8 @@ public class Action {
 	// Constructor
 	public Action(int type, Shape shape, Vector[] vals) {
 		this.type = type;
-		this.vals = vals;
 		this.shape = shape;
+		this.vals = vals;
 	}
 	
 	// Methods

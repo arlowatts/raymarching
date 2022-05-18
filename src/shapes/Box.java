@@ -10,16 +10,14 @@ public class Box extends Shape {
 	private double width, height, length, radius;
 	
 	// Constructors
-	public Box(double w, double h, double l, double r, double[] args) {
-		super(args);
+	public Box(double[] args, double[] dargs) {
+		super(dargs);
 		
-		width = Math.max(w, Shape.MIN_LENGTH);
-		height = Math.max(h, Shape.MIN_LENGTH);
-		length = Math.max(l, Shape.MIN_LENGTH);
+		width = Math.max(args[0], Shape.MIN_LENGTH);
+		height = Math.max(args[1], Shape.MIN_LENGTH);
+		length = Math.max(args[2], Shape.MIN_LENGTH);
 		
-		radius = r;
-		
-		setBoundRadius();
+		radius = args[3];
 	}
 	
 	// Methods
@@ -67,7 +65,8 @@ public class Box extends Shape {
 	}
 	
 	// Helpers
-	private void setBoundRadius() {
+	@Override
+	protected void setBoundRadius() {
 		setBoundRadius(Math.sqrt(width*width + height*height + length*length));
 	}
 }

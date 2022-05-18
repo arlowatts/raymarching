@@ -11,14 +11,24 @@ import java.io.File;
 import java.io.IOException;
 
 public class Main {
-	// Variables
+	// All of the objects being rendered are stored in Scene object
 	private static Scene scene;
 	
 	// Main
-	public static void main(String[] args) throws IOException, InvalidSetupException {
-		// Creates and loads the scene
+	public static void main(String[] args) throws IOException {
+		// Creates and loads the scene from a file
 		String sceneName = args.length > 0 ? args[0] : "setup";
-		scene = new Scene(sceneName + ".txt");
+		
+		if (sceneName.length() >= 4 && sceneName.substring(sceneName.length() - 4).equals(".txt"))
+			sceneName = sceneName.substring(0, sceneName.length() - 4);
+		
+		try {
+			scene = new Scene(sceneName + ".txt");
+		}
+		catch (UndefinedException e) {
+			System.out.println(e);
+			return;
+		}
 		
 		// Creating the output file and GIF writer
 		File outputFile = new File("gifs\\" + sceneName + ".gif");

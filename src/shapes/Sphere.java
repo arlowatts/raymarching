@@ -10,10 +10,10 @@ public class Sphere extends Shape{
 	private double radius;
 	
 	// Constructors
-	public Sphere(double r, double[] args) {
-		super(args);
+	public Sphere(double[] args, double[] dargs) {
+		super(dargs);
 		
-		radius = Math.max(r, Shape.MIN_LENGTH);
+		radius = Math.max(args[0], Shape.MIN_LENGTH);
 	}
 	
 	// Methods
@@ -34,8 +34,15 @@ public class Sphere extends Shape{
 	// Getters
 	public double getRadius() {return radius;}
 	
-	public double getBoundRadius() {return radius;}
-	
 	// Setters
-	public void setRadius(double r) {radius = r;}
+	public void setRadius(double r) {
+		radius = r;
+		setBoundRadius();
+	}
+	
+	// Helpers
+	@Override
+	protected void setBoundRadius() {
+		setBoundRadius(radius);
+	}
 }

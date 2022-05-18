@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Group extends Shape {
 	// Constants
-	public static final String[] PARAMS = {"objectList", "smoothingVal"};
+	public static final String[] PARAMS = {"smoothingVal"};
 	
 	// Member variables
 	private ArrayList<Shape> shapes;
@@ -14,14 +14,12 @@ public class Group extends Shape {
 	private double smoothing;
 	
 	// Constructors
-	public Group(ArrayList<Shape> shapes, ArrayList<Character> modifiers, double smoothing, double[] args) {
-		super(args);
+	public Group(double[] args, double[] dargs) {
+		super(dargs);
 		
-		this.smoothing = Math.min(Math.max(smoothing, 0), 1);
-		this.shapes = shapes;
-		this.modifiers = modifiers;
-		
-		setBoundRadius();
+		this.smoothing = Math.min(Math.max(args[0], 0), 1);
+		this.shapes = new ArrayList<>();
+		this.modifiers = new ArrayList<>();
 	}
 	
 	// Methods
@@ -61,10 +59,10 @@ public class Group extends Shape {
 		setBoundRadius();
 	}
 	
-	public Shape remove(int i) {
+	public void remove(int i) {
+		shapes.remove(i);
 		modifiers.remove(i);
 		setBoundRadius();
-		return shapes.remove(i);
 	}
 	
 	// Getters
@@ -80,7 +78,8 @@ public class Group extends Shape {
 	public void setSmoothing(double smoothing) {this.smoothing = smoothing;}
 	
 	// Helpers
-	private void setBoundRadius() {
+	@Override
+	protected void setBoundRadius() {
 		setBoundRadius(0);
 		
 		for (int i = 0; i < shapes.size(); i++) {
