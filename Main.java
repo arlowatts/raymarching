@@ -48,7 +48,7 @@ public class Main {
 		}
 		
 		gifWriter.close();
-		System.out.println("GIF saved.");
+		System.out.println(sceneName + ".gif saved");
 		scene.getScreen().dispose();
 	}
 }

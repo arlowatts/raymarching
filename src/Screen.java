@@ -69,11 +69,11 @@ public class Screen extends JFrame {
 				
 				pixels[k++] = castRay(ray, scene);
 			}
+			
+			// Updating the screen
+			image.setRGB(0, 0, width, height, pixels, 0, width);
+			label.updateUI();
 		}
-		
-		// Updating the screen
-		image.setRGB(0, 0, width, height, pixels, 0, width);
-		label.updateUI();
 	}
 	
 	private int castRay(Ray ray, Scene scene) {

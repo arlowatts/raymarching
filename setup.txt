@@ -8,7 +8,7 @@ light -3 0 3 0xffffff
 light 3 0 -3 0xffffff
 light -3 0 -3 0xffffff
 
-//sphere . 1 0 0 -10 0 0 0 0 0.9 1.5 0xff0000
+sphere . 1 0 0 -10 0 0 0 0 0.9 1.5 0xff0000
 
 box mybox 1 1 0.3 0.1 0 0 -5 -1.5708 0 1.5708 0 0.7 1.3 0x00ff00
 
@@ -20,9 +20,9 @@ group . b1,&s1,-t1 0.1 0 0 0 0 0 0 0.5 0 0 0xf436a0
 
 box . 0.8 1.9 2.4 0.4 -1.5 -2 -1.5 -0.2 0 0.2 0.5 0 0 0x7bc4a8
 
-//plane . 4 4 0 -5 0 -1 0 -1 0.75 0 1 0xffffff
+plane . 4 4 0 -5 0 -1 0 -1 0.75 0 1 0xffffff
 
-//cylinder . 1 3 0.4 -1 -2 3 -2.9 0 -0.1 0.4 0 1 0x4f7a42
+cylinder . 1 3 0.4 -1 -2 3 -2.9 0 -0.1 0.4 0 1 0x4f7a42
 
 action rotate camera 0 0.05 0
 action rotateabout camera -1.5708 0.05 1.5708 0 0 0

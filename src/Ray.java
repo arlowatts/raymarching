@@ -53,7 +53,7 @@ public class Ray {
 		
 		// If the hit object is not opaque, create a new ray and refract it through the surface
 		if (transparency > 0 && reflections > 0) {
-			// Get the refractive index of the current medium, or 1 if the medium is null
+			// Get the refractive index of the current medium, or 1 if the medium is null (empty space)
 			double n1 = medium == null ? 1 : medium.getRefrIndex();
 			// Get the refractive index of the object the ray is refracting into, or 1 if it hit the same surface (it is refracting into space)
 			double n2 = medium == hit ? 1 : hit.getRefrIndex();
@@ -62,9 +62,11 @@ public class Ray {
 			refractedRay.refract(normal, n1, n2);
 			
 			// Shade the current color by the refracted ray
-			shade.multiply(transparency);
-			refractionColor = refractedRay.cast(scene, shade, hit == medium ? null : hit, reflections - 1);
-			shade.multiply(1 / transparency - 1);
+			Vector tempShade = new Vector(shade);
+			tempShade.multiply(transparency);
+			shade.multiply(1 - transparency);
+			
+			refractionColor = refractedRay.cast(scene, tempShade, medium == hit ? null : hit, reflections - 1);
 		}
 		
 		double shine = hit.getShine();
@@ -79,9 +81,11 @@ public class Ray {
 			reflectedRay.pos.add(2 * MIN_LENGTH * normal.getX(), 2 * MIN_LENGTH * normal.getY(), 2 * MIN_LENGTH * normal.getZ());
 			
 			// Shade the current color by the reflected ray
-			shade.multiply(shine);
-			reflectionColor = reflectedRay.cast(scene, shade, medium, reflections - 1);
-			shade.multiply(1 / shine - 1);
+			Vector tempShade = new Vector(shade);
+			tempShade.multiply(shine);
+			shade.multiply(1 - shine);
+			
+			reflectionColor = reflectedRay.cast(scene, tempShade, medium, reflections - 1);
 		}
 		
 		Vector brightness = new Vector(1, 1, 1);
@@ -121,7 +125,7 @@ public class Ray {
 	}
 	
 	private void reflect(Vector normal) {
-		double dot = -2 * normal.dotProduct(dir);
+		double dot = normal.dotProduct(dir);
 		
 		/*
 		 * Reflecting the ray by the formula t = i - 2(n.i)(n)
@@ -129,7 +133,7 @@ public class Ray {
 		 * t = the resultant vector,
 		 * n = the normal vector
 		 */
-		dir.add(dot * normal.getX(), dot * normal.getY(), dot * normal.getZ());
+		dir.add(-2 * dot * normal.getX(), -2 * dot * normal.getY(), -2 * dot * normal.getZ());
 	}
 	
 	// March rays from the current point to each light source in the scene to find the total brightness of the hit point
