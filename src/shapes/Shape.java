@@ -70,11 +70,12 @@ public class Shape {
 	}
 	
 	// Setters
-	public void setColor(int color) {this.color = color;}
 	public void setShine(double shine) {this.shine = shine;}
-	
-	public void setBoundRadius(double r) {boundRadius = r;}
+	public void setTransparency(double transparency) {this.transparency = transparency;}
+	public void setRefrIndex(double refrIndex) {this.refrIndex = refrIndex;}
+	public void setColor(int color) {this.color = color;}
 	
 	// Helpers
 	protected void setBoundRadius() {boundRadius = 0;}
+	protected void setBoundRadius(double r) {boundRadius = r;}
 }
