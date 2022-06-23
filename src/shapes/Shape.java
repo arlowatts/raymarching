@@ -4,7 +4,8 @@ import java.lang.Math;
 
 public class Shape {
 	// Constants
-	public static final String[] DEFAULT_PARAMS = {"x", "y", "z", "phi", "theta", "psi", "shine", "transparency", "refrIndex", "color"};
+	public static final String[] DEFAULT_PARAMS = {"x", "y", "z", "phi", "theta", "psi", "shine", "transparency", "refrIndex"};
+	public static final Class<?>[] DEFAULT_PARAM_TYPES = {Double.class, Double.class, Double.class, Double.class, Double.class, Double.class, Double.class, Double.class, Double.class};
 	
 	public static final double MIN_LENGTH = 0.001;
 	
@@ -17,6 +18,19 @@ public class Shape {
 	private double boundRadius;
 	
 	// Constructors
+	/*public Shape(Object[] args) {
+		pos = new Vector((Double)args[0], (Double)args[1], (Double)args[2]);
+		angle = new Vector((Double)args[3], (Double)args[4], (Double)args[5]);
+		
+		shine = Math.min(Math.max((Double)args[6], 0), 1);
+		transparency = Math.min(Math.max((Double)args[7], 0), 1);
+		refrIndex = Math.max((Double)args[8], 1);
+		
+		color = (Integer)args[9] & 0xffffff;
+		
+		boundRadius = -1;
+	}*/
+	
 	public Shape(double... args) {
 		pos = new Vector(args[0], args[1], args[2]);
 		angle = new Vector(args[3], args[4], args[5]);
@@ -25,7 +39,7 @@ public class Shape {
 		transparency = Math.min(Math.max(args[7], 0), 1);
 		refrIndex = Math.max(args[8], 1);
 		
-		color = (int)args[9] & 0xffffff;
+		color = 0;
 		
 		boundRadius = -1;
 	}

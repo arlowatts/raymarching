@@ -1,9 +1,5 @@
 package src;
 
-import src.shapes.*;
-
-import java.lang.Math;
-
 /*
  * A class with static methods for manipulating colors stored as standard RGB integers
  */
@@ -40,24 +36,5 @@ public class Color {
 			   (int)((double)(getB(color) * getB(shade)) * RATIO);
 	}
 	
-	// Shading the components of a color by the x, y, and z components of a normalized vector
-	public static int shade(int color, Vector shade) {
-		return ((int)((double)getR(color) * shade.getX()) << 16) |
-			   ((int)((double)getG(color) * shade.getY()) << 8) |
-			   (int)((double)getB(color) * shade.getZ());
-	}
-	
 	public static int invert(int color) {return 0xffffff - color;}
-	
-	public static int max(int colorA, int colorB) {
-		return (Math.max(getR(colorA), getR(colorB)) << 16) |
-			   (Math.max(getG(colorA), getG(colorB)) << 8) |
-			   Math.max(getB(colorA), getB(colorB));
-	}
-	
-	public static int min(int colorA, int colorB) {
-		return (Math.min(getR(colorA), getR(colorB)) << 16) |
-			   (Math.min(getG(colorA), getG(colorB)) << 8) |
-			   Math.min(getB(colorA), getB(colorB));
-	}
 }
