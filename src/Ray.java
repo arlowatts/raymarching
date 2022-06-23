@@ -42,7 +42,7 @@ public class Ray {
 		
 		// March the ray through the scene
 		int hitIndex = march(shapes, medium);
-		if (hitIndex == -1) return Color.shade(scene.getScreen().getBgnd(), shade);
+		if (hitIndex == -1) return Color.shade(scene.getScreen().getBgnd(), shade.getX(), shade.getY(), shade.getZ());
 		
 		Shape hit = shapes.get(hitIndex);
 		
@@ -103,7 +103,7 @@ public class Ray {
 					  Math.min(1 - brightness.getZ() + (double)Color.getB(scene.getScreen().getBgnd()) * Color.RATIO, 1));
 		
 		// Add together all of the colors and return the result
-		return Color.shade(hit.getColor(), shade) + reflectionColor + refractionColor;
+		return Color.shade(hit.getColor(), shade.getX(), shade.getY(), shade.getZ()) + reflectionColor + refractionColor;
 	}
 	
 	private void refract(Vector normal, double n1, double n2) {

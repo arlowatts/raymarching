@@ -1,61 +1,36 @@
 package src;
 
-import src.shapes.*;
+import src.shapes.Vector;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
 import java.awt.image.BufferedImage;
 
-import java.awt.Component;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentAdapter;
-
-import java.util.ArrayList;
-
 /*
- * A Screen object extends the JFrame class and displays the rendered image each frame.
+ * A Screen object creates the rendered image each frame.
  */
-public class Screen extends JFrame {
+public class Screen {
 	// Member variables
 	private int width, height, distance, background, maxReflections;
 	
-	private boolean initWaiting;
-	
-	private JLabel label;
 	private BufferedImage image;
 	private int[] pixels;
 	
 	// Constructors
-	public Screen(String title, int[] args) {
-		super(title);
-		
-		setSize(args[0], args[1]);
+	public Screen(int[] args) {
+		width = args[0];
+		height = args[1];
 		distance = args[2];
 		
 		background = args[3];
 		
 		maxReflections = args[4];
 		
-		// Adding a listener to know when the user resizes the window
-		addComponentListener(new ComponentAdapter() {
-			public void componentResized(ComponentEvent e) {
-				Screen c = (Screen)e.getSource();
-				
-				c.setInitWaiting(true);
-			}
-		});
-		
-		// Initializing the JFrame
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
-		setVisible(true);
+		// Creating the Buffered Image and a pixels array to update individual pixels faster
+		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		pixels = new int[width * height];
 	}
 	
 	// Methods
 	public void updateImage(Scene scene) {
-		if (initWaiting) init();
-		
 		int k = 0;
 		
 		// Iterating through every pixel to cast a ray through it
@@ -67,47 +42,24 @@ public class Screen extends JFrame {
 				// Rotate it by the camera's rotation
 				ray.getDir().rotate(scene.getCamera().getAngle());
 				
-				pixels[k++] = castRay(ray, scene);
+				pixels[k++] = ray.cast(scene, new Vector(1, 1, 1), null, maxReflections);
 			}
-			
-			// Updating the screen
-			image.setRGB(0, 0, width, height, pixels, 0, width);
-			label.updateUI();
 		}
-	}
-	
-	private int castRay(Ray ray, Scene scene) {
-		return ray.cast(scene, new Vector(1, 1, 1), null, maxReflections);
+		
+		// Updating the screen
+		image.setRGB(0, 0, width, height, pixels, 0, width);
 	}
 	
 	// Getters
+	public int getWidth() {return width;}
+	public int getHeight() {return height;}
 	public int getDistance() {return distance;}
-	
 	public int getBgnd() {return background;}
-	
 	public BufferedImage getImage() {return image;}
 	
 	// Setters
-	public void setDistance(int dist) {distance = dist;}
-	
-	public void setBgnd(int bgnd) {background = bgnd;}
-	
-	// Helpers
-	private void init() {
-		initWaiting = false;
-		
-		width = getWidth();
-		height = getHeight();
-		
-		// Creating the Buffered Image and a pixels array to update individual pixels faster
-		image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
-		pixels = new int[getWidth() * getHeight()];
-		
-		// Creating the label
-		label = new JLabel(new ImageIcon(image));
-		getContentPane().removeAll();
-		getContentPane().add(label);
-	}
-	
-	private void setInitWaiting(boolean init) {initWaiting = init;}
+	public void setWidth(int w) {width = w;}
+	public void setHeight(int h) {height = h;}
+	public void setDistance(int d) {distance = d;}
+	public void setBgnd(int b) {background = b;}
 }

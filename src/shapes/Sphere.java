@@ -5,6 +5,7 @@ import java.lang.Math;
 public class Sphere extends Shape{
 	// Constants
 	public static final String[] PARAMS = {"radius"};
+	public static final Class<?>[] PARAM_TYPES = {Double.class};
 	
 	// Member variables
 	private double radius;
