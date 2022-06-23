@@ -5,6 +5,7 @@ import java.lang.Math;
 public class Cylinder extends Shape {
 	// Constants
 	public static final String[] PARAMS = {"radius", "height", "edgeRadius"};
+	public static final Class<?>[] PARAM_TYPES = {Double.class, Double.class, Double.class};
 	
 	// Member variables
 	private double radius, height, edgeRadius;

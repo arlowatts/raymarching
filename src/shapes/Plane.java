@@ -5,6 +5,7 @@ import java.lang.Math;
 public class Plane extends Shape {
 	// Constants
 	public static final String[] PARAMS = {"width", "length"};
+	public static final Class<?>[] PARAM_TYPES = {Double.class, Double.class};
 	
 	// Member variables
 	private double width, length;

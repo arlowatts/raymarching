@@ -5,7 +5,8 @@ import java.util.ArrayList;
 
 public class Group extends Shape {
 	// Constants
-	public static final String[] PARAMS = {"smoothingVal"};
+	public static final String[] PARAMS = {"smoothing"};
+	public static final Class<?>[] PARAM_TYPES = {Double.class};
 	
 	// Member variables
 	private ArrayList<Shape> shapes;

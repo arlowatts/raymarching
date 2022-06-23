@@ -5,9 +5,10 @@ import java.lang.Math;
 public class Box extends Shape {
 	// Constants
 	public static final String[] PARAMS = {"width", "height", "length", "edgeRadius"};
+	public static final Class<?>[] PARAM_TYPES = {Double.class, Double.class, Double.class, Double.class};
 	
 	// Member variables
-	private double width, height, length, radius;
+	private double width, height, length, edgeRadius;
 	
 	// Constructors
 	public Box(double[] args, double[] dargs) {
@@ -17,7 +18,7 @@ public class Box extends Shape {
 		height = Math.max(args[1], Shape.MIN_LENGTH);
 		length = Math.max(args[2], Shape.MIN_LENGTH);
 		
-		radius = args[3];
+		edgeRadius = args[3];
 	}
 	
 	// Methods
@@ -26,18 +27,18 @@ public class Box extends Shape {
 		
 		v1.subtract(getPos());
 		v1.inverseRotate(getAngle());
-		v1.set(Math.abs(v1.getX()) - width + radius, Math.abs(v1.getY()) - height + radius, Math.abs(v1.getZ()) - length + radius);
+		v1.set(Math.abs(v1.getX()) - width + edgeRadius, Math.abs(v1.getY()) - height + edgeRadius, Math.abs(v1.getZ()) - length + edgeRadius);
 		
 		Vector v2 = new Vector(Math.max(v1.getX(), 0), Math.max(v1.getY(), 0), Math.max(v1.getZ(), 0));
 		
-		return v2.getLength() + Math.min(Math.max(v1.getX(), Math.max(v1.getY(), v1.getZ())), 0) - radius;
+		return v2.getLength() + Math.min(Math.max(v1.getX(), Math.max(v1.getY(), v1.getZ())), 0) - edgeRadius;
 	}
 	
 	// Getters
 	public double getWidth() {return width;}
 	public double getHeight() {return height;}
 	public double getLength() {return length;}
-	public double getRadius() {return radius;}
+	public double getRadius() {return edgeRadius;}
 	
 	// Setters
 	public void setWidth(double w) {
@@ -55,7 +56,7 @@ public class Box extends Shape {
 		setBoundRadius();
 	}
 	
-	public void setRadius(double r) {radius = r;}
+	public void setRadius(double r) {edgeRadius = r;}
 	
 	public void setSize(double w, double h, double l) {
 		width = w;

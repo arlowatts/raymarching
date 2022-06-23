@@ -1,6 +1,7 @@
 package src;
 
-import src.shapes.*;
+import src.shapes.Shape;
+import src.shapes.Vector;
 
 /*
  * An Action object stores an action that can be performed on a shape.
@@ -8,6 +9,7 @@ import src.shapes.*;
 public class Action {
 	// Constants
 	public static final String[] ACTION_TYPES = {"translate", "rotate", "rotateabout"};
+	public static final int[] NUM_VECS_BY_TYPE = {1, 1, 2};
 	
 	// Member variables
 	private int type;
