@@ -75,6 +75,26 @@ public class Group extends Shape {
 		return modifiers.get(i);
 	}
 	
+	public int getColor(Vector v) {
+		if (shapes.size() == 0) return 0;
+		
+		double minDist = shapes.get(0).getDistance(v);
+		int nearestShape = 0;
+		
+		for (int i = 1; i < shapes.size(); i++) {
+			if (modifiers.get(i) == '+') {
+				double dist = shapes.get(i).getDistance(v);
+				
+				if (dist < minDist) {
+					minDist = dist;
+					nearestShape = i;
+				}
+			}
+		}
+		
+		return shapes.get(nearestShape).getColor(v);
+	}
+	
 	// Setters
 	public void setSmoothing(double smoothing) {this.smoothing = smoothing;}
 	

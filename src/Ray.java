@@ -103,7 +103,7 @@ public class Ray {
 					  Math.min(1 - brightness.getZ() + (double)Color.getB(scene.getScreen().getBgnd()) * Color.RATIO, 1));
 		
 		// Add together all of the colors and return the result
-		return Color.shade(hit.getColor(), shade.getX(), shade.getY(), shade.getZ()) + reflectionColor + refractionColor;
+		return Color.shade(hit.getColor(pos), shade.getX(), shade.getY(), shade.getZ()) + reflectionColor + refractionColor;
 	}
 	
 	private void refract(Vector normal, double n1, double n2) {
@@ -155,7 +155,7 @@ public class Ray {
 		// If it hits the light, add brightness proportional to the light's brightness and the dot product of the normal
 		if (hit != -1 && shapes.get(hit) == light) {
 			double lightShade = Math.max(normal.dotProduct(lightRay.dir), 0) * Color.RATIO;
-			int lightColor = light.getColor();
+			int lightColor = light.getColor(pos);
 			
 			brightness.stretch(1 - Color.getR(lightColor) * lightShade,
 							   1 - Color.getG(lightColor) * lightShade,

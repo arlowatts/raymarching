@@ -72,7 +72,7 @@ public class Shape {
 	
 	public Vector getAngle() {return angle;}
 	
-	public int getColor() {return color;}
+	public int getColor(Vector v) {return color;}
 	public double getShine() {return shine;}
 	
 	public double getTransparency() {return transparency;}
