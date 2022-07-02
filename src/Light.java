@@ -1,6 +1,7 @@
 package src;
 
 import src.shapes.Shape;
+import src.shapes.Color;
 
 public class Light extends Shape {
 	// Constructors

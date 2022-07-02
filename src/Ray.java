@@ -11,7 +11,7 @@ public class Ray {
 	// Constants
 	public static final int MAX_STEPS = 1000;
 	public static final int MAX_LENGTH = 100;
-	public static final double MIN_LENGTH = 0.001;
+	public static final double MIN_LENGTH = Shape.MIN_LENGTH;
 	
 	// Member variables
 	private Vector pos;
@@ -42,7 +42,7 @@ public class Ray {
 		
 		// March the ray through the scene
 		int hitIndex = march(shapes, medium);
-		if (hitIndex == -1) return Color.shade(scene.getScreen().getBgnd(), shade.getX(), shade.getY(), shade.getZ());
+		if (hitIndex == -1) return Color.shade(scene.getScreen().getBgnd(), shade);
 		
 		Shape hit = shapes.get(hitIndex);
 		
@@ -103,7 +103,7 @@ public class Ray {
 					  Math.min(1 - brightness.getZ() + (double)Color.getB(scene.getScreen().getBgnd()) * Color.RATIO, 1));
 		
 		// Add together all of the colors and return the result
-		return Color.shade(hit.getColor(pos), shade.getX(), shade.getY(), shade.getZ()) + reflectionColor + refractionColor;
+		return Color.shade(hit.getColor(pos), shade) + reflectionColor + refractionColor;
 	}
 	
 	private void refract(Vector normal, double n1, double n2) {

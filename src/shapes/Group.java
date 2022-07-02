@@ -6,7 +6,6 @@ import java.util.ArrayList;
 public class Group extends Shape {
 	// Constants
 	public static final String[] PARAMS = {"smoothing"};
-	public static final Class<?>[] PARAM_TYPES = {Double.class};
 	
 	// Member variables
 	private ArrayList<Shape> shapes;
@@ -66,33 +65,33 @@ public class Group extends Shape {
 		setBoundRadius();
 	}
 	
+	public int getColor(Vector v) {
+		if (shapes.size() == 0) return getColor();
+		
+		int pointColor = 0;
+		
+		double[] dists = new double[shapes.size()];
+		double sumDists = 0;
+		
+		for (int i = 0; i < shapes.size(); i++) {
+			dists[i] = Math.abs(shapes.get(i).getDistance(v)) / shapes.size();
+			sumDists += dists[i];
+		}
+		
+		for (int i = 0; i < shapes.size(); i++) {
+			pointColor += Color.shade(shapes.get(i).getColor(v), 1 - dists[i] / sumDists);
+		}
+		
+		return pointColor;
+	}
+	
 	// Getters
 	public Shape get(int i) {
 		return shapes.get(i);
 	}
 	
-	public int getMod(int i) {
+	public char getMod(int i) {
 		return modifiers.get(i);
-	}
-	
-	public int getColor(Vector v) {
-		if (shapes.size() == 0) return 0;
-		
-		double minDist = shapes.get(0).getDistance(v);
-		int nearestShape = 0;
-		
-		for (int i = 1; i < shapes.size(); i++) {
-			if (modifiers.get(i) == '+') {
-				double dist = shapes.get(i).getDistance(v);
-				
-				if (dist < minDist) {
-					minDist = dist;
-					nearestShape = i;
-				}
-			}
-		}
-		
-		return shapes.get(nearestShape).getColor(v);
 	}
 	
 	// Setters

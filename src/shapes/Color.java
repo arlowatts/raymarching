@@ -1,4 +1,4 @@
-package src;
+package src.shapes;
 
 /*
  * A class with static methods for manipulating colors stored as standard RGB integers
@@ -27,6 +27,13 @@ public class Color {
 		return ((int)((double)getR(color) * shadeR) << 16) |
 			   ((int)((double)getG(color) * shadeG) << 8) |
 			   (int)((double)getB(color) * shadeB);
+	}
+	
+	// Shading the components of a color by corresponding components of a vector
+	public static int shade(int color, Vector v) {
+		return ((int)((double)getR(color) * v.getX()) << 16) |
+			   ((int)((double)getG(color) * v.getY()) << 8) |
+			   (int)((double)getB(color) * v.getX());
 	}
 	
 	// Shading a color by another color

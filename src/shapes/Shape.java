@@ -2,6 +2,8 @@ package src.shapes;
 
 import java.lang.Math;
 
+import java.awt.image.BufferedImage;
+
 public class Shape {
 	// Constants
 	public static final String[] DEFAULT_PARAMS = {"x", "y", "z", "phi", "theta", "psi", "shine", "transparency", "refrIndex"};
@@ -13,6 +15,8 @@ public class Shape {
 	private Vector pos, angle;
 	
 	private int color;
+	private BufferedImage texture;
+	
 	private double shine, transparency, refrIndex;
 	
 	private double boundRadius;
@@ -67,14 +71,18 @@ public class Shape {
 		return normal;
 	}
 	
+	public int getColor(Vector v) {return color;}
+	
+	public void loadTexture(String path) {
+		
+	}
+	
 	// Getters
 	public Vector getPos() {return pos;}
 	
 	public Vector getAngle() {return angle;}
 	
-	public int getColor(Vector v) {return color;}
 	public double getShine() {return shine;}
-	
 	public double getTransparency() {return transparency;}
 	public double getRefrIndex() {return refrIndex;}
 	
@@ -83,11 +91,15 @@ public class Shape {
 		return boundRadius;
 	}
 	
+	public int getColor() {return color;}
+	public BufferedImage getTexture() {return texture;}
+	
 	// Setters
 	public void setShine(double shine) {this.shine = shine;}
 	public void setTransparency(double transparency) {this.transparency = transparency;}
 	public void setRefrIndex(double refrIndex) {this.refrIndex = refrIndex;}
 	public void setColor(int color) {this.color = color;}
+	public void setTexture(BufferedImage texture) {this.texture = texture;}
 	
 	// Helpers
 	protected void setBoundRadius() {boundRadius = 0;}
