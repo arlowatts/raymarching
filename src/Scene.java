@@ -26,6 +26,8 @@ public class Scene {
 	private int frames;
 	private int maxFrames;
 	
+	private boolean suppressWarnings;
+	
 	// Constructors
 	public Scene(String path) throws UndefinedException {
 		File setup = new File(path);
@@ -46,6 +48,7 @@ public class Scene {
 		maxFrames = -1;
 		
 		boolean commented = false;
+		suppressWarnings = false;
 		
 		// Each line of the file is parsed individually
 		// Comments and empty lines are skipped, everything else is parsed
@@ -61,6 +64,11 @@ public class Scene {
 			
 			try {
 				switch (line[1].toLowerCase()) {
+					case "suppress_warnings":
+					InvalidSetupException.assertLength(line, 3);
+					suppressWarnings = Boolean.parseBoolean(line[2].toLowerCase());
+					break;
+					
 					case "gif":
 					InvalidSetupException.assertLength(line, 3);
 					maxFrames = Integer.parseInt(line[2]);
@@ -183,7 +191,7 @@ public class Scene {
 		else if (line[3].toLowerCase().equals("camera"))
 			return new Action(type, camera, vals);
 		
-		else
+		else if (!suppressWarnings)
 			System.out.println("\"" + line[3] + "\" is referenced at line " + line[0] + " but does not exist");
 		
 		return null;
@@ -203,13 +211,18 @@ public class Scene {
 				groupShapes[i] = groupShapes[i].substring(1, groupShapes[i].length());
 			else modifier = '+';
 			
+			if (i == 0 && modifier != '+') {
+				modifier = '+';
+				if (!suppressWarnings) System.out.println("\"" + groupShapes[i] + "\" modifier automatically changed to \"+\" at line " + line[0]);
+			}
+			
 			int index = savedShapes.indexOf(groupShapes[i]);
 			
 			if (index != -1) {
 				shape.add(shapes.get(index), modifier);
 				removedShapes.add(shapes.get(index));
 			}
-			else System.out.println("\"" + groupShapes[i] + "\" is referenced at line " + line[0] + " but does not exist");
+			else if (!suppressWarnings) System.out.println("\"" + groupShapes[i] + "\" is referenced at line " + line[0] + " but does not exist");
 		}
 		
 		return shape;
