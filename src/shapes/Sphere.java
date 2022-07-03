@@ -37,9 +37,14 @@ public class Sphere extends Shape{
 		v.subtract(getPos());
 		v.inverseRotate(getAngle());
 		
+		Vector step = getNormal(v);
+		step.setLength(getDistance(v));
+		v.subtract(step);
+		
 		int x = (int)((Math.atan(v.getX() / v.getZ()) / (Math.PI * -2) + (v.getZ() < 0 ? 0.25 : 0.75)) * (getTexture().getWidth() - 1));
 		int y = (int)((Math.acos(v.getY()) / Math.PI) * (getTexture().getHeight() - 1));
 		
+		v.add(step);
 		v.rotate(getAngle());
 		v.add(getPos());
 		
