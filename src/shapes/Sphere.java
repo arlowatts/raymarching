@@ -37,15 +37,8 @@ public class Sphere extends Shape{
 		v.subtract(getPos());
 		v.inverseRotate(getAngle());
 		
-		//double radianRatio = 1 / Math.PI;
-		
-		//System.out.println(Math.acos(v.getY()) / (Math.PI));
-		
 		int x = (int)((Math.atan(v.getX() / v.getZ()) / (Math.PI * -2) + (v.getZ() < 0 ? 0.25 : 0.75)) * (getTexture().getWidth() - 1));
 		int y = (int)((Math.acos(v.getY()) / Math.PI) * (getTexture().getHeight() - 1));
-		
-		//x = getTexture().getWidth() / 2;
-		//y = getTexture().getHeight() / 2;
 		
 		v.rotate(getAngle());
 		v.add(getPos());
