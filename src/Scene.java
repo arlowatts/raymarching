@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 /*
@@ -60,7 +61,7 @@ public class Scene {
 			if (line[1].equals("/*")) commented = true;
 			if (line[1].equals("*/")) commented = false;
 			
-			if (commented || line[1].substring(0, 2).equals("//") || line[1].equals("\n")) continue;
+			if (commented || line[1].equals("*/") || line[1].substring(0, 2).equals("//") || line[1].equals("\n")) continue;
 			
 			try {
 				switch (line[1].toLowerCase()) {
@@ -232,17 +233,22 @@ public class Scene {
 		if (line.length < 2) throw new InvalidSetupException(line);
 		
 		Class<?> type = null;
-		try {type = Class.forName("src.shapes." + line[1].substring(0, 1).toUpperCase() + line[1].substring(1).toLowerCase());}
-		catch (ClassNotFoundException e) {return null;}
+		try {
+			type = Class.forName("src.shapes." + line[1].substring(0, 1).toUpperCase() + line[1].substring(1).toLowerCase());
+		}
+		catch (ClassNotFoundException e) {
+			System.out.println(e);
+			return null;
+		}
 		
 		int numParams = 0;
 		try {
-			try {
-				numParams = String[].class.cast(type.getField("PARAMS").get(null)).length;
-			}
-			catch (IllegalAccessException e) {return null;}
+			numParams = String[].class.cast(type.getField("PARAMS").get(null)).length;
 		}
-		catch (NoSuchFieldException e) {return null;}
+		catch (Exception e) {
+			System.out.println(e);
+			return null;
+		}
 		
 		InvalidSetupException.assertLength(line, 4 + numParams + Shape.DEFAULT_PARAMS.length);
 		
@@ -251,9 +257,16 @@ public class Scene {
 			shape = Shape.class.cast(type.getConstructor(double[].class, double[].class)
 										 .newInstance(getDoubles(line, 4, numParams), getDoubles(line, 4 + numParams, Shape.DEFAULT_PARAMS.length)));
 		}
-		catch (Exception e) {return null;}
+		catch (Exception e) {
+			System.out.println(e);
+			return null;
+		}
 		
-		shape.setColor(Integer.decode(line[3]));
+		try {shape.setColor(Integer.decode(line[3]));}
+		catch (NumberFormatException e) {}
+		
+		try {shape.loadTexture("textures\\" + line[3]);}
+		catch (IOException e) {}
 		
 		return shape;
 	}

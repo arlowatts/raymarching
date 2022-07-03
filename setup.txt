@@ -1,5 +1,5 @@
-camera 0 0 -10 -1.5708 0 1.5708
-screen 750 500 500 0x303030 10
+camera 0 0 -5 -1.5708 0 1.5708
+screen 750 500 500 0x101010 3
 
 gif 126
 
@@ -8,9 +8,9 @@ light . -3 0 3 1 1 1
 light . 3 0 -3 1 1 1
 light . -3 0 -3 1 1 1
 
-sphere . 0xff0000 1 0 0 0 0 0 0 0 0.9 1.5
+sphere earth 0xffffff 1 0 0 0 0 0 0 0.9 0.9 1.5
 
-box mybox 0x00ff00 1 1 0.3 0.1 0 0 -5 -1.5708 0 1.5708 0 0.7 2
+//box mybox 0x00ff00 1 1 0.3 0.1 0 0 -5 -1.5708 0 1.5708 0 0.7 2
 
 sphere s1 0x995511 1 1.5 2 -1 0 0 0 0 0 1
 box b1 0x119955 2.1 3.14 1.23 0.1 1 -0.5 0.25 0 0 0.1 0.5 0 1
@@ -27,8 +27,8 @@ cylinder c1 0x4f7a42 1 5 0.4 -1 -2 3 -2.9 0 -0.1 0.4 0 1
 action rotate camera 0 -0.05 0
 action rotateabout camera -1.5708 -0.05 1.5708 0 0 0
 
-action rotate mybox 0 0.1 0
-action rotateabout mybox 0 0.15 0 0 0 0
+//action rotate mybox 0 0.1 0
+//action rotateabout mybox 0 0.15 0 0 0 0
 
 action rotate t1 0.1 0.1 0.1
 action rotate c1 0.025 0 0

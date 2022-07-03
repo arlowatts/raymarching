@@ -5,8 +5,7 @@ import java.lang.Math;
 public class Box extends Shape {
 	// Constants
 	public static final String[] PARAMS = {"width", "height", "length", "edgeRadius"};
-	public static final Class<?>[] PARAM_TYPES = {Double.class, Double.class, Double.class, Double.class};
-	
+
 	// Member variables
 	private double width, height, length, edgeRadius;
 	

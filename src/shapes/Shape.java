@@ -3,12 +3,14 @@ package src.shapes;
 import java.lang.Math;
 
 import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 
 public class Shape {
 	// Constants
 	public static final String[] DEFAULT_PARAMS = {"x", "y", "z", "phi", "theta", "psi", "shine", "transparency", "refrIndex"};
-	public static final Class<?>[] DEFAULT_PARAM_TYPES = {Double.class, Double.class, Double.class, Double.class, Double.class, Double.class, Double.class, Double.class, Double.class};
-	
+
 	public static final double MIN_LENGTH = 0.001;
 	
 	// Member variables
@@ -73,8 +75,8 @@ public class Shape {
 	
 	public int getColor(Vector v) {return color;}
 	
-	public void loadTexture(String path) {
-		
+	public void loadTexture(String path) throws IOException {
+		texture = ImageIO.read(new File(path));
 	}
 	
 	// Getters
