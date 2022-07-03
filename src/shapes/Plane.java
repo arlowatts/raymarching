@@ -41,6 +41,17 @@ public class Plane extends Shape {
 		return normal;
 	}
 	
+	public int getColor(Vector v) {
+		if (getTexture() == null) return getColor();
+		
+		Vector r = toSurface(v);
+		
+		int x = (int)(Math.min(Math.max(r.getX() / (width * 2) + 0.5, 0), 1) * (getTexture().getWidth() - 1));
+		int y = (int)(Math.min(Math.max(r.getZ() / (length * 2) + 0.5, 0), 1) * (getTexture().getHeight() - 1));
+		
+		return getTexture().getRGB(x, y);
+	}
+	
 	// Getters
 	public double getWidth() {return width;}
 	public double getLength() {return length;}

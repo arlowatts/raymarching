@@ -34,19 +34,10 @@ public class Sphere extends Shape{
 	public int getColor(Vector v) {
 		if (getTexture() == null) return getColor();
 		
-		v.subtract(getPos());
-		v.inverseRotate(getAngle());
+		Vector r = toSurface(v);
 		
-		Vector step = getNormal(v);
-		step.setLength(getDistance(v));
-		v.subtract(step);
-		
-		int x = (int)((Math.atan(v.getX() / v.getZ()) / (Math.PI * -2) + (v.getZ() < 0 ? 0.25 : 0.75)) * (getTexture().getWidth() - 1));
-		int y = (int)((Math.acos(v.getY()) / Math.PI) * (getTexture().getHeight() - 1));
-		
-		v.add(step);
-		v.rotate(getAngle());
-		v.add(getPos());
+		int x = (int)(((r.getZ() < 0 ? 0.25 : 0.75) - Math.atan(r.getX() / r.getZ()) / (Math.PI * 2)) * (getTexture().getWidth() - 1));
+		int y = (int)((Math.acos(r.getY() / radius) / Math.PI) * (getTexture().getHeight() - 1));
 		
 		return getTexture().getRGB(x, y);
 	}

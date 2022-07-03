@@ -31,6 +31,19 @@ public class Torus extends Shape{
 		return distance;
 	}
 	
+	public int getColor(Vector v) {
+		if (getTexture() == null) return getColor();
+		
+		Vector r = toSurface(v);
+		
+		boolean inside = r.getX()*r.getX() + r.getZ()*r.getZ() < largeRadius*largeRadius;
+		
+		int x = (int)(((r.getZ() < 0 ? 0.25 : 0.75) - Math.atan(r.getX() / r.getZ()) / (Math.PI * 2)) * (getTexture().getWidth() - 1));
+		int y = (int)(((inside ? 0.5 : 0) + Math.acos((inside ? -1 : 1) * r.getY() / smallRadius) / (Math.PI * 2)) * (getTexture().getHeight() - 1));
+		
+		return getTexture().getRGB(x, y);
+	}
+	
 	// Getters
 	public double getLargeRadius() {return largeRadius;}
 	public double getSmallRadius() {return smallRadius;}
