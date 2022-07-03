@@ -53,7 +53,7 @@ public class Raymarching {
 	// Helpers
 	// Gets the scene name from the arguments the program was run with
 	private static void getSceneName(String[] args) {
-		sceneName = args.length > 0 ? args[0] : "setup";
+		sceneName = args.length > 0 ? args[0] : "default";
 		
 		if (sceneName.length() >= 4 && sceneName.substring(sceneName.length() - 4).equals(".txt"))
 			sceneName = sceneName.substring(0, sceneName.length() - 4);

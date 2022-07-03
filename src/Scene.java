@@ -31,7 +31,7 @@ public class Scene {
 	
 	// Constructors
 	public Scene(String path) throws UndefinedException {
-		File setup = new File(path);
+		File setup = new File("scenes\\" + path);
 		Scanner scanner = null;
 		
 		try {scanner = new Scanner(setup);}

@@ -155,7 +155,7 @@ public class Ray {
 		// If it hits the light, add brightness proportional to the light's brightness and the dot product of the normal
 		if (hit != -1 && shapes.get(hit) == light) {
 			double lightShade = Math.max(normal.dotProduct(lightRay.dir), 0) * Color.RATIO;
-			int lightColor = light.getColor(pos);
+			int lightColor = light.getColor();
 			
 			brightness.stretch(1 - Color.getR(lightColor) * lightShade,
 							   1 - Color.getG(lightColor) * lightShade,

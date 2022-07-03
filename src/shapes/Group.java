@@ -74,12 +74,12 @@ public class Group extends Shape {
 		double sumDists = 0;
 		
 		for (int i = 0; i < shapes.size(); i++) {
-			dists[i] = Math.abs(shapes.get(i).getDistance(v)) / shapes.size();
+			dists[i] = smoothing / Math.abs(shapes.get(i).getDistance(v));
 			sumDists += dists[i];
 		}
 		
 		for (int i = 0; i < shapes.size(); i++) {
-			pointColor += Color.shade(shapes.get(i).getColor(v), 1 - dists[i] / sumDists);
+			pointColor += Color.shade(shapes.get(i).getColor(v), dists[i] / sumDists);
 		}
 		
 		return pointColor;

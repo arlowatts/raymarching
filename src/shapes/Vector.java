@@ -112,10 +112,22 @@ public class Vector {
 		z += v.z;
 	}
 	
+	public void add(Vector v, double scale) {
+		x += v.x * scale;
+		y += v.y * scale;
+		z += v.z * scale;
+	}
+	
 	public void subtract(Vector v) {
 		x -= v.x;
 		y -= v.y;
 		z -= v.z;
+	}
+	
+	public void subtract(Vector v, double scale) {
+		x -= v.x * scale;
+		y -= v.y * scale;
+		z -= v.z * scale;
 	}
 	
 	public void multiply(double l) {
