@@ -1,14 +1,7 @@
-camera 0 0 -3 0 0 0
-screen 750 500 500 0x101010 10
+camera 0 0 -5 0 0 0
+screen 750 500 500 0xffffff 10
 
-gif 251
-
-light . 3 0 3 1 1 1
-light . 3 0 -3 1 1 1
-light . -3 0 3 1 1 1
-light . -3 0 -3 1 1 1
-
-sphere ball colorful_pixels.jpg 1 0 0 0 -1.5708 0 1.5708 0 0 1.5
+torus ball torus_texture.png 1 0.4 0 0 0 -1.5708 0 1.5708 0 0 1.5
 
 action rotate camera 0 -0.025 0
 action rotateabout camera 0 -0.025 0 0 0 0
