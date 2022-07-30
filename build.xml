@@ -1,6 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project name="Raymarching" default="compile">
-	<target name="compile">
-		<javac srcdir="src" destdir="build"/>
+
+	<property name="src" location="src"/>
+	<property name="build" location="build"/>
+	<property name="dist" location="dist"/>
+
+	<target name="init">
+		<tstamp/>
+		<mkdir dir="${build}"/>
 	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="${src}" destdir="${build}"/>
+	</target>
+
+	<target name="dist" depends="compile">
+		<mkdir dir="${dist}/lib"/>
+		<jar jarfile="${dist}/lib/Raymarching-${DSTAMP}.jar" basedir="${build}"/>
+	</target>
+
+	<target name="run" depends="compile">
+		<java fork="true" classpath="${build}" sourcefile="${src}/raymarching.java"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build}"/>
+		<delete dir="${dist}"/>
+	</target>
+
 </project>
