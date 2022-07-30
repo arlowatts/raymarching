@@ -1,3 +1,5 @@
+package src;
+
 import src.Scene;
 
 import src.GifSequenceWriter;
