@@ -9,11 +9,13 @@
 	</target>
 
 	<target name="compile" depends="init">
-		<javac srcdir="${src}" destdir="${build}"/>
+		<javac srcdir="${src}" destdir="${build}" includeantruntime="false"/>
 	</target>
 
 	<target name="run" depends="compile">
-		<java fork="true" classpath="${build}" sourcefile="${src}/raymarching.java"/>
+		<java fork="true" classpath="${build}" sourcefile="${src}/raymarching.java">
+			<arg value="${setup}"/>
+		</java>
 	</target>
 
 	<target name="clean">
