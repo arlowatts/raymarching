@@ -37,6 +37,7 @@ public class Sphere extends Shape{
 		Vector r = toSurface(v);
 		
 		int x = (int)(((r.getZ() < 0 ? 0.25 : 0.75) - Math.atan(r.getX() / r.getZ()) / (Math.PI * 2)) * (getTexture().getWidth() - 1));
+		
 		int y = (int)((Math.acos(r.getY() / radius) / Math.PI) * (getTexture().getHeight() - 1));
 		
 		return getTexture().getRGB(x, y);

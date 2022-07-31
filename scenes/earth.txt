@@ -8,11 +8,11 @@ light . 3 0 3 1 1 1
 light . 3 -3 0 1 1 1
 light . 3 3 0 1 1 1
 
-sphere earthSphere earth.jpg 1 0 0 0 -1.5708 0 1.5708 0 0.25 1
-plane . earth.jpg 2 1 0 0 1 0 -1.5708 0 0.25 0 1
+//sphere earthSphere earth.jpg 1 0 0 0 -1.5708 0 1.5708 0 0 1
+//plane . earth.jpg 2 1 0 0 1 0 -1.5708 0 0 0 1
 torus earthTorus earth.jpg 1.5 0.3 0 0 0 0 0 0 0 0 1
 
-action rotate camera 0 -0.025 0
-action rotateabout camera 0 -0.025 0 0 0 0
+action rotate camera 0 0.025 0
+action rotateabout camera 0 0.025 0 0 0 0
 
 action rotate earthSphere 0 -0.025 0
