@@ -40,7 +40,7 @@ public class Torus extends Shape{
 		
 		int x = (int)(((r.getZ() < 0 ? 0.25 : 0.75) - Math.atan(r.getX() / r.getZ()) / (Math.PI * 2)) * (getTexture().getWidth() - 1));
 		
-		int y = (int)(((r.getY() < 0 ? 0.75 : 0.25) - (r.getY() < 0 ? -1 : 1) * Math.asin(w / smallRadius) / (Math.PI * 2)) * (getTexture().getHeight() - 1));
+		int y = (int)(((r.getY() < 0 ? 0.25 : 0.75) - Math.atan(w / r.getY()) / (Math.PI * 2)) * (getTexture().getHeight() - 1));
 		
 		return getTexture().getRGB(x, y);
 	}
