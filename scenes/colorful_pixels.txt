@@ -3,9 +3,7 @@ screen 500 500 500 0xffffff 10
 
 gif 251
 
-torus planet map.png 5.05425 1.31675 0 0 0 -1.5708 0 1.5708 0 0 1
-
-sphere heart 0x444444 1.7374 0 0 0 0 0 0 0 0 1
+torus planet colorful_pixels.jpg 5.05425 1.31675 0 0 0 -1.5708 0 1.5708 0 0 1
 
 action rotate camera 0 -0.025 0
 action rotateabout camera 0 -0.025 0 0 0 0
