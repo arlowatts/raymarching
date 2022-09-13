@@ -123,7 +123,7 @@ public class Scene {
 	}
 	
 	// Methods
-	public void next() {
+	public void tick() {
 		screen.updateImage(this);
 		
 		for (Action action : actions)

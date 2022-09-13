@@ -1,51 +1,47 @@
 package src;
 
 import src.Scene;
+
 import src.GifSequenceWriter;
+
 import src.UndefinedException;
 
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
-import javafx.scene.layout.StackPane;
-
-import javafx.scene.image.ImageView;
-
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
 import java.awt.image.BufferedImage;
 
-import java.util.List;
-
-public class Raymarching extends Application {
+public class Raymarching {
 	// All of the objects being rendered are stored in Scene object
-	private Scene scene;
-	private String sceneName;
+	private static Scene scene;
+	private static String sceneName;
 	
-	private ImageView imgView;
-	private javafx.scene.Scene jfxScene;
+	private static JFrame frame;
+	private static JLabel label;
 	
-	private GifSequenceWriter gifWriter;
+	private static GifSequenceWriter gifWriter;
 	
 	// Main
-	@Override
-	public void start(Stage stage) throws IOException {
-		getSceneName(getParameters().getRaw());
+	public static void main(String[] args) throws IOException {
+		getSceneName(args);
 		loadScene();
 		
-		initScreen(stage);
+		createJFrame();
 		
 		if (scene.getMaxFrames() != -1) setupGifWriter();
 		
 		// The main loop
 		while (true) {
 			// Update and display the current frame
-			scene.next();
-			System.out.println(scene.getFrames());
+			scene.tick();
+			label.updateUI();
 			
 			if (scene.getMaxFrames() != -1) {
-				gifWriter.writeToSequence(scene.getScreen().getBufferedImage());
+				gifWriter.writeToSequence(scene.getScreen().getImage());
 				
 				if (scene.getFrames() >= scene.getMaxFrames()) break;
 			}
@@ -53,19 +49,20 @@ public class Raymarching extends Application {
 		
 		if (scene.getMaxFrames() != -1) gifWriter.close();
 		System.out.println(sceneName + ".gif saved");
+		frame.dispose();
 	}
 	
 	// Helpers
 	// Gets the scene name from the arguments the program was run with
-	private void getSceneName(List<String> args) {
-		sceneName = args.size() < 1 || args.get(0).equals("${scene}") ? "default" : args.get(0);
+	private static void getSceneName(String[] args) {
+		sceneName = args[0].equals("${setup}") ? "default" : args[0];
 		
 		if (sceneName.length() >= 4 && sceneName.substring(sceneName.length() - 4).equals(".txt"))
 			sceneName = sceneName.substring(0, sceneName.length() - 4);
 	}
 	
 	// Loads the scene from a file
-	private void loadScene() {
+	private static void loadScene() {
 		try {
 			scene = new Scene(sceneName + ".txt");
 		}
@@ -75,22 +72,21 @@ public class Raymarching extends Application {
 		}
 	}
 	
-	// Creates am ImageView and initializes the javafx Scene to display the rendered image
-	private void initScreen(Stage stage) {
-		imgView = new ImageView(scene.getScreen().getWritableImage());
+	// Creates a JFrame and a JLabel to display the rendered image
+	private static void createJFrame() {
+		frame = new JFrame(sceneName);
+		frame.setSize(scene.getScreen().getWidth(), scene.getScreen().getHeight());
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
 		
-		jfxScene = new javafx.scene.Scene(new StackPane(imgView), scene.getScreen().getWidth(), scene.getScreen().getHeight());
-        stage.setScene(jfxScene);
-		stage.show();
+		label = new JLabel(new ImageIcon(scene.getScreen().getImage()));
+		frame.getContentPane().add(label);
 	}
 	
 	// Initializes a Gif writer to write the rendered images to a .gif file
-	private void setupGifWriter() throws IOException{
+	private static void setupGifWriter() throws IOException{
 		File outputFile = new File("gifs\\" + sceneName + ".gif");
 		gifWriter = new GifSequenceWriter(ImageIO.createImageOutputStream(outputFile), BufferedImage.TYPE_INT_RGB, 1000 / 60, true);
-	}
-	
-	public static void main(String[] args) {
-		launch(args);
 	}
 }

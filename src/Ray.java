@@ -1,8 +1,6 @@
 package src;
 
-import src.shapes.Shape;
-import src.shapes.Vector;
-import src.shapes.Color;
+import src.shapes.*;
 
 import java.util.ArrayList;
 
