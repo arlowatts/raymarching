@@ -37,7 +37,7 @@ public class Raymarching {
 		// The main loop
 		while (true) {
 			// Update and display the current frame
-			scene.tick();
+			scene.next();
 			label.updateUI();
 			
 			if (scene.getMaxFrames() != -1) {
@@ -55,7 +55,7 @@ public class Raymarching {
 	// Helpers
 	// Gets the scene name from the arguments the program was run with
 	private static void getSceneName(String[] args) {
-		sceneName = args[0].equals("${setup}") ? "default" : args[0];
+		sceneName = args.length < 1 || args[0].equals("${scene}") ? "default" : args[0];
 		
 		if (sceneName.length() >= 4 && sceneName.substring(sceneName.length() - 4).equals(".txt"))
 			sceneName = sceneName.substring(0, sceneName.length() - 4);

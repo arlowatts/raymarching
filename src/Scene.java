@@ -41,11 +41,55 @@ public class Scene {
 		
 		actions = new ArrayList<>();
 		
-		ArrayList<Shape> removedShapes = new ArrayList<>();
-		ArrayList<String> savedShapes = new ArrayList<>();
-		
 		frames = 0;
 		maxFrames = -1;
+		
+		scanFile(scanner);
+		scanner.close();
+		
+		if (camera == null) throw new UndefinedException("camera");
+		if (screen == null) throw new UndefinedException("screen");
+	}
+	
+	// Methods
+	public void next() {
+		screen.updateImage(this);
+		
+		for (Action action : actions)
+			action.execute();
+		
+		frames++;
+	}
+	
+	// Returns an ArrayList of the shapes in the scene whose bounding spheres intersect the path of the ray
+	public ArrayList<Shape> getVisible(Ray ray) {
+		ArrayList<Shape> visible = new ArrayList<>();
+		
+		for (int i = 0; i < shapes.size(); i++) {
+			if (ray.distToPoint(shapes.get(i).getPos()) < shapes.get(i).getBoundRadius() + Ray.MIN_LENGTH)
+				visible.add(shapes.get(i));
+		}
+		
+		return visible;
+	}
+	
+	// Getters
+	public Camera getCamera() {return camera;}
+	public Screen getScreen() {return screen;}
+	
+	public ArrayList<Shape> getShapes() {return shapes;}
+	public ArrayList<Light> getLights() {return lights;}
+	
+	public Shape getShape(int i) {return shapes.get(i);}
+	public Light getLight(int i) {return lights.get(i);}
+	
+	public int getFrames() {return frames;}
+	public int getMaxFrames() {return maxFrames;}
+	
+	// Parsing methods
+	private void scanFile(Scanner scanner) {
+		ArrayList<Shape> removedShapes = new ArrayList<>();
+		ArrayList<String> savedShapes = new ArrayList<>();
 		
 		boolean commented = false;
 		suppressWarnings = false;
@@ -115,36 +159,8 @@ public class Scene {
 		
 		for (Shape shape : removedShapes)
 			shapes.remove(shape);
-		
-		scanner.close();
-		
-		if (camera == null) throw new UndefinedException("camera");
-		if (screen == null) throw new UndefinedException("screen");
 	}
 	
-	// Methods
-	public void tick() {
-		screen.updateImage(this);
-		
-		for (Action action : actions)
-			action.execute();
-		
-		frames++;
-	}
-	
-	// Returns an ArrayList of the shapes in the scene whose bounding spheres intersect the path of the ray
-	public ArrayList<Shape> getVisible(Ray ray) {
-		ArrayList<Shape> visible = new ArrayList<>();
-		
-		for (int i = 0; i < shapes.size(); i++) {
-			if (ray.distToPoint(shapes.get(i).getPos()) < shapes.get(i).getBoundRadius() + Ray.MIN_LENGTH)
-				visible.add(shapes.get(i));
-		}
-		
-		return visible;
-	}
-	
-	// Parsing methods
 	private Screen parseScreen(String[] line) throws InvalidSetupException {
 		InvalidSetupException.assertLength(line, 7);
 		return new Screen(getInts(line, 2, 5));
@@ -287,17 +303,4 @@ public class Scene {
 		
 		return ints;
 	}
-	
-	// Getters
-	public Camera getCamera() {return camera;}
-	public Screen getScreen() {return screen;}
-	
-	public ArrayList<Shape> getShapes() {return shapes;}
-	public ArrayList<Light> getLights() {return lights;}
-	
-	public Shape getShape(int i) {return shapes.get(i);}
-	public Light getLight(int i) {return lights.get(i);}
-	
-	public int getFrames() {return frames;}
-	public int getMaxFrames() {return maxFrames;}
 }
