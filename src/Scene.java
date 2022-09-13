@@ -11,7 +11,6 @@ import java.util.Scanner;
 
 /*
  * A Scene object contains the camera, screen, and all of the shapes and lights that are being rendered in the scene.
- *
  * It also stores the movements and rotations of all the shapes that are executed each frame, and the number of frames computed.
  */
 public class Scene {
