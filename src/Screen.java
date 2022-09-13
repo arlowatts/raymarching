@@ -2,9 +2,10 @@ package src;
 
 import src.shapes.Vector;
 
-import java.awt.image.BufferedImage;
 import javafx.scene.image.WritableImage;
 import javafx.scene.image.PixelFormat;
+
+import java.awt.image.BufferedImage;
 
 /*
  * A Screen object creates the rendered image each frame.
