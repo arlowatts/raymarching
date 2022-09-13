@@ -14,15 +14,20 @@ import javafx.scene.layout.StackPane;
 
 import javafx.scene.image.ImageView;
 
+import javafx.concurrent.Task;
+
 import java.awt.image.BufferedImage;
 
 import java.util.List;
+
+import javafx.scene.image.WritableImage;
 
 public class Raymarching extends Application {
 	// All of the objects being rendered are stored in Scene object
 	private Scene scene;
 	private String sceneName;
 	
+	private WritableImage img;
 	private ImageView imgView;
 	private javafx.scene.Scene jfxScene;
 	
@@ -34,25 +39,44 @@ public class Raymarching extends Application {
 		getSceneName(getParameters().getRaw());
 		loadScene();
 		
-		initScreen(stage);
+		img = scene.getScreen().getWritableImage();
 		
-		if (scene.getMaxFrames() != -1) setupGifWriter();
+		imgView = new ImageView(img);
 		
-		// The main loop
-		while (true) {
-			// Update and display the current frame
-			scene.next();
-			System.out.println(scene.getFrames());
-			
-			if (scene.getMaxFrames() != -1) {
-				gifWriter.writeToSequence(scene.getScreen().getBufferedImage());
+		jfxScene = new javafx.scene.Scene(new StackPane(imgView), 500, 500);
+        stage.setScene(jfxScene);
+		stage.show();
+		
+		scene.start();
+		
+		/*if (scene.getMaxFrames() != -1) setupGifWriter();
+		
+		// The thread to run the main loop
+		Thread th = new Thread(new Task<Integer>() {
+			@Override
+			protected Integer call() throws IOException {
+				// The main loop
+				while (true) {
+					// Update and display the current frame
+					scene.next();
+					System.out.println(scene.getFrames());
+					
+					if (scene.getMaxFrames() != -1) {
+						gifWriter.writeToSequence(scene.getScreen().getBufferedImage());
+						
+						if (scene.getFrames() >= scene.getMaxFrames()) break;
+					}
+				}
 				
-				if (scene.getFrames() >= scene.getMaxFrames()) break;
+				if (scene.getMaxFrames() != -1) gifWriter.close();
+				System.out.println(sceneName + ".gif saved");
+				
+				return scene.getFrames();
 			}
-		}
+		});
 		
-		if (scene.getMaxFrames() != -1) gifWriter.close();
-		System.out.println(sceneName + ".gif saved");
+		th.setDaemon(true);
+		th.start();*/
 	}
 	
 	// Helpers
