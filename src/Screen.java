@@ -2,6 +2,9 @@ package src;
 
 import src.shapes.Vector;
 
+import javafx.scene.image.WritableImage;
+import javafx.scene.image.PixelFormat;
+
 import java.awt.image.BufferedImage;
 
 /*
@@ -11,7 +14,8 @@ public class Screen {
 	// Member variables
 	private int width, height, distance, background, maxReflections;
 	
-	private BufferedImage image;
+	private WritableImage wImage;
+	private BufferedImage bImage;
 	private int[] pixels;
 	
 	// Constructors
@@ -25,7 +29,8 @@ public class Screen {
 		maxReflections = args[4];
 		
 		// Creating the Buffered Image and a pixels array to update individual pixels faster
-		image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		wImage = new WritableImage(width, height);
+		bImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		pixels = new int[width * height];
 	}
 	
@@ -47,7 +52,8 @@ public class Screen {
 		}
 		
 		// Updating the screen
-		image.setRGB(0, 0, width, height, pixels, 0, width);
+		bImage.setRGB(0, 0, width, height, pixels, 0, width);
+		wImage.getPixelWriter().setPixels(0, 0, width, height, PixelFormat.getIntArgbInstance(), pixels, 0, width);
 	}
 	
 	// Getters
@@ -55,7 +61,8 @@ public class Screen {
 	public int getHeight() {return height;}
 	public int getDistance() {return distance;}
 	public int getBgnd() {return background;}
-	public BufferedImage getImage() {return image;}
+	public WritableImage getWritableImage() {return wImage;}
+	public BufferedImage getBufferedImage() {return bImage;}
 	
 	// Setters
 	public void setWidth(int w) {width = w;}
