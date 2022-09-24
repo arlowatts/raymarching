@@ -2,20 +2,22 @@ package src.shapes;
 
 import java.lang.Math;
 
+/*
+ * A class to store a set of three numbers and perform calculations on them
+ * Can be used for any set of three numbers
+ */
 public class Vector {
 	// Member variables
 	private double x, y, z;
 	
 	// Constructors
 	public Vector(double x, double y, double z) {set(x, y, z);}
-	
 	public Vector(double[] xyz) {set(xyz[0], xyz[1], xyz[2]);}
-	
 	public Vector(Vector v) {set(v);}
-	
 	public Vector() {set(0, 0, 0);}
 	
 	// Methods
+	// Rotates the vector by the Euler angles phi, theta, and psi around the point (cx, cy, cz)
 	public void rotate(double phi, double theta, double psi, double cx, double cy, double cz) {
 		double[] sincos = getSincos(phi, theta, psi);
 		
@@ -42,6 +44,7 @@ public class Vector {
 		z += cz;
 	}
 	
+	// Rotates the vector by the Euler angles -phi, -theta, -psi around the point (cx, cy, cz)
 	public void inverseRotate(double phi, double theta, double psi, double cx, double cy, double cz) {
 		double[] sincos = getSincos(-phi, -theta, -psi);
 		
@@ -92,50 +95,59 @@ public class Vector {
 		inverseRotate(phi, theta, psi, 0, 0, 0);
 	}
 	
+	// Takes the dot product of itself and another vector
 	public double dotProduct(Vector v) {
-		return x * v.x + y * v.y + z * v.z;
+		return x*v.x + y*v.y + z*v.z;
 	}
 	
+	// Gets the distance between the endpoints of itself and another vector, or the length of their difference
 	public double getDistance(Vector v) {
-		return Math.sqrt((v.x - x)*(v.x - x) + (v.y - y)*(v.y - y) + (v.z - z)*(v.z - z));
+		return Math.sqrt((v.x-x)*(v.x-x) + (v.y-y)*(v.y-y) + (v.z-z)*(v.z-z));
 	}
 	
+	// Adds the values to itself
 	public void add(double x, double y, double z) {
 		this.x += x;
 		this.y += y;
 		this.z += z;
 	}
 	
+	// Adds the vector to itself
 	public void add(Vector v) {
 		x += v.x;
 		y += v.y;
 		z += v.z;
 	}
 	
+	// Adds the scaled vector to itself
 	public void add(Vector v, double scale) {
 		x += v.x * scale;
 		y += v.y * scale;
 		z += v.z * scale;
 	}
 	
+	// Subtracts the vector from itself
 	public void subtract(Vector v) {
 		x -= v.x;
 		y -= v.y;
 		z -= v.z;
 	}
 	
+	// Subtracts the scaled vector from itelf
 	public void subtract(Vector v, double scale) {
 		x -= v.x * scale;
 		y -= v.y * scale;
 		z -= v.z * scale;
 	}
 	
+	// Multiplies itself by a scalar
 	public void multiply(double l) {
 		x *= l;
 		y *= l;
 		z *= l;
 	}
 	
+	// Rescales itself by values lx, ly, lz
 	public void stretch(double lx, double ly, double lz) {
 		x *= lx;
 		y *= ly;
