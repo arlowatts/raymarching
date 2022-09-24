@@ -48,10 +48,15 @@ public abstract class Shape {
 	}
 	
 	// Abstract methods
+	// Should return the least distance from a point v to the surface of the shape
 	public abstract double getDistance(Vector v);
+	// Should call setBoundRadius(double r) to set the bound radius to the radius
+	// of the smallest sphere centered at pos that completely contains the shape
 	protected abstract void setBoundRadius();
 	
 	// Methods
+	// Returns the surface normal at the point v
+	// Can be overridden by a more efficient and more precise function in many cases
 	public Vector getNormal(Vector v) {
 		double distance = getDistance(v);
 		
@@ -72,18 +77,20 @@ public abstract class Shape {
 		return normal;
 	}
 	
+	// Returns the color of the surface at a point v
+	// Must be overriden in a subclass to implement texture mapping
 	public int getColor(Vector v) {return color;}
 	
+	// Loads a texture (image) from a file into the shape
 	public void loadTexture(String path) throws IOException {
 		texture = ImageIO.read(new File(path));
 	}
 	
 	// Getters
 	public Vector getPos() {return pos;}
-	
 	public Vector getAngle() {return angle;}
 	
-	public double getShine() {return reflectivity;}
+	public double getReflectivity() {return reflectivity;}
 	public double getTransparency() {return transparency;}
 	public double getRefrIndex() {return refrIndex;}
 	
@@ -96,15 +103,17 @@ public abstract class Shape {
 	public BufferedImage getTexture() {return texture;}
 	
 	// Setters
-	public void setShine(double reflectivity) {this.reflectivity = reflectivity;}
+	public void setReflectivity(double reflectivity) {this.reflectivity = reflectivity;}
 	public void setTransparency(double transparency) {this.transparency = transparency;}
 	public void setRefrIndex(double refrIndex) {this.refrIndex = refrIndex;}
+	
 	public void setColor(int color) {this.color = color;}
 	public void setTexture(BufferedImage texture) {this.texture = texture;}
 	
 	// Helpers
 	protected void setBoundRadius(double r) {boundRadius = r;}
 	
+	// Returns a new vector much closer to the surface of the shape and in coordinates relative to the shape
 	protected Vector toSurface(Vector v) {
 		Vector r = new Vector(v);
 		
