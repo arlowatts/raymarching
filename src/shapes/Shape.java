@@ -7,20 +7,30 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 
-public class Shape {
+/*
+ * A class designed to be extended
+ * Contains methods and variables a 3D shape will need, such as position and surface properties
+ */
+public abstract class Shape {
 	// Constants
-	public static final String[] DEFAULT_PARAMS = {"x", "y", "z", "phi", "theta", "psi", "shine", "transparency", "refrIndex"};
-
+	// The default parameters that must be passed to the constructor
+	public static final String[] DEFAULT_PARAMS = {"x", "y", "z", "phi", "theta", "psi", "reflectivity", "transparency", "refrIndex"};
+	// The minimum size of a shape - it depends on the shape to limit its size to this value
 	public static final double MIN_LENGTH = 0.001;
 	
 	// Member variables
 	private Vector pos, angle;
 	
-	private int color;
+	// The subclass of Shape should define how the texture maps to the surface
 	private BufferedImage texture;
+	// If the texture is null, a color will be used instead
+	private int color;
 	
-	private double shine, transparency, refrIndex;
+	// Reflectivity, transparency, and refractive index are all universal properties of the surface
+	private double reflectivity, transparency, refrIndex;
 	
+	// boundRadius represents the size of the smallest sphere centered at pos that can completely contain the shape
+	// The subclass of Shape must define how it is calculated
 	private double boundRadius;
 	
 	// Constructors
@@ -28,7 +38,7 @@ public class Shape {
 		pos = new Vector(args[0], args[1], args[2]);
 		angle = new Vector(args[3], args[4], args[5]);
 		
-		shine = Math.min(Math.max(args[6], 0), 1);
+		reflectivity = Math.min(Math.max(args[6], 0), 1);
 		transparency = Math.min(Math.max(args[7], 0), 1);
 		refrIndex = Math.max(args[8], 1);
 		
@@ -37,9 +47,11 @@ public class Shape {
 		boundRadius = -1;
 	}
 	
-	//Methods
-	public double getDistance(Vector v) {return pos.getDistance(v);}
+	// Abstract methods
+	public abstract double getDistance(Vector v);
+	protected abstract void setBoundRadius();
 	
+	// Methods
 	public Vector getNormal(Vector v) {
 		double distance = getDistance(v);
 		
@@ -71,7 +83,7 @@ public class Shape {
 	
 	public Vector getAngle() {return angle;}
 	
-	public double getShine() {return shine;}
+	public double getShine() {return reflectivity;}
 	public double getTransparency() {return transparency;}
 	public double getRefrIndex() {return refrIndex;}
 	
@@ -84,14 +96,13 @@ public class Shape {
 	public BufferedImage getTexture() {return texture;}
 	
 	// Setters
-	public void setShine(double shine) {this.shine = shine;}
+	public void setShine(double reflectivity) {this.reflectivity = reflectivity;}
 	public void setTransparency(double transparency) {this.transparency = transparency;}
 	public void setRefrIndex(double refrIndex) {this.refrIndex = refrIndex;}
 	public void setColor(int color) {this.color = color;}
 	public void setTexture(BufferedImage texture) {this.texture = texture;}
 	
 	// Helpers
-	protected void setBoundRadius() {boundRadius = 0;}
 	protected void setBoundRadius(double r) {boundRadius = r;}
 	
 	protected Vector toSurface(Vector v) {

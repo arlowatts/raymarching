@@ -69,11 +69,11 @@ public class Ray {
 			refractionColor = refractedRay.cast(scene, tempShade, medium == hit ? null : hit, reflections - 1);
 		}
 		
-		double shine = hit.getShine();
+		double reflectivity = hit.getShine();
 		int reflectionColor = 0;
 		
 		// If the hit object is reflective, create a new ray and reflect it
-		if (shine > 0 && reflections > 0) {
+		if (reflectivity > 0 && reflections > 0) {
 			Ray reflectedRay = new Ray(this.pos, this.dir);
 			reflectedRay.reflect(normal);
 			
@@ -82,8 +82,8 @@ public class Ray {
 			
 			// Shade the current color by the reflected ray
 			Vector tempShade = new Vector(shade);
-			tempShade.multiply(shine);
-			shade.multiply(1 - shine);
+			tempShade.multiply(reflectivity);
+			shade.multiply(1 - reflectivity);
 			
 			reflectionColor = reflectedRay.cast(scene, tempShade, medium, reflections - 1);
 		}
