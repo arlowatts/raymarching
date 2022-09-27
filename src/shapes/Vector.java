@@ -2,28 +2,47 @@ package src.shapes;
 
 import java.lang.Math;
 
-/*
- * A class to store a set of three numbers and perform calculations on them
- * Can be used for any set of three numbers
- */
+/**
+A class to store a set of three doubles and perform calculations on them.
+*/
 public class Vector {
-	// Member variables
 	private double x, y, z;
 	
-	// Constructors
+	/**
+	Creates a new vector with the specified x, y, and z values.
+	
+	@param x the x-coordinate of the vector
+	@param y the y-coordinate of the vector
+	@param z the z-coordinate of the vector
+	*/
 	public Vector(double x, double y, double z) {set(x, y, z);}
-	public Vector(double[] xyz) {set(xyz[0], xyz[1], xyz[2]);}
+	
+	/**
+	Creates a new vector from the values of an array with length 3.
+	
+	@param v an array of three doubles to be the coordinates of the vector
+	*/
+	public Vector(double[] v) {set(v[0], v[1], v[2]);}
+	
+	/**
+	Creates a new vector that is a copy of another vector.
+	
+	@param v a Vector to copy
+	*/
 	public Vector(Vector v) {set(v);}
+	
+	/**
+	Creates a new instance of the zero vector.
+	*/
 	public Vector() {set(0, 0, 0);}
 	
-	// Methods
-	// Rotates the vector by the Euler angles phi, theta, and psi around the point (cx, cy, cz)
-	public void rotate(double phi, double theta, double psi, double cx, double cy, double cz) {
-		double[] sincos = getSincos(phi, theta, psi);
-		
-		x -= cx;
-		y -= cy;
-		z -= cz;
+	/**
+	Rotates the vector by the Euler angles (<code>rotation.x</code>, <code>rotation.y</code>, <code>rotation.z</code>).
+	
+	@param rotation a <code>Vector</code> whose coordinates represent the Euler angles phi, theta, and psi by which to rotate the vector
+	*/
+	public void rotate(Vector rotation) {
+		double[] sincos = getSincos(rotation);
 		
 		double t;
 		
@@ -38,19 +57,17 @@ public class Vector {
 		t = x;
 		x = x * sincos[5] - y * sincos[2];
 		y = t * sincos[2] + y * sincos[5];
-		
-		x += cx;
-		y += cy;
-		z += cz;
 	}
 	
-	// Rotates the vector by the Euler angles -phi, -theta, -psi around the point (cx, cy, cz)
-	public void inverseRotate(double phi, double theta, double psi, double cx, double cy, double cz) {
-		double[] sincos = getSincos(-phi, -theta, -psi);
-		
-		x -= cx;
-		y -= cy;
-		z -= cz;
+	/**
+	Performs a reversed rotation by the Euler angles (<code>rotation.x</code>, <code>rotation.y</code>, <code>rotation.z</code>).
+	
+	@param rotation a <code>Vector</code> whose coordinates represent the Euler angles phi, theta, and psi by which to rotate the vector
+	*/
+	public void inverseRotate(Vector rotation) {
+		rotation.multiply(-1);
+		double[] sincos = getSincos(rotation);
+		rotation.multiply(-1);
 		
 		double t;
 		
@@ -65,42 +82,38 @@ public class Vector {
 		t = x;
 		x = x * sincos[3] - y * sincos[0];
 		y = t * sincos[0] + y * sincos[3];
-		
-		x += cx;
-		y += cy;
-		z += cz;
 	}
 	
-	public void rotate(Vector angle, Vector origin) {
-		rotate(angle.x, angle.y, angle.z, origin.x, origin.y, origin.z);
+	/**
+	Rotates the vector by the Euler angles (<code>rotation.x</code>, <code>rotation.y</code>, <code>rotation.z</code>) about <code>origin</code>.
+	
+	@param rotation a <code>Vector</code> whose coordinates represent the Euler angles phi, theta, and psi by which to rotate the vector
+	@param origin a <code>Vector</code> representing the point about which the vector will be rotated
+	*/
+	public void rotate(Vector rotation, Vector origin) {
+		subtract(origin);
+		rotate(rotation);
+		add(origin);
 	}
 	
-	public void inverseRotate(Vector angle, Vector origin) {
-		inverseRotate(angle.x, angle.y, angle.z, origin.x, origin.y, origin.z);
+	/**
+	Performs a reversed rotation by the Euler angles (<code>rotation.x</code>, <code>rotation.y</code>, <code>rotation.z</code>) about <code>origin</code>.
+	
+	@param rotation a <code>Vector</code> whose coordinates represent the Euler angles phi, theta, and psi by which to rotate the vector
+	@param origin a <code>Vector</code> representing the point about which the vector will be rotated
+	*/
+	public void inverseRotate(Vector rotation, Vector origin) {
+		subtract(origin);
+		inverseRotate(rotation);
+		add(origin);
 	}
 	
-	public void rotate(Vector angle) {
-		rotate(angle.x, angle.y, angle.z, 0, 0, 0);
-	}
-	
-	public void inverseRotate(Vector angle) {
-		inverseRotate(angle.x, angle.y, angle.z, 0, 0, 0);
-	}
-	
-	public void rotate(double phi, double theta, double psi) {
-		rotate(phi, theta, psi, 0, 0, 0);
-	}
-	
-	public void inverseRotate(double phi, double theta, double psi) {
-		inverseRotate(phi, theta, psi, 0, 0, 0);
-	}
-	
-	// Takes the dot product of itself and another vector
+	/*Returns the dot product of itself and another vector.*/
 	public double dotProduct(Vector v) {
 		return x*v.x + y*v.y + z*v.z;
 	}
 	
-	// Gets the distance between the endpoints of itself and another vector, or the length of their difference
+	/*Returns the distance between the endpoints of itself and another vector, or the length of their difference.*/
 	public double getDistance(Vector v) {
 		return Math.sqrt((v.x-x)*(v.x-x) + (v.y-y)*(v.y-y) + (v.z-z)*(v.z-z));
 	}
@@ -154,7 +167,6 @@ public class Vector {
 		z *= lz;
 	}
 	
-	// Getters
 	public double getX() {return x;}
 	public double getY() {return y;}
 	public double getZ() {return z;}
@@ -163,7 +175,6 @@ public class Vector {
 		return Math.sqrt(x*x + y*y + z*z);
 	}
 	
-	// Setters
 	public void setX(double x) {this.x = x;}
 	public void setY(double y) {this.y = y;}
 	public void setZ(double z) {this.z = z;}
@@ -182,18 +193,10 @@ public class Vector {
 		multiply(length / getLength());
 	}
 	
-	// Helpers
-	private static double[] getSincos(double phi, double theta, double psi) {
-		double sincos[] = {Math.sin(phi), Math.sin(theta), Math.sin(psi),
-						   Math.cos(phi), Math.cos(theta), Math.cos(psi)};
+	private static double[] getSincos(Vector rotation) {
+		double sincos[] = {Math.sin(rotation.x), Math.sin(rotation.y), Math.sin(rotation.z),
+						   Math.cos(rotation.x), Math.cos(rotation.y), Math.cos(rotation.z)};
 		
 		return sincos;
-	}
-	
-	// toString
-	public String toString() {
-		return "X: " + (double)Math.round(x * 100000) / 100000D +
-			   "\tY: " + (double)Math.round(y * 100000) / 100000D +
-			   "\tZ: " + (double)Math.round(z * 100000) / 100000D;
 	}
 }
