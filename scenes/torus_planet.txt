@@ -1,13 +1,13 @@
 camera 0 0 -15 0 0 0
-screen 500 500 500 0xffffff 10
+screen 500 500 500 0x0 10
 
-gif 251
+png
 
-torus planet map.png 5.05425 1.31675 0 0 0 -1.5708 0 1.5708 0 0 1
+light . -10 -10 0 1 1 1
+light . -10 -10 -10 1 1 1
 
-sphere heart 0x444444 1.7374 0 0 0 0 0 0 0 0 1
+torus planet map.png 5.05425 1.31675 0 0 0 0 0.7 0 0 0 1
 
-action rotate camera 0 -0.025 0
-action rotateabout camera 0 -0.025 0 0 0 0
+sphere heart 0x444444 0.7374 0 0 0 0 0 0 0 0 1
 
-action rotate planet 0 -0.025 0
+plane stars stars.jpg 50 50 0 0 50 0 1.5708 0 0 0 1
