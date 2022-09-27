@@ -6,8 +6,8 @@ png
 light . -10 -10 0 1 1 1
 light . -10 -10 -10 1 1 1
 
-torus planet map.png 5.05425 1.31675 0 0 0 0 0.7 0 0 0 1
+torus planet map.png 5.05425 1.31675 0 -1 0 0 0.7 0 0 0 1
 
-sphere heart 0x444444 0.7374 0 0 0 0 0 0 0 0 1
+sphere heart 0x444444 0.7374 0 -1 0 0 0 0 0 0 1
 
 plane stars stars.jpg 50 50 0 0 50 0 1.5708 0 0 0 1
