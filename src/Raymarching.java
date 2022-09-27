@@ -32,7 +32,7 @@ public class Raymarching {
 		
 		createJFrame();
 		
-		if (scene.getMaxFrames() != -1) setupGifWriter();
+		if (scene.getOutputFormat() == 1 && scene.getMaxFrames() != -1) setupGifWriter();
 		
 		// The main loop
 		while (true) {
@@ -40,15 +40,28 @@ public class Raymarching {
 			scene.next();
 			label.updateUI();
 			
-			if (scene.getMaxFrames() != -1) {
+			if (scene.getOutputFormat() == 2) {
+				try {
+					ImageIO.write(scene.getScreen().getImage(), "png", new File("output\\" + sceneName + ".png"));
+					System.out.println(sceneName + ".png saved");
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+				break;
+			}
+			
+			if (scene.getOutputFormat() == 1 && scene.getMaxFrames() != -1) {
 				gifWriter.writeToSequence(scene.getScreen().getImage());
 				
 				if (scene.getFrames() >= scene.getMaxFrames()) break;
 			}
 		}
 		
-		if (scene.getMaxFrames() != -1) gifWriter.close();
-		System.out.println(sceneName + ".gif saved");
+		if (scene.getOutputFormat() == 1 && scene.getMaxFrames() != -1) {
+			System.out.println(sceneName + ".gif saved");
+			gifWriter.close();
+		}
 		frame.dispose();
 	}
 	
@@ -86,7 +99,7 @@ public class Raymarching {
 	
 	// Initializes a Gif writer to write the rendered images to a .gif file
 	private static void setupGifWriter() throws IOException{
-		File outputFile = new File("gifs\\" + sceneName + ".gif");
+		File outputFile = new File("output\\" + sceneName + ".gif");
 		gifWriter = new GifSequenceWriter(ImageIO.createImageOutputStream(outputFile), BufferedImage.TYPE_INT_RGB, 1000 / 60, true);
 	}
 }

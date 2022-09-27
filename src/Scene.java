@@ -26,6 +26,8 @@ public class Scene {
 	private int frames;
 	private int maxFrames;
 	
+	private int outputFormat = 0;
+	
 	private boolean suppressWarnings;
 	
 	// Constructors
@@ -86,6 +88,8 @@ public class Scene {
 	public int getFrames() {return frames;}
 	public int getMaxFrames() {return maxFrames;}
 	
+	public int getOutputFormat() {return outputFormat;}
+	
 	// Parsing methods
 	private void scanFile(Scanner scanner) {
 		ArrayList<Shape> removedShapes = new ArrayList<>();
@@ -116,6 +120,12 @@ public class Scene {
 					case "gif":
 					InvalidSetupException.assertLength(line, 3);
 					maxFrames = Integer.parseInt(line[2]);
+					outputFormat = 1;
+					break;
+					
+					case "png":
+					InvalidSetupException.assertLength(line, 2);
+					outputFormat = 2;
 					break;
 					
 					case "screen":
