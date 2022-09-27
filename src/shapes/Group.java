@@ -17,7 +17,7 @@ public class Group extends Shape {
 	public Group(double[] args, double[] dargs) {
 		super(dargs);
 		
-		this.smoothing = Math.min(Math.max(args[0], 0), 1);
+		this.smoothing = Math.min(Math.max(args[0], Shape.MIN_LENGTH), 1);
 		this.shapes = new ArrayList<>();
 		this.modifiers = new ArrayList<>();
 	}
@@ -68,18 +68,20 @@ public class Group extends Shape {
 	public int getColor(Vector v) {
 		if (shapes.size() == 0) return getColor();
 		
+		Vector r = toSurface(v);
+		
 		int pointColor = 0;
 		
 		double[] dists = new double[shapes.size()];
 		double sumDists = 0;
 		
 		for (int i = 0; i < shapes.size(); i++) {
-			dists[i] = smoothing / Math.abs(shapes.get(i).getDistance(v));
+			dists[i] = smoothing / Math.abs(shapes.get(i).getDistance(r));
 			sumDists += dists[i];
 		}
 		
 		for (int i = 0; i < shapes.size(); i++) {
-			pointColor += Color.shade(shapes.get(i).getColor(v), dists[i] / sumDists);
+			pointColor += Color.shade(shapes.get(i).getColor(r), dists[i] / sumDists);
 		}
 		
 		return pointColor;
