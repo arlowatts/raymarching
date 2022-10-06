@@ -78,7 +78,7 @@ public class Ray {
 			reflectedRay.reflect(normal);
 			
 			// Stepping away from the current surface
-			reflectedRay.pos.add(2 * MIN_LENGTH * normal.getX(), 2 * MIN_LENGTH * normal.getY(), 2 * MIN_LENGTH * normal.getZ());
+			reflectedRay.pos.add(2 * MIN_LENGTH * normal.x, 2 * MIN_LENGTH * normal.y, 2 * MIN_LENGTH * normal.z);
 			
 			// Shade the current color by the reflected ray
 			Vector tempShade = new Vector(shade);
@@ -98,9 +98,9 @@ public class Ray {
 		}
 		
 		// Multiply the shade of the pixel by the total brightness and add ambient light
-		shade.stretch(Math.min(1 - brightness.getX() + (double)Color.getR(scene.getScreen().getBgnd()) * Color.RATIO, 1),
-					  Math.min(1 - brightness.getY() + (double)Color.getG(scene.getScreen().getBgnd()) * Color.RATIO, 1),
-					  Math.min(1 - brightness.getZ() + (double)Color.getB(scene.getScreen().getBgnd()) * Color.RATIO, 1));
+		shade.stretch(Math.min(1 - brightness.x + (double)Color.getR(scene.getScreen().getBgnd()) * Color.RATIO, 1),
+					  Math.min(1 - brightness.y + (double)Color.getG(scene.getScreen().getBgnd()) * Color.RATIO, 1),
+					  Math.min(1 - brightness.z + (double)Color.getB(scene.getScreen().getBgnd()) * Color.RATIO, 1));
 		
 		// Add together all of the colors and return the result
 		return Color.shade(hit.getColor(pos), shade) + reflectionColor + refractionColor;
@@ -119,9 +119,9 @@ public class Ray {
 		 * n = the normal vector,
 		 * u = the ratio of refractive indices n1/n2
 		 */
-		dir.add(-dot * normal.getX(), -dot * normal.getY(), -dot * normal.getZ());
+		dir.add(-dot * normal.x, -dot * normal.y, -dot * normal.z);
 		dir.multiply(mu);
-		dir.add(root * normal.getX(), root * normal.getY(), root * normal.getZ());
+		dir.add(root * normal.x, root * normal.y, root * normal.z);
 	}
 	
 	private void reflect(Vector normal) {
@@ -133,7 +133,7 @@ public class Ray {
 		 * t = the resultant vector,
 		 * n = the normal vector
 		 */
-		dir.add(-2 * dot * normal.getX(), -2 * dot * normal.getY(), -2 * dot * normal.getZ());
+		dir.add(-2 * dot * normal.x, -2 * dot * normal.y, -2 * dot * normal.z);
 	}
 	
 	// March rays from the current point to each light source in the scene to find the total brightness of the hit point
@@ -141,7 +141,7 @@ public class Ray {
 		Ray lightRay = new Ray(this.pos, this.dir);
 		
 		// Stepping away from the current surface
-		lightRay.pos.add(2 * MIN_LENGTH * normal.getX(), 2 * MIN_LENGTH * normal.getY(), 2 * MIN_LENGTH * normal.getZ());
+		lightRay.pos.add(2 * MIN_LENGTH * normal.x, 2 * MIN_LENGTH * normal.y, 2 * MIN_LENGTH * normal.z);
 		
 		// Pointing it at the light
 		lightRay.dir.set(light.getPos());
@@ -168,7 +168,7 @@ public class Ray {
 		Vector r = new Vector(pos);
 		
 		double gamma = v.dotProduct(dir) - pos.dotProduct(dir);
-		r.add(gamma * dir.getX(), gamma * dir.getY(), gamma * dir.getZ());
+		r.add(gamma * dir.x, gamma * dir.y, gamma * dir.z);
 		
 		return v.getDistance(r);
 	}
@@ -210,7 +210,7 @@ public class Ray {
 		length += len;
 		lastStep = len;
 		
-		pos.add(dir.getX() * len, dir.getY() * len, dir.getZ() * len);
+		pos.add(dir.x * len, dir.y * len, dir.z * len);
 	}
 	
 	// Getters

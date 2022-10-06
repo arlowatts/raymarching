@@ -22,8 +22,8 @@ public class Torus extends Shape{
 		v.subtract(getPos());
 		v.inverseRotate(getAngle());
 		
-		double a = Math.sqrt(v.getX()*v.getX() + v.getZ()*v.getZ()) - largeRadius;
-		double distance = Math.sqrt(a*a + v.getY()*v.getY()) - smallRadius;
+		double a = Math.sqrt(v.x*v.x + v.z*v.z) - largeRadius;
+		double distance = Math.sqrt(a*a + v.y*v.y) - smallRadius;
 		
 		v.rotate(getAngle());
 		v.add(getPos());
@@ -36,11 +36,11 @@ public class Torus extends Shape{
 		
 		Vector r = toSurface(v);
 		
-		double w = largeRadius - Math.sqrt(r.getX()*r.getX() + r.getZ()*r.getZ());
+		double w = largeRadius - Math.sqrt(r.x*r.x + r.z*r.z);
 		
-		int x = (int)(((r.getZ() < 0 ? 0.25 : 0.75) - Math.atan(r.getX() / r.getZ()) / (Math.PI * 2)) * (getTexture().getWidth() - 1));
+		int x = (int)(((r.z < 0 ? 0.25 : 0.75) - Math.atan(r.x / r.z) / (Math.PI * 2)) * (getTexture().getWidth() - 1));
 		
-		int y = (int)(((r.getY() < 0 ? 0.25 : 0.75) - Math.atan(w / r.getY()) / (Math.PI * 2)) * (getTexture().getHeight() - 1));
+		int y = (int)(((r.y < 0 ? 0.25 : 0.75) - Math.atan(w / r.y) / (Math.PI * 2)) * (getTexture().getHeight() - 1));
 		
 		return getTexture().getRGB(x, y);
 	}
@@ -61,7 +61,6 @@ public class Torus extends Shape{
 	}
 	
 	// Helpers
-	@Override
 	protected void setBoundRadius() {
 		setBoundRadius(largeRadius + smallRadius);
 	}

@@ -31,9 +31,9 @@ public class Color {
 	
 	// Shades the components of a color by corresponding components of a vector
 	public static int shade(int color, Vector v) {
-		return ((int)(getR(color) * v.getX()) << 16) |
-			   ((int)(getG(color) * v.getY()) <<  8) |
-			    (int)(getB(color) * v.getX());
+		return ((int)(getR(color) * v.x) << 16) |
+			   ((int)(getG(color) * v.y) <<  8) |
+			    (int)(getB(color) * v.x);
 	}
 	
 	// Shades a color by another color

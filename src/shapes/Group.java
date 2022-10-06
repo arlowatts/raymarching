@@ -98,7 +98,6 @@ public class Group extends Shape {
 	public void setSmoothing(double smoothing) {this.smoothing = smoothing;}
 	
 	// Helpers
-	@Override
 	protected void setBoundRadius() {
 		setBoundRadius(0);
 		

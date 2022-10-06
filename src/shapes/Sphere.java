@@ -36,9 +36,9 @@ public class Sphere extends Shape{
 		
 		Vector r = toSurface(v);
 		
-		int x = (int)(((r.getZ() < 0 ? 0.25 : 0.75) - Math.atan(r.getX() / r.getZ()) / (Math.PI * 2)) * (getTexture().getWidth() - 1));
+		int x = (int)(((r.z < 0 ? 0.25 : 0.75) - Math.atan(r.x / r.z) / (Math.PI * 2)) * (getTexture().getWidth() - 1));
 		
-		int y = (int)((Math.acos(r.getY() / radius) / Math.PI) * (getTexture().getHeight() - 1));
+		int y = (int)((Math.acos(r.y / radius) / Math.PI) * (getTexture().getHeight() - 1));
 		
 		return getTexture().getRGB(x, y);
 	}
@@ -53,7 +53,6 @@ public class Sphere extends Shape{
 	}
 	
 	// Helpers
-	@Override
 	protected void setBoundRadius() {
 		setBoundRadius(radius);
 	}

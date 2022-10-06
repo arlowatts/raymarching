@@ -17,7 +17,7 @@ public class Box extends Shape {
 		height = Math.max(args[1], Shape.MIN_LENGTH);
 		length = Math.max(args[2], Shape.MIN_LENGTH);
 		
-		edgeRadius = args[3];
+		edgeRadius = Math.max(args[3], 0);
 	}
 	
 	// Methods
@@ -26,11 +26,11 @@ public class Box extends Shape {
 		
 		v1.subtract(getPos());
 		v1.inverseRotate(getAngle());
-		v1.set(Math.abs(v1.getX()) - width + edgeRadius, Math.abs(v1.getY()) - height + edgeRadius, Math.abs(v1.getZ()) - length + edgeRadius);
+		v1.set(Math.abs(v1.x) - width + edgeRadius, Math.abs(v1.y) - height + edgeRadius, Math.abs(v1.z) - length + edgeRadius);
 		
-		Vector v2 = new Vector(Math.max(v1.getX(), 0), Math.max(v1.getY(), 0), Math.max(v1.getZ(), 0));
+		Vector v2 = new Vector(Math.max(v1.x, 0), Math.max(v1.y, 0), Math.max(v1.z, 0));
 		
-		return v2.getLength() + Math.min(Math.max(v1.getX(), Math.max(v1.getY(), v1.getZ())), 0) - edgeRadius;
+		return v2.getLength() + Math.min(Math.max(v1.x, Math.max(v1.y, v1.z)), 0) - edgeRadius;
 	}
 	
 	// Getters
@@ -65,7 +65,6 @@ public class Box extends Shape {
 	}
 	
 	// Helpers
-	@Override
 	protected void setBoundRadius() {
 		setBoundRadius(Math.sqrt(width*width + height*height + length*length));
 	}

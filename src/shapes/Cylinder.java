@@ -24,12 +24,12 @@ public class Cylinder extends Shape {
 		v.subtract(getPos());
 		v.inverseRotate(getAngle());
 		
-		Vector v1 = new Vector(Math.sqrt(v.getX()*v.getX() + v.getZ()*v.getZ()) - radius + edgeRadius, Math.abs(v.getY()) - height + edgeRadius, 0);
+		Vector v1 = new Vector(Math.sqrt(v.x*v.x + v.z*v.z) - radius + edgeRadius, Math.abs(v.y) - height + edgeRadius, 0);
 		
-		double dist = Math.min(Math.max(v1.getX(), v1.getY()), 0);
+		double dist = Math.min(Math.max(v1.x, v1.y), 0);
 		
-		v1.setX(Math.max(v1.getX(), 0));
-		v1.setY(Math.max(v1.getY(), 0));
+		v1.x = Math.max(v1.x, 0);
+		v1.y = Math.max(v1.y, 0);
 		
 		v.rotate(getAngle());
 		v.add(getPos());
@@ -62,7 +62,6 @@ public class Cylinder extends Shape {
 	}
 	
 	// Helpers
-	@Override
 	protected void setBoundRadius() {
 		setBoundRadius(Math.sqrt(radius*radius + height*height));
 	}

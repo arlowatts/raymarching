@@ -6,7 +6,7 @@ import java.lang.Math;
 A class to store a set of three doubles and perform calculations on them.
 */
 public class Vector {
-	private double x, y, z;
+	public double x, y, z;
 	
 	/**
 	Creates a new vector with the specified x, y, and z values.
@@ -119,10 +119,10 @@ public class Vector {
 	}
 	
 	// Adds the values to itself
-	public void add(double x, double y, double z) {
-		this.x += x;
-		this.y += y;
-		this.z += z;
+	public void add(double x1, double y1, double z1) {
+		x += x1;
+		y += y1;
+		z += z1;
 	}
 	
 	// Adds the vector to itself
@@ -137,6 +137,13 @@ public class Vector {
 		x += v.x * scale;
 		y += v.y * scale;
 		z += v.z * scale;
+	}
+	
+	// Adds the values to itself
+	public void subtract(double x1, double y1, double z1) {
+		x += x1;
+		y += y1;
+		z += z1;
 	}
 	
 	// Subtracts the vector from itself
@@ -167,30 +174,24 @@ public class Vector {
 		z *= lz;
 	}
 	
-	public double getX() {return x;}
-	public double getY() {return y;}
-	public double getZ() {return z;}
-	
 	public double getLength() {
 		return Math.sqrt(x*x + y*y + z*z);
 	}
 	
-	public void setX(double x) {this.x = x;}
-	public void setY(double y) {this.y = y;}
-	public void setZ(double z) {this.z = z;}
+	public void setLength(double length) {
+		multiply(length / getLength());
+	}
 	
-	public void set(double x, double y, double z) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+	public void set(double x1, double y1, double z1) {
+		x = x1;
+		y = y1;
+		z = z1;
 	}
 	
 	public void set(Vector v) {
-		set(v.x, v.y, v.z);
-	}
-	
-	public void setLength(double length) {
-		multiply(length / getLength());
+		x = v.x;
+		y = v.y;
+		z = v.z;
 	}
 	
 	private static double[] getSincos(Vector rotation) {

@@ -24,7 +24,7 @@ public class Plane extends Shape {
 		v1.subtract(getPos());
 		v1.inverseRotate(getAngle());
 		
-		v1.add(-Math.min(Math.max(-width, v1.getX()), width), 0, -Math.min(Math.max(-length, v1.getZ()), length));
+		v1.add(-Math.min(Math.max(-width, v1.x), width), 0, -Math.min(Math.max(-length, v1.z), length));
 		
 		return v1.getLength();
 	}
@@ -32,7 +32,7 @@ public class Plane extends Shape {
 	public Vector getNormal(Vector v) {
 		v.inverseRotate(getAngle(), getPos());
 		
-		Vector normal = new Vector(0, v.getY() > getPos().getY() ? 1 : -1, 0);
+		Vector normal = new Vector(0, v.y > getPos().y ? 1 : -1, 0);
 		
 		v.rotate(getAngle(), getPos());
 		
@@ -46,8 +46,8 @@ public class Plane extends Shape {
 		
 		Vector r = toSurface(v);
 		
-		int x = (int)(Math.min(Math.max(r.getX() / (width * 2) + 0.5, 0), 1) * (getTexture().getWidth() - 1));
-		int y = (int)(Math.min(Math.max(r.getZ() / (length * 2) + 0.5, 0), 1) * (getTexture().getHeight() - 1));
+		int x = (int)(Math.min(Math.max(r.x / (width * 2) + 0.5, 0), 1) * (getTexture().getWidth() - 1));
+		int y = (int)(Math.min(Math.max(r.z / (length * 2) + 0.5, 0), 1) * (getTexture().getHeight() - 1));
 		
 		return getTexture().getRGB(x, y);
 	}
@@ -73,7 +73,6 @@ public class Plane extends Shape {
 	}
 	
 	// Helpers
-	@Override
 	protected void setBoundRadius() {
 		setBoundRadius(Math.sqrt(width*width + length*length));
 	}
