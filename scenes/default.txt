@@ -1,34 +1,22 @@
-camera 0 0 -10 -1.5708 0 1.5708
-screen 750 500 500 0x505050 3
+camera 0 5 -15 0 0.5 0
+screen 750 500 500 0xa0a0a0 3
 
-gif 126
+png
 
-light . 3 0 3 1 1 1
-light . -3 0 3 1 1 1
-light . 3 0 -3 1 1 1
-light . -3 0 -3 1 1 1
+light . 0 0 0 1 1 1
 
-sphere earth 0xffffff 1 0 0 0 0 0 0 0.9 0.9 1.5
+plane . 0xffffff 10 10 0 -5 0 0 0 0 0.5 0 1
 
-//box mybox 0x00ff00 1 1 0.3 0.1 0 0 -5 -1.5708 0 1.5708 0 0.7 2
+cylinder . 0x325188 2 3 0.3 0 -2 7 0 0 0 0.8 0 1
 
-sphere s1 0x995511 1 1.5 2 -1 0 0 0 0 0 1
-box b1 0x119955 2.1 3.14 1.23 0.1 1 -0.5 0.25 0 0 0.1 0.5 0 1
-torus t1 earth.jpg 2 0.2 0 0 0 0 1 0 0.2 0 1
+box . 0x009162 3 2 2 0.2 -7 -3 7 -1.5708 0.75 1.5708 0.4 0 1
 
-group . b1,s1,&t1 0.9 0 0 0 0 0 0 0 0 0
+torus . 0xdcdc24 1.75 0.25 -7 -3 -5 0 1.5708 0 0 0 1
 
-box . 0x7bc4a8 0.8 1.9 2.4 0.4 -1.5 -2 -1.5 -0.2 0 0.2 0.5 0 0
+sphere . 0xff5588 2 -5 -3 0 0 0 0 0 0.5 1.02
 
-plane . 0xff66ff 4 4 0 -5 0 -1 0 -1 0.75 0 1
+box b1 0xffcccc 2 2 2 0.75 0 0 0 -1.5708 -0.75 1.5708 0 0 1
+torus t1 colorful_pixels.png 1.5 0.5 2 0 -1 0 1.5708 0 0 0 1
+group . b1,t1 1 5 -3 3 0 0 0 0.1 0 1
 
-cylinder c1 0x4f7a42 1 5 0.4 -1 -2 3 -2.9 0 -0.1 0.4 0 1
-
-action rotate camera 0 -0.05 0
-action rotateabout camera -1.5708 -0.05 1.5708 0 0 0
-
-//action rotate mybox 0 0.1 0
-//action rotateabout mybox 0 0.15 0 0 0 0
-
-action rotate t1 0.1 0.1 0.1
-action rotate c1 0.025 0 0
+cone . 0x649f65 1.5 4 0.5 -5 0.5 0 0 0 0 0 1
