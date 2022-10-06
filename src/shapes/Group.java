@@ -53,6 +53,26 @@ public class Group extends Shape {
 		return minDist;
 	}
 	
+	public int getColor(Vector v) {
+		if (shapes.size() == 0) return getColor();
+		
+		int pointColor = 0;
+		
+		double[] dists = new double[shapes.size()];
+		double sumDists = 0;
+		
+		for (int i = 0; i < shapes.size(); i++) {
+			dists[i] = smoothing / Math.abs(shapes.get(i).getDistance(v));
+			sumDists += dists[i];
+		}
+		
+		for (int i = 0; i < shapes.size(); i++) {
+			pointColor += Color.shade(shapes.get(i).getColor(v), dists[i] / sumDists);
+		}
+		
+		return pointColor;
+	}
+	
 	public void add(Shape object, char modifier) {
 		shapes.add(object);
 		modifiers.add(modifier);
@@ -63,28 +83,6 @@ public class Group extends Shape {
 		shapes.remove(i);
 		modifiers.remove(i);
 		setBoundRadius();
-	}
-	
-	public int getColor(Vector v) {
-		if (shapes.size() == 0) return getColor();
-		
-		Vector r = toSurface(v);
-		
-		int pointColor = 0;
-		
-		double[] dists = new double[shapes.size()];
-		double sumDists = 0;
-		
-		for (int i = 0; i < shapes.size(); i++) {
-			dists[i] = smoothing / Math.abs(shapes.get(i).getDistance(r));
-			sumDists += dists[i];
-		}
-		
-		for (int i = 0; i < shapes.size(); i++) {
-			pointColor += Color.shade(shapes.get(i).getColor(r), dists[i] / sumDists);
-		}
-		
-		return pointColor;
 	}
 	
 	// Getters
