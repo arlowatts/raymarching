@@ -2,7 +2,7 @@ package src.shapes;
 
 import java.lang.Math;
 
-public class Torus extends Shape{
+public class Torus extends Shape {
 	// Constants
 	public static final String[] PARAMS = {"largeRadius", "smallRadius"};
 

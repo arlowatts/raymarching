@@ -2,7 +2,7 @@ package src.shapes;
 
 import java.lang.Math;
 
-public class Sphere extends Shape{
+public class Sphere extends Shape {
 	// Constants
 	public static final String[] PARAMS = {"radius"};
 
