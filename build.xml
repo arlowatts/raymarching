@@ -10,7 +10,7 @@
 	</target>
 
 	<target name="compile" depends="init">
-		<javac srcdir="${src}" destdir="${build}" includeantruntime="false"/>
+		<javac srcdir="${src}" destdir="${build}" includes="${src}/**" includeantruntime="false"/>
 	</target>
 
 	<target name="run" depends="compile">
