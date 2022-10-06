@@ -149,9 +149,9 @@ public class Vector {
 	
 	// Adds the values to itself
 	public void subtract(double x1, double y1, double z1) {
-		x += x1;
-		y += y1;
-		z += z1;
+		x -= x1;
+		y -= y1;
+		z -= z1;
 	}
 	
 	// Subtracts the vector from itself
