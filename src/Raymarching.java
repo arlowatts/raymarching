@@ -61,6 +61,7 @@ public class Raymarching {
 		if (scene.getOutputFormat() == 1 && scene.getMaxFrames() != -1) {
 			System.out.println(sceneName + ".gif saved");
 			gifWriter.close();
+			frame.dispose();
 		}
 	}
 	
