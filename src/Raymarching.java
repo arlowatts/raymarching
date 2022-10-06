@@ -34,15 +34,13 @@ public class Raymarching {
 		
 		if (scene.getOutputFormat() == 1 && scene.getMaxFrames() != -1) setupGifWriter();
 		
-		boolean written = false;
-		
 		// The main loop
 		while (true) {
 			// Update and display the current frame
 			scene.next();
 			label.updateUI();
 			
-			if (!written && scene.getOutputFormat() == 2) {
+			if (scene.getOutputFormat() == 2) {
 				try {
 					ImageIO.write(scene.getScreen().getImage(), "png", new File("output\\" + sceneName + ".png"));
 					System.out.println(sceneName + ".png saved");
@@ -50,8 +48,6 @@ public class Raymarching {
 				catch (IOException e) {
 					e.printStackTrace();
 				}
-				
-				written = true;
 			}
 			
 			if (scene.getOutputFormat() == 1 && scene.getMaxFrames() != -1) {
@@ -65,7 +61,6 @@ public class Raymarching {
 			System.out.println(sceneName + ".gif saved");
 			gifWriter.close();
 		}
-		frame.dispose();
 	}
 	
 	// Helpers
