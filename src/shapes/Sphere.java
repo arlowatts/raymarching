@@ -14,11 +14,17 @@ public class Sphere extends Shape{
 		super(dargs);
 		
 		radius = Math.max(args[0], Shape.MIN_LENGTH);
+		
+		setBoundRadius();
 	}
 	
 	// Methods
 	public double getDistance(Vector v) {
 		return getPos().getDistance(v) - radius;
+	}
+	
+	protected void setBoundRadius() {
+		setBoundRadius(radius);
 	}
 	
 	public Vector getNormal(Vector v) {
@@ -50,10 +56,5 @@ public class Sphere extends Shape{
 	public void setRadius(double r) {
 		radius = r;
 		setBoundRadius();
-	}
-	
-	// Helpers
-	protected void setBoundRadius() {
-		setBoundRadius(radius);
 	}
 }

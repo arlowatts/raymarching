@@ -15,6 +15,8 @@ public class Torus extends Shape{
 		
 		largeRadius = Math.max(args[0], Shape.MIN_LENGTH);
 		smallRadius = Math.max(args[1], Shape.MIN_LENGTH);
+		
+		setBoundRadius();
 	}
 	
 	// Methods
@@ -29,6 +31,10 @@ public class Torus extends Shape{
 		v.add(getPos());
 		
 		return distance;
+	}
+	
+	protected void setBoundRadius() {
+		setBoundRadius(largeRadius + smallRadius);
 	}
 	
 	public int getColor(Vector v) {
@@ -58,10 +64,5 @@ public class Torus extends Shape{
 	public void setSmallRadius(double r) {
 		smallRadius = r;
 		setBoundRadius();
-	}
-	
-	// Helpers
-	protected void setBoundRadius() {
-		setBoundRadius(largeRadius + smallRadius);
 	}
 }

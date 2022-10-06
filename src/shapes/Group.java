@@ -18,6 +18,7 @@ public class Group extends Shape {
 		super(dargs);
 		
 		this.smoothing = Math.min(Math.max(args[0], Shape.MIN_LENGTH), 1);
+		
 		this.shapes = new ArrayList<>();
 		this.modifiers = new ArrayList<>();
 	}
@@ -26,35 +27,49 @@ public class Group extends Shape {
 	public double getDistance(Vector v) {
 		if (shapes.size() == 0) return getPos().getDistance(v);
 		
-		v.subtract(getPos());
-		v.inverseRotate(getAngle());
+		Vector r = new Vector(v);
 		
-		double minDist = shapes.get(0).getDistance(v);
+		r.subtract(getPos());
+		r.inverseRotate(getAngle());
+		
+		double minDist = shapes.get(0).getDistance(r);
 		
 		for (int i = 1; i < shapes.size(); i++) {
 			switch (modifiers.get(i)) {
 				case '+':
-				minDist = smoothUnion(minDist, shapes.get(i).getDistance(v));
+				minDist = smoothUnion(minDist, shapes.get(i).getDistance(r));
 				break;
 				
 				case '-':
-				minDist = smoothDifference(minDist, shapes.get(i).getDistance(v));
+				minDist = smoothDifference(minDist, shapes.get(i).getDistance(r));
 				break;
 				
 				case '&':
-				minDist = smoothIntersection(minDist, shapes.get(i).getDistance(v));
+				minDist = smoothIntersection(minDist, shapes.get(i).getDistance(r));
 				break;
 			}
 		}
 		
-		v.rotate(getAngle());
-		v.add(getPos());
-		
 		return minDist;
+	}
+	
+	protected void setBoundRadius() {
+		setBoundRadius(0);
+		
+		for (int i = 0; i < shapes.size(); i++) {
+			if (modifiers.get(i) == '+') {
+				setBoundRadius(Math.max(shapes.get(i).getPos().getLength() + shapes.get(i).getBoundRadius(), getBoundRadius()));
+			}
+		}
 	}
 	
 	public int getColor(Vector v) {
 		if (shapes.size() == 0) return getColor();
+		
+		Vector r = new Vector(v);
+		
+		r.subtract(getPos());
+		r.inverseRotate(getAngle());
 		
 		int pointColor = 0;
 		
@@ -62,12 +77,12 @@ public class Group extends Shape {
 		double sumDists = 0;
 		
 		for (int i = 0; i < shapes.size(); i++) {
-			dists[i] = smoothing / Math.abs(shapes.get(i).getDistance(v));
+			dists[i] = smoothing / Math.abs(shapes.get(i).getDistance(r));
 			sumDists += dists[i];
 		}
 		
 		for (int i = 0; i < shapes.size(); i++) {
-			pointColor += Color.shade(shapes.get(i).getColor(v), dists[i] / sumDists);
+			pointColor += Color.shade(shapes.get(i).getColor(r), dists[i] / sumDists);
 		}
 		
 		return pointColor;
@@ -86,11 +101,13 @@ public class Group extends Shape {
 	}
 	
 	// Getters
-	public Shape get(int i) {
+	public double getSmoothing() {return smoothing;}
+	
+	public Shape getShape(int i) {
 		return shapes.get(i);
 	}
 	
-	public char getMod(int i) {
+	public char getModifier(int i) {
 		return modifiers.get(i);
 	}
 	
@@ -98,16 +115,6 @@ public class Group extends Shape {
 	public void setSmoothing(double smoothing) {this.smoothing = smoothing;}
 	
 	// Helpers
-	protected void setBoundRadius() {
-		setBoundRadius(0);
-		
-		for (int i = 0; i < shapes.size(); i++) {
-			if (modifiers.get(i) == '+') {
-				setBoundRadius(Math.max(shapes.get(i).getPos().getLength() + shapes.get(i).getBoundRadius(), getBoundRadius()));
-			}
-		}
-	}
-	
 	private double smoothUnion(double a, double b) {
 		double h = Math.min(Math.max(0.5 + 0.5 * (a - b) / smoothing, 0), 1);
 		return lerp(a, b, h) - smoothing * h * (1 - h);

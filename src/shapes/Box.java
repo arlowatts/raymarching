@@ -18,6 +18,8 @@ public class Box extends Shape {
 		length = Math.max(args[2], Shape.MIN_LENGTH);
 		
 		edgeRadius = Math.max(args[3], 0);
+		
+		setBoundRadius();
 	}
 	
 	// Methods
@@ -31,6 +33,10 @@ public class Box extends Shape {
 		Vector v2 = new Vector(Math.max(v1.x, 0), Math.max(v1.y, 0), Math.max(v1.z, 0));
 		
 		return v2.getLength() + Math.min(Math.max(v1.x, Math.max(v1.y, v1.z)), 0) - edgeRadius;
+	}
+	
+	protected void setBoundRadius() {
+		setBoundRadius(Math.sqrt(width*width + height*height + length*length));
 	}
 	
 	// Getters
@@ -62,10 +68,5 @@ public class Box extends Shape {
 		height = h;
 		length = l;
 		setBoundRadius();
-	}
-	
-	// Helpers
-	protected void setBoundRadius() {
-		setBoundRadius(Math.sqrt(width*width + height*height + length*length));
 	}
 }

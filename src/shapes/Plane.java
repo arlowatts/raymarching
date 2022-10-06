@@ -15,6 +15,8 @@ public class Plane extends Shape {
 		
 		width = args[0];
 		length = args[1];
+		
+		setBoundRadius();
 	}
 	
 	// Methods
@@ -27,6 +29,10 @@ public class Plane extends Shape {
 		v1.add(-Math.min(Math.max(-width, v1.x), width), 0, -Math.min(Math.max(-length, v1.z), length));
 		
 		return v1.getLength();
+	}
+	
+	protected void setBoundRadius() {
+		setBoundRadius(Math.sqrt(width*width + length*length));
 	}
 	
 	public Vector getNormal(Vector v) {
@@ -70,10 +76,5 @@ public class Plane extends Shape {
 		width = w;
 		length = l;
 		setBoundRadius();
-	}
-	
-	// Helpers
-	protected void setBoundRadius() {
-		setBoundRadius(Math.sqrt(width*width + length*length));
 	}
 }

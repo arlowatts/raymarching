@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 
 /*
- * A class designed to be extended
  * Contains methods and variables a 3D shape will need, such as position and surface properties
  */
 public abstract class Shape {
@@ -21,13 +20,13 @@ public abstract class Shape {
 	// Member variables
 	private Vector pos, angle;
 	
+	// Reflectivity, transparency, and refractive index are all universal properties of the surface
+	private double reflectivity, transparency, refrIndex;
+	
 	// The subclass of Shape should define how the texture maps to the surface
 	private BufferedImage texture;
 	// If the texture is null, a color will be used instead
 	private int color;
-	
-	// Reflectivity, transparency, and refractive index are all universal properties of the surface
-	private double reflectivity, transparency, refrIndex;
 	
 	// boundRadius represents the size of the smallest sphere centered at pos that can completely contain the shape
 	// The subclass of Shape must define how it is calculated
@@ -44,7 +43,7 @@ public abstract class Shape {
 		
 		color = 0;
 		
-		boundRadius = -1;
+		boundRadius = 0;
 	}
 	
 	// Abstract methods
@@ -94,10 +93,7 @@ public abstract class Shape {
 	public double getTransparency() {return transparency;}
 	public double getRefrIndex() {return refrIndex;}
 	
-	public double getBoundRadius() {
-		if (boundRadius == -1) setBoundRadius();
-		return boundRadius;
-	}
+	public double getBoundRadius() {return boundRadius;}
 	
 	public int getColor() {return color;}
 	public BufferedImage getTexture() {return texture;}
