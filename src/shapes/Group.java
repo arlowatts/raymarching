@@ -27,28 +27,29 @@ public class Group extends Shape {
 	public double getDistance(Vector v) {
 		if (shapes.size() == 0) return getPos().getDistance(v);
 		
-		Vector r = new Vector(v);
+		v.subtract(getPos());
+		v.inverseRotate(getAngle());
 		
-		r.subtract(getPos());
-		r.inverseRotate(getAngle());
-		
-		double minDist = shapes.get(0).getDistance(r);
+		double minDist = shapes.get(0).getDistance(v);
 		
 		for (int i = 1; i < shapes.size(); i++) {
 			switch (modifiers.get(i)) {
 				case '+':
-				minDist = smoothUnion(minDist, shapes.get(i).getDistance(r));
+				minDist = smoothUnion(minDist, shapes.get(i).getDistance(v));
 				break;
 				
 				case '-':
-				minDist = smoothDifference(minDist, shapes.get(i).getDistance(r));
+				minDist = smoothDifference(minDist, shapes.get(i).getDistance(v));
 				break;
 				
 				case '&':
-				minDist = smoothIntersection(minDist, shapes.get(i).getDistance(r));
+				minDist = smoothIntersection(minDist, shapes.get(i).getDistance(v));
 				break;
 			}
 		}
+		
+		v.rotate(getAngle());
+		v.add(getPos());
 		
 		return minDist;
 	}
@@ -66,10 +67,8 @@ public class Group extends Shape {
 	public int getColor(Vector v) {
 		if (shapes.size() == 0) return getColor();
 		
-		Vector r = new Vector(v);
-		
-		r.subtract(getPos());
-		r.inverseRotate(getAngle());
+		v.subtract(getPos());
+		v.inverseRotate(getAngle());
 		
 		int pointColor = 0;
 		
@@ -77,13 +76,16 @@ public class Group extends Shape {
 		double sumDists = 0;
 		
 		for (int i = 0; i < shapes.size(); i++) {
-			dists[i] = smoothing / Math.abs(shapes.get(i).getDistance(r));
+			dists[i] = smoothing / Math.abs(shapes.get(i).getDistance(v));
 			sumDists += dists[i];
 		}
 		
 		for (int i = 0; i < shapes.size(); i++) {
-			pointColor += Color.shade(shapes.get(i).getColor(r), dists[i] / sumDists);
+			pointColor += Color.shade(shapes.get(i).getColor(v), dists[i] / sumDists);
 		}
+		
+		v.rotate(getAngle());
+		v.add(getPos());
 		
 		return pointColor;
 	}
