@@ -48,6 +48,7 @@ public class Raymarching {
 				catch (IOException e) {
 					e.printStackTrace();
 				}
+				break;
 			}
 			
 			if (scene.getOutputFormat() == 1 && scene.getMaxFrames() != -1) {
