@@ -18,8 +18,6 @@ public class Box extends Shape {
 		length = Math.max(args[2], Shape.MIN_LENGTH);
 		
 		edgeRadius = Math.max(args[3], 0);
-		
-		setBoundRadius();
 	}
 	
 	// Methods
@@ -48,17 +46,17 @@ public class Box extends Shape {
 	// Setters
 	public void setWidth(double w) {
 		width = w;
-		setBoundRadius();
+		setBoundRadius(-1);
 	}
 	
 	public void setHeight(double h) {
 		height = h;
-		setBoundRadius();
+		setBoundRadius(-1);
 	}
 	
 	public void setLength(double l) {
 		length = l;
-		setBoundRadius();
+		setBoundRadius(-1);
 	}
 	
 	public void setRadius(double r) {edgeRadius = r;}
@@ -67,6 +65,6 @@ public class Box extends Shape {
 		width = w;
 		height = h;
 		length = l;
-		setBoundRadius();
+		setBoundRadius(-1);
 	}
 }

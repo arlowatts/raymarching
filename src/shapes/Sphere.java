@@ -14,8 +14,6 @@ public class Sphere extends Shape {
 		super(dargs);
 		
 		radius = Math.max(args[0], Shape.MIN_LENGTH);
-		
-		setBoundRadius();
 	}
 	
 	// Methods
@@ -55,6 +53,6 @@ public class Sphere extends Shape {
 	// Setters
 	public void setRadius(double r) {
 		radius = r;
-		setBoundRadius();
+		setBoundRadius(-1);
 	}
 }

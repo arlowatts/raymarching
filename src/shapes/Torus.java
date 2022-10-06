@@ -15,8 +15,6 @@ public class Torus extends Shape {
 		
 		largeRadius = Math.max(args[0], Shape.MIN_LENGTH);
 		smallRadius = Math.max(args[1], Shape.MIN_LENGTH);
-		
-		setBoundRadius();
 	}
 	
 	// Methods
@@ -58,11 +56,11 @@ public class Torus extends Shape {
 	// Setters
 	public void setLargeRadius(double r) {
 		largeRadius = r;
-		setBoundRadius();
+		setBoundRadius(-1);
 	}
 	
 	public void setSmallRadius(double r) {
 		smallRadius = r;
-		setBoundRadius();
+		setBoundRadius(-1);
 	}
 }

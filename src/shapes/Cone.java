@@ -12,8 +12,6 @@ public class Cone extends Shape {
 		
 		radius = Math.max(args[0], MIN_LENGTH);
 		height = Math.max(args[1], MIN_LENGTH);
-		
-		setBoundRadius();
 	}
 	
 	public double getDistance(Vector v) {
@@ -64,5 +62,18 @@ public class Cone extends Shape {
 		v.add(getPos());
 		
 		return n;
+	}
+	
+	public double getRadius() {return radius;}
+	public double getHeight() {return height;}
+	
+	public void setRadius(double r) {
+		radius = r;
+		setBoundRadius(-1);
+	}
+	
+	public void setHeight(double h) {
+		height = h;
+		setBoundRadius(-1);
 	}
 }

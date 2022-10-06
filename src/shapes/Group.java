@@ -93,13 +93,13 @@ public class Group extends Shape {
 	public void add(Shape object, char modifier) {
 		shapes.add(object);
 		modifiers.add(modifier);
-		setBoundRadius();
+		setBoundRadius(-1);
 	}
 	
 	public void remove(int i) {
 		shapes.remove(i);
 		modifiers.remove(i);
-		setBoundRadius();
+		setBoundRadius(-1);
 	}
 	
 	// Getters

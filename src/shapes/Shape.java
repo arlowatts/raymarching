@@ -43,7 +43,7 @@ public abstract class Shape {
 		
 		color = 0;
 		
-		boundRadius = 0;
+		boundRadius = -1;
 	}
 	
 	// Abstract methods
@@ -93,7 +93,10 @@ public abstract class Shape {
 	public double getTransparency() {return transparency;}
 	public double getRefrIndex() {return refrIndex;}
 	
-	public double getBoundRadius() {return boundRadius;}
+	public double getBoundRadius() {
+		if (boundRadius == -1) setBoundRadius();
+		return boundRadius;
+	}
 	
 	public int getColor() {return color;}
 	public BufferedImage getTexture() {return texture;}
