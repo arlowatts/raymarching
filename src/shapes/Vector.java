@@ -113,6 +113,14 @@ public class Vector {
 		return x*v.x + y*v.y + z*v.z;
 	}
 	
+	public double getLength() {
+		return Math.sqrt(x*x + y*y + z*z);
+	}
+	
+	public void setLength(double length) {
+		multiply(length / getLength());
+	}
+	
 	/*Returns the distance between the endpoints of itself and another vector, or the length of their difference.*/
 	public double getDistance(Vector v) {
 		return Math.sqrt((v.x-x)*(v.x-x) + (v.y-y)*(v.y-y) + (v.z-z)*(v.z-z));
@@ -167,19 +175,19 @@ public class Vector {
 		z *= l;
 	}
 	
+	// Divides itself by a scalar
+	public void divide(double l) {
+		l = 1 / l;
+		x *= l;
+		y *= l;
+		z *= l;
+	}
+	
 	// Rescales itself by values lx, ly, lz
 	public void stretch(double lx, double ly, double lz) {
 		x *= lx;
 		y *= ly;
 		z *= lz;
-	}
-	
-	public double getLength() {
-		return Math.sqrt(x*x + y*y + z*z);
-	}
-	
-	public void setLength(double length) {
-		multiply(length / getLength());
 	}
 	
 	public void set(double x1, double y1, double z1) {
