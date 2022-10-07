@@ -1,8 +1,8 @@
 camera 0 15 -15 0 0.7 0
-screen 750 500 350 0x404000 10
+screen 1500 1000 600 0x404000 10
 
-gif 63
-//png
+//gif 63
+png
 
 light flame 16.5 15 10 1 0.8 0
 action rotateabout flame 0.2589 1.5122 -0.2325 16 15 10
