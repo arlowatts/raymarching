@@ -1,22 +1,18 @@
-camera 0 20 -30 0 0.5 0
-screen 750 500 500 0x0 10
+camera 0 15 -15 0 0.7 0
+screen 750 500 350 0x404000 10
 
-//gif 63
+gif 63
 //png
 
-light . -20 20 -20 0.3 0.3 0
-light . -20 20 20 0.3 0.3 0
-light . 20 20 -20 0.3 0.3 0
-light . 20 20 20 0.3 0.3 0
+light flame 16.5 15 10 1 0.8 0
+action rotateabout flame 0.2589 1.5122 -0.2325 16 15 10
 
-light . 16 10 10 1 0.8 0
-cylinder . 0xd0c0a0 1 4.5 0.2 16 4.5 10 0 0 0 0 0 1
-
-cylinder . 0x807850 1.2 1 0 16 1 10 0 0 0 0.4 0 1
+cylinder . 0xd0c0a0 1 6 0.2 16 6 10 0 0 0 0 0 1
+cylinder . 0x807850 1.2 2 0 16 2 10 0 0 0 0.4 0 1
 
 torus cndlstk_bowl 0x807850 3 1 0 1 0 0 0 0 0 0 1
 torus cndlstk_bowl_cutout1 0x807850 3 0.8 0 1 0 0 0 0 0 0 1
-sphere cndlstk_bowl_cutout2 0x807850 5 0 5 0 0 0 0 0 0 1
+sphere cndlstk_bowl_cutout2 0x807850 5 0 4.5 0 0 0 0 0 0 1
 cylinder cndlstk_base 0x807850 3 0.1 0 0 0.1 0 0 0 0 0 0 1
 group . cndlstk_bowl,-cndlstk_bowl_cutout1,-cndlstk_bowl_cutout2,cndlstk_base 0 16 0 10 0 0 0 0.4 0 1
 
@@ -26,22 +22,26 @@ plane desk3 wood.jpg 11 8 11 0 -8 0 0 0 0 0 1
 plane desk4 wood.jpg 11 8 11 0 8 0 0 0 0 0 1
 group . desk1,desk2,desk3,desk4 0.2 0 0 0 0 0 0 0 0 1
 
+plane . drawers.jpg 22 10 0 10 16 0 1.5708 0 0 0 1
+plane . drawers.jpg 22 10 -22 10 -6 1.5708 1.5708 0 0 0 1
+plane . drawers.jpg 22 10 22 10 -6 1.5708 1.5708 0 0 0 1
+plane . 0x0 22 10 0 10 -16 0 1.5708 0 0 0 1
+plane . 0x0 22 16 0 20 0 0 0 0 0 0 1
+
 cylinder . 0x325188 2 3 0.3 0 3 7 0 0 0 0.8 0 1
 
 box . 0x009162 3 2 2 0.2 -7 2 7 -1.5708 0.75 1.5708 0.4 0 1
 
-torus . 0xdcdc24 1.75 0.25 -7 2 -5 1 1.5708 0 0 0 1
+torus . 0xdcdc24 1.75 0.25 7 2 -1 -1 1.5708 0 0 0 1
 
 sphere s1 earth.jpg 2 -5 2 0 -1.5708 0 1.5708 0 0 1
 action rotate s1 0 0.1 0
 
-box b1 0xffcccc 2 2 2 0.75 -2.5 0 1 -1.5708 -0.75 1.5708 0 0 1
-torus t1 colorful_pixels.png 1.5 0.5 0 0 0 0 1.5708 0 0 0 1
-group . b1,t1 1 7 2 5 -0.7 0.4 0 0.1 0 1
+box b1 0xffcccc 2 2 2 0.75 0 0 0 0 0 0 0 0 1
+torus t1 colorful_pixels.png 1.5 0.5 0 2 0 -0.3 -0.3 0 0 0 1
+group . b1,t1 1 6 2 6 0 0 0 0.1 0 1
 
 cone c1 0x649f65 1.5 4 0 0 0 0.5 0 0 0 0 1
 group g2 c1 0 0.5 2 0.5 -1.5708 0 1.5708 0.1 0 1
 
-box b2 0x0000ff 2 2 1 0 6 2 -5 0 0 0 0 0.8 1.5
-
-sphere . 0xff0000 1 0 7 7 0 0 0 0 0 1
+sphere . 0x55bbdd 1 0 7 7 0 0 0 0 0 1
