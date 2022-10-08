@@ -21,9 +21,9 @@ box b1 0xffcccc 2 2 2 0.75 -2 0 1 -1.5708 -0.75 1.5708 0 0 1
 torus t1 colorful_pixels.png 1.5 0.5 0 0 0 0 1.5708 0 0 0 1
 group . b1,t1 1 7 2 5 -0.7 0 0 0.1 0 1
 
-cone c1 0x649f65 1.5 4 0 0 0 0.5 0 0 0 0 1
+cone c1 0x649f65 1.5 4 1 0 0 0 0.5 0 0 0 0 1
 group g2 c1 0 0.5 2 0.5 -1.5708 0 1.5708 0.1 0 1
 action rotate g2 0 0.1 0
 
-box b2 0x0000ff 2 2 1 0 3 5 -5 0 0 0 0 0.8 1.5
-action rotateabout b2 0.3 0 0 3.1 5 -5
+//box b2 0x0000ff 2 2 1 0 3 5 -5 0 0 0 0 0.8 1.5
+//action rotateabout b2 0.3 0 0 3.1 5 -5
