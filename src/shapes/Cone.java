@@ -23,17 +23,10 @@ public class Cone extends Shape {
 		v.rotate(getAngle());
 		v.add(getPos());
 		
-		Vector a = new Vector(radius, 0, 0);
-		Vector b = new Vector(-radius, height, 0);
+		double epsilon = Math.min(Math.max((q.dotProduct(-radius, height, 0) + radius*radius) / (radius*radius + height*height), 0), 1);
 		
-		double gamma = Math.min(Math.max((q.dotProduct(b) - a.dotProduct(b)) / b.dotProduct(b), 0), 1);
-		
-		b.multiply(gamma);
-		a.add(b);
-		
-		Vector c = new Vector(Math.min(q.x, radius), 0, 0);
-		
-		double distance = Math.min(q.getDistance(a), q.getDistance(c));
+		double distance = Math.min(q.getDistance(radius * (1 - epsilon), height * epsilon, 0),
+								   q.x < radius ? Math.abs(q.y) : q.getDistance(radius, 0, 0));
 		
 		if (q.y > 0 && q.y < height && q.x < radius * (height - q.y) / height) distance *= -1;
 		
@@ -41,7 +34,7 @@ public class Cone extends Shape {
 	}
 	
 	protected void setBoundRadius() {
-		setBoundRadius(Math.sqrt(radius*radius + height*height/4));
+		setBoundRadius(Math.sqrt(radius*radius + height*height / 4));
 	}
 	
 	public Vector getNormal(Vector v) {
