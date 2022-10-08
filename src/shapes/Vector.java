@@ -109,6 +109,11 @@ public class Vector {
 	}
 	
 	/*Returns the dot product of itself and another vector.*/
+	public double dotProduct(double x1, double y1, double z1) {
+		return x*x1 + y*y1 + z*z1;
+	}
+	
+	/*Returns the dot product of itself and another vector.*/
 	public double dotProduct(Vector v) {
 		return x*v.x + y*v.y + z*v.z;
 	}
@@ -122,8 +127,13 @@ public class Vector {
 	}
 	
 	/*Returns the distance between the endpoints of itself and another vector, or the length of their difference.*/
+	public double getDistance(double x1, double y1, double z1) {
+		return Math.sqrt((x-x1)*(x-x1) + (y-y1)*(y-y1) + (z-z1)*(z-z1));
+	}
+	
+	/*Returns the distance between the endpoints of itself and another vector, or the length of their difference.*/
 	public double getDistance(Vector v) {
-		return Math.sqrt((v.x-x)*(v.x-x) + (v.y-y)*(v.y-y) + (v.z-z)*(v.z-z));
+		return Math.sqrt((x-v.x)*(x-v.x) + (y-v.y)*(y-v.y) + (z-v.z)*(z-v.z));
 	}
 	
 	// Adds the values to itself
