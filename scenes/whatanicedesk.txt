@@ -1,11 +1,11 @@
 camera 0 15 -15 0 0.7 0
-screen 1500 1000 600 0x404000 10
+screen 750 500 300 0x404000 10
 
-//gif 63
-png
+gif 63
+//png
 
-light flame 16.5 15 10 1 0.8 0
-action rotateabout flame 0.2589 1.5122 -0.2325 16 15 10
+light flame 16.3 14.7 10.1 1 0.8 0
+action rotateabout flame 0.2589 1.5122 -0.0625 16 15 10
 
 cylinder . 0xd0c0a0 1 6 0.2 16 6 10 0 0 0 0 0 1
 cylinder . 0x807850 1.2 2 0 16 2 10 0 0 0 0.4 0 1
