@@ -33,7 +33,7 @@ public class Color {
 	public static int shade(int color, Vector v) {
 		return ((int)(getR(color) * v.x) << 16) |
 			   ((int)(getG(color) * v.y) <<  8) |
-			    (int)(getB(color) * v.x);
+			    (int)(getB(color) * v.z);
 	}
 	
 	// Shades a color by another color
