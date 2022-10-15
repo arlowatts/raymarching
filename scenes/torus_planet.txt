@@ -3,13 +3,9 @@ screen 500 500 500 0xffffff 10
 
 gif 251
 
-//light sun -20 0 0 1 1 1
-
 torus planet map.png 5.05425 1.31675 0 0 0 0 0 0 0 0 1
 sphere heart 0x444444 0.7374 0 0 0 0 0 0 0 0 1
 
-group planetg1 planet 0 3 0 0 1.2 0 0 0 0 1
-
-//action rotateabout sun 1.5708 -0.025 -1.5708 0 0 0
+group planetg1 planet 0 0 0 0 1.2 0 0 0 0 1
 
 action rotate planet 0 0.025 0
