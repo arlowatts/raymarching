@@ -1,4 +1,4 @@
-<project name="Raymarching" default="run">
+<project name="Raymarching" default="compile">
 
 	<property name="src" location="src"/>
 	<property name="build" location="build"/>
