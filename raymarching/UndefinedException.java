@@ -1,4 +1,4 @@
-package src;
+package raymarching;
 
 public class UndefinedException extends Exception {
 	public UndefinedException(String undef) {

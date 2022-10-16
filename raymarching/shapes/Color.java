@@ -1,4 +1,4 @@
-package src.shapes;
+package raymarching.shapes;
 
 /*
  * A class with static methods for manipulating colors stored as standard RGB integers

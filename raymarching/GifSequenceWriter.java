@@ -8,7 +8,7 @@
 // http://creativecommons.org/licenses/by/3.0/ or send a letter to Creative
 // Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
 
-package src;
+package raymarching;
 
 import javax.imageio.*;
 import javax.imageio.metadata.*;

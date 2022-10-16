@@ -1,6 +1,6 @@
-package src;
+package raymarching;
 
-import src.shapes.*;
+import raymarching.shapes.*;
 
 import java.util.ArrayList;
 

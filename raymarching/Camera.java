@@ -1,7 +1,7 @@
-package src;
+package raymarching;
 
-import src.shapes.Shape;
-import src.shapes.Vector;
+import raymarching.shapes.Shape;
+import raymarching.shapes.Vector;
 
 public class Camera extends Shape {
 	// Constructors

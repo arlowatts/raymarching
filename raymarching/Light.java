@@ -1,8 +1,8 @@
-package src;
+package raymarching;
 
-import src.shapes.Shape;
-import src.shapes.Color;
-import src.shapes.Vector;
+import raymarching.shapes.Shape;
+import raymarching.shapes.Color;
+import raymarching.shapes.Vector;
 
 public class Light extends Shape {
 	// Constructors

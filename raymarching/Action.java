@@ -1,7 +1,7 @@
-package src;
+package raymarching;
 
-import src.shapes.Shape;
-import src.shapes.Vector;
+import raymarching.shapes.Shape;
+import raymarching.shapes.Vector;
 
 /*
  * An Action object stores an action that can be performed on a shape.

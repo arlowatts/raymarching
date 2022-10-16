@@ -1,4 +1,4 @@
-package src;
+package raymarching;
 
 public class InvalidSetupException extends Exception {
 	public InvalidSetupException(String[] line) {

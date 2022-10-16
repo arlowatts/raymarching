@@ -1,6 +1,6 @@
-package src;
+package raymarching;
 
-import src.shapes.*;
+import raymarching.shapes.*;
 
 import java.util.ArrayList;
 
@@ -259,7 +259,7 @@ public class Scene {
 		
 		Class<?> type = null;
 		try {
-			type = Class.forName("src.shapes." + line[1].substring(0, 1).toUpperCase() + line[1].substring(1).toLowerCase());
+			type = Class.forName("raymarching.shapes." + line[1].substring(0, 1).toUpperCase() + line[1].substring(1).toLowerCase());
 		}
 		catch (ClassNotFoundException e) {
 			System.out.println(e);

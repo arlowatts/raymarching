@@ -1,4 +1,4 @@
-package src.shapes;
+package raymarching.shapes;
 
 import java.lang.Math;
 import java.util.ArrayList;
