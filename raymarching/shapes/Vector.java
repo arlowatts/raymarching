@@ -212,6 +212,12 @@ public class Vector {
 		z = v.z;
 	}
 	
+	public void setPositive() {
+		x = Math.abs(x);
+		y = Math.abs(y);
+		z = Math.abs(z);
+	}
+	
 	private static double[] getSincos(Vector rotation) {
 		double sincos[] = {Math.sin(rotation.x), Math.sin(rotation.y), Math.sin(rotation.z),
 						   Math.cos(rotation.x), Math.cos(rotation.y), Math.cos(rotation.z)};
