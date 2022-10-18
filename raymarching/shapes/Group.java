@@ -1,5 +1,7 @@
 package raymarching.shapes;
 
+import raymarching.Vector;
+
 import java.lang.Math;
 import java.util.ArrayList;
 

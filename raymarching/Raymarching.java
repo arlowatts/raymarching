@@ -1,11 +1,5 @@
 package raymarching;
 
-import raymarching.Scene;
-
-import raymarching.GifSequenceWriter;
-
-import raymarching.UndefinedException;
-
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;

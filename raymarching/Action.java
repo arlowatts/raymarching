@@ -1,7 +1,6 @@
 package raymarching;
 
 import raymarching.shapes.Shape;
-import raymarching.shapes.Vector;
 
 /*
  * An Action object stores an action that can be performed on a shape.

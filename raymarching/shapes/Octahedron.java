@@ -1,5 +1,7 @@
 package raymarching.shapes;
 
+import raymarching.Vector;
+
 import java.lang.Math;
 
 public class Octahedron extends Shape {

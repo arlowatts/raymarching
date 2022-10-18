@@ -1,4 +1,4 @@
-package raymarching.shapes;
+package raymarching;
 
 import java.lang.Math;
 
