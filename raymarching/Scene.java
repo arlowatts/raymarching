@@ -1,5 +1,8 @@
 package raymarching;
 
+import raymarching.exceptions.InvalidSetupException;
+import raymarching.exceptions.UndefinedException;
+
 import raymarching.shapes.*;
 
 import java.util.ArrayList;

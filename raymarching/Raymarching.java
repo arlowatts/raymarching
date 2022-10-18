@@ -1,5 +1,7 @@
 package raymarching;
 
+import raymarching.exceptions.UndefinedException;
+
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
