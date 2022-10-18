@@ -26,7 +26,7 @@ group g2 c1 0 3 2 0.5 -1.5708 0 1.5708 0.1 0 1
 action rotate g2 0 0.1 0
 
 octahedron o1 0x426af9 2 2 2 0 3 0 0 0 0 0.3 0 1
-action rotate o1 0.1 0.05 0.025
+action rotate o1 0.1 0.1 0.1
 
 //box b2 0x0000ff 2 2 1 0 3 5 -5 0 0 0 0 0.8 1.5
 //action rotateabout b2 0.3 0 0 3.1 5 -5
