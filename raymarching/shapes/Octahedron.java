@@ -26,7 +26,7 @@ public class Octahedron extends Shape {
 		r.setPositive();
 		r.x -= width;
 		
-		Vector n = new Vector(width, height, depth);
+		Vector n = new Vector(1 / width, 1 / height, 1 / depth);
 		n.setLength(1);
 		
 		return r.dotProduct(n);
@@ -36,7 +36,7 @@ public class Octahedron extends Shape {
 		v.subtract(getPos());
 		v.inverseRotate(getAngle());
 		
-		Vector n = new Vector(width, height, depth);
+		Vector n = new Vector(1 / width, 1 / height, 1 / depth);
 		n.setLength(1);
 		
 		n.copySign(v);
