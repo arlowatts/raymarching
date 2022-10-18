@@ -218,6 +218,18 @@ public class Vector {
 		z = Math.abs(z);
 	}
 	
+	public void copySign(double a, double b, double c) {
+		x *= a > 0 ? 1 : -1;
+		y *= b > 0 ? 1 : -1;
+		z *= c > 0 ? 1 : -1;
+	}
+	
+	public void copySign(Vector v) {
+		x *= v.x > 0 ? 1 : -1;
+		y *= v.y > 0 ? 1 : -1;
+		z *= v.z > 0 ? 1 : -1;
+	}
+	
 	private static double[] getSincos(Vector rotation) {
 		double sincos[] = {Math.sin(rotation.x), Math.sin(rotation.y), Math.sin(rotation.z),
 						   Math.cos(rotation.x), Math.cos(rotation.y), Math.cos(rotation.z)};
