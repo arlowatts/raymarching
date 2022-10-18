@@ -15,26 +15,22 @@ public class Cylinder extends Shape {
 	public Cylinder(double[] args, double[] dargs) {
 		super(dargs);
 		
-		radius = Math.max(args[0], Shape.MIN_LENGTH);
-		height = Math.max(args[1], Shape.MIN_LENGTH);
+		radius = Math.max(args[0], MIN_LENGTH);
+		height = Math.max(args[1], MIN_LENGTH);
 	}
 	
 	// Methods
 	public double getDistance(Vector v) {
-		v.subtract(getPos());
-		v.inverseRotate(getAngle());
+		Vector r = toLocalFrame(v);
 		
-		Vector v1 = new Vector(Math.sqrt(v.x*v.x + v.z*v.z) - radius, Math.abs(v.y) - height, 0);
+		r.set(Math.sqrt(r.x*r.x + r.z*r.z) - radius, Math.abs(r.y) - height, 0);
 		
-		double dist = Math.min(Math.max(v1.x, v1.y), 0);
+		double dist = Math.min(Math.max(r.x, r.y), 0);
 		
-		v1.x = Math.max(v1.x, 0);
-		v1.y = Math.max(v1.y, 0);
+		r.x = Math.max(r.x, 0);
+		r.y = Math.max(r.y, 0);
 		
-		v.rotate(getAngle());
-		v.add(getPos());
-		
-		return dist + v1.getLength();
+		return dist + r.getLength();
 	}
 	
 	protected void setBoundRadius() {

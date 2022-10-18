@@ -15,7 +15,7 @@ public class Sphere extends Shape {
 	public Sphere(double[] args, double[] dargs) {
 		super(dargs);
 		
-		radius = Math.max(args[0], Shape.MIN_LENGTH);
+		radius = Math.max(args[0], MIN_LENGTH);
 	}
 	
 	// Methods
@@ -28,13 +28,12 @@ public class Sphere extends Shape {
 	}
 	
 	public Vector getNormal(Vector v) {
-		Vector normal = new Vector(v);
+		Vector n = new Vector(v);
 		
-		normal.subtract(getPos());
+		n.subtract(getPos());
+		n.setLength(1);
 		
-		normal.setLength(1);
-		
-		return normal;
+		return n;
 	}
 	
 	public int getColor(Vector v) {

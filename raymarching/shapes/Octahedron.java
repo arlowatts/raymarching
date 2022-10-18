@@ -5,10 +5,13 @@ import raymarching.Vector;
 import java.lang.Math;
 
 public class Octahedron extends Shape {
+	// Constants
 	public static final String[] PARAMS = {"width", "height", "depth"};
 	
+	// Member variables
 	private double width, height, depth;
 	
+	// Constructors
 	public Octahedron(double[] args, double[] dargs) {
 		super(dargs);
 		
@@ -17,11 +20,9 @@ public class Octahedron extends Shape {
 		depth = Math.max(args[2], MIN_LENGTH);
 	}
 	
+	// Methods
 	public double getDistance(Vector v) {
-		Vector r = new Vector(v);
-		
-		r.subtract(getPos());
-		r.inverseRotate(getAngle());
+		Vector r = toLocalFrame(v);
 		
 		r.setPositive();
 		r.x -= width;
@@ -32,32 +33,40 @@ public class Octahedron extends Shape {
 		return r.dotProduct(n);
 	}
 	
+	protected void setBoundRadius() {
+		setBoundRadius(Math.max(Math.max(width, height), depth));
+	}
+	
 	public Vector getNormal(Vector v) {
-		v.subtract(getPos());
-		v.inverseRotate(getAngle());
+		Vector n = toLocalFrame(v);
 		
-		Vector n = new Vector(1 / width, 1 / height, 1 / depth);
+		n.sign();
+		n.stretch(1 / width, 1 / height, 1 / depth);
 		n.setLength(1);
 		
-		n.copySign(v);
-		
 		n.rotate(getAngle());
-		
-		v.rotate(getAngle());
-		v.add(getPos());
 		
 		return n;
 	}
 	
-	public void setBoundRadius() {
-		setBoundRadius(Math.max(Math.max(width, height), depth));
-	}
-	
+	// Getters
 	public double getWidth() {return width;}
 	public double getHeight() {return height;}
 	public double getDepth() {return depth;}
 	
-	public void setWidth(double w) {width = w;}
-	public void setHeight(double h) {height = h;}
-	public void setDepth(double d) {depth = d;}
+	// Setters
+	public void setWidth(double w) {
+		width = w;
+		setBoundRadius(-1);
+	}
+	
+	public void setHeight(double h) {
+		height = h;
+		setBoundRadius(-1);
+	}
+	
+	public void setDepth(double d) {
+		depth = d;
+		setBoundRadius(-1);
+	}
 }

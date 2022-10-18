@@ -5,10 +5,13 @@ import raymarching.Vector;
 import java.lang.Math;
 
 public class Cone extends Shape {
+	// Constants
 	public static final String[] PARAMS = {"radius", "height"};
 	
+	// Member variables
 	private double radius, height;
 	
+	// Constructors
 	public Cone(double[] args, double[] dargs) {
 		super(dargs);
 		
@@ -16,21 +19,18 @@ public class Cone extends Shape {
 		height = Math.max(args[1], MIN_LENGTH);
 	}
 	
+	// Methods
 	public double getDistance(Vector v) {
-		v.subtract(getPos());
-		v.inverseRotate(getAngle());
+		Vector r = toLocalFrame(v);
 		
-		Vector q = new Vector(Math.sqrt(v.x*v.x + v.z*v.z), v.y + height / 2, 0);
+		r.set(Math.sqrt(r.x*r.x + r.z*r.z), r.y + height / 2, 0);
 		
-		v.rotate(getAngle());
-		v.add(getPos());
+		double epsilon = Math.min(Math.max((r.dotProduct(-radius, height, 0) + radius*radius) / (radius*radius + height*height), 0), 1);
 		
-		double epsilon = Math.min(Math.max((q.dotProduct(-radius, height, 0) + radius*radius) / (radius*radius + height*height), 0), 1);
+		double distance = Math.min(r.getDistance(radius * (1 - epsilon), height * epsilon, 0),
+								   r.x < radius ? Math.abs(r.y) : r.getDistance(radius, 0, 0));
 		
-		double distance = Math.min(q.getDistance(radius * (1 - epsilon), height * epsilon, 0),
-								   q.x < radius ? Math.abs(q.y) : q.getDistance(radius, 0, 0));
-		
-		if (q.y > 0 && q.y < height && q.x < radius * (height - q.y) / height) distance *= -1;
+		if (r.y > 0 && r.y < height && r.x < radius * (height - r.y) / height) distance *= -1;
 		
 		return distance;
 	}
@@ -40,28 +40,24 @@ public class Cone extends Shape {
 	}
 	
 	public Vector getNormal(Vector v) {
-		Vector n = new Vector();
+		Vector n = toLocalFrame(v);
 		
-		v.subtract(getPos());
-		v.inverseRotate(getAngle());
-		
-		if (v.y < -height / 2) n.set(0, -1, 0);
+		if (n.y < -height / 2) n.set(0, -1, 0);
 		else {
-			n.set(v.x, radius / height * Math.sqrt(v.x*v.x + v.z*v.z), v.z);
+			n.set(n.x, radius / height * Math.sqrt(n.x*n.x + n.z*n.z), n.z);
 			n.setLength(1);
 		}
 		
 		n.rotate(getAngle());
 		
-		v.rotate(getAngle());
-		v.add(getPos());
-		
 		return n;
 	}
 	
+	// Getters
 	public double getRadius() {return radius;}
 	public double getHeight() {return height;}
 	
+	// Setters
 	public void setRadius(double r) {
 		radius = r;
 		setBoundRadius(-1);

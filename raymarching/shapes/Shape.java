@@ -115,6 +115,15 @@ public abstract class Shape {
 	// Helpers
 	protected void setBoundRadius(double r) {boundRadius = r;}
 	
+	protected Vector toLocalFrame(Vector v) {
+		Vector r = new Vector(v);
+		
+		r.subtract(pos);
+		r.inverseRotate(angle);
+		
+		return r;
+	}
+	
 	// Returns a new vector much closer to the surface of the shape and in coordinates relative to the shape
 	protected Vector toSurface(Vector v) {
 		Vector r = new Vector(v);

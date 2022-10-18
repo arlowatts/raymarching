@@ -218,6 +218,18 @@ public class Vector {
 		z = Math.abs(z);
 	}
 	
+	public void setNegative() {
+		x = -Math.abs(x);
+		y = -Math.abs(y);
+		z = -Math.abs(z);
+	}
+	
+	public void sign() {
+		x = x > 0 ? 1 : -1;
+		y = y > 0 ? 1 : -1;
+		z = z > 0 ? 1 : -1;
+	}
+	
 	public void copySign(double a, double b, double c) {
 		x *= a > 0 ? 1 : -1;
 		y *= b > 0 ? 1 : -1;

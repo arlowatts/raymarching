@@ -15,22 +15,23 @@ public class Box extends Shape {
 	public Box(double[] args, double[] dargs) {
 		super(dargs);
 		
-		width = Math.max(args[0], Shape.MIN_LENGTH);
-		height = Math.max(args[1], Shape.MIN_LENGTH);
-		length = Math.max(args[2], Shape.MIN_LENGTH);
+		width = Math.max(args[0], MIN_LENGTH);
+		height = Math.max(args[1], MIN_LENGTH);
+		length = Math.max(args[2], MIN_LENGTH);
 	}
 	
 	// Methods
 	public double getDistance(Vector v) {
-		Vector v1 = new Vector(v);
+		Vector r = toLocalFrame(v);
 		
-		v1.subtract(getPos());
-		v1.inverseRotate(getAngle());
-		v1.set(Math.abs(v1.x) - width, Math.abs(v1.y) - height, Math.abs(v1.z) - length);
+		r.setPositive();
+		r.subtract(width, height, length);
 		
-		Vector v2 = new Vector(Math.max(v1.x, 0), Math.max(v1.y, 0), Math.max(v1.z, 0));
+		double dval = Math.min(Math.max(r.x, Math.max(r.y, r.z)), 0);
 		
-		return v2.getLength() + Math.min(Math.max(v1.x, Math.max(v1.y, v1.z)), 0);
+		r.set(Math.max(r.x, 0), Math.max(r.y, 0), Math.max(r.z, 0));
+		
+		return r.getLength() + dval;
 	}
 	
 	protected void setBoundRadius() {

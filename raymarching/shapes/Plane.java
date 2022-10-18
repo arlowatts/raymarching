@@ -15,20 +15,17 @@ public class Plane extends Shape {
 	public Plane(double[] args, double[] dargs) {
 		super(dargs);
 		
-		width = args[0];
-		length = args[1];
+		width = Math.max(args[0], MIN_LENGTH);
+		length = Math.max(args[1], MIN_LENGTH);
 	}
 	
 	// Methods
 	public double getDistance(Vector v) {
-		Vector v1 = new Vector(v);
+		Vector r = toLocalFrame(v);
 		
-		v1.subtract(getPos());
-		v1.inverseRotate(getAngle());
+		r.add(-Math.min(Math.max(-width, r.x), width), 0, -Math.min(Math.max(-length, r.z), length));
 		
-		v1.add(-Math.min(Math.max(-width, v1.x), width), 0, -Math.min(Math.max(-length, v1.z), length));
-		
-		return v1.getLength();
+		return r.getLength();
 	}
 	
 	protected void setBoundRadius() {
@@ -36,15 +33,13 @@ public class Plane extends Shape {
 	}
 	
 	public Vector getNormal(Vector v) {
-		v.inverseRotate(getAngle(), getPos());
+		Vector n = toLocalFrame(v);
 		
-		Vector normal = new Vector(0, v.y > getPos().y ? 1 : -1, 0);
+		n.set(0, n.y > 0 ? 1 : -1, 0);
 		
-		v.rotate(getAngle(), getPos());
+		n.rotate(getAngle());
 		
-		normal.rotate(getAngle());
-		
-		return normal;
+		return n;
 	}
 	
 	public int getColor(Vector v) {
@@ -67,6 +62,7 @@ public class Plane extends Shape {
 		width = w;
 		setBoundRadius(-1);
 	}
+	
 	public void setLength(double l) {
 		length = l;
 		setBoundRadius(-1);

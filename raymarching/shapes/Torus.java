@@ -15,20 +15,16 @@ public class Torus extends Shape {
 	public Torus(double[] args, double[] dargs) {
 		super(dargs);
 		
-		largeRadius = Math.max(args[0], Shape.MIN_LENGTH);
-		smallRadius = Math.max(args[1], Shape.MIN_LENGTH);
+		largeRadius = Math.max(args[0], MIN_LENGTH);
+		smallRadius = Math.max(args[1], MIN_LENGTH);
 	}
 	
 	// Methods
 	public double getDistance(Vector v) {
-		v.subtract(getPos());
-		v.inverseRotate(getAngle());
+		Vector r = toLocalFrame(v);
 		
-		double a = Math.sqrt(v.x*v.x + v.z*v.z) - largeRadius;
-		double distance = Math.sqrt(a*a + v.y*v.y) - smallRadius;
-		
-		v.rotate(getAngle());
-		v.add(getPos());
+		double a = Math.sqrt(r.x*r.x + r.z*r.z) - largeRadius;
+		double distance = Math.sqrt(a*a + r.y*r.y) - smallRadius;
 		
 		return distance;
 	}
