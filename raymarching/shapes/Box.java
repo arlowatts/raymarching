@@ -6,10 +6,10 @@ import java.lang.Math;
 
 public class Box extends Shape {
 	// Constants
-	public static final String[] PARAMS = {"width", "height", "length"};
+	public static final String[] PARAMS = {"width", "height", "depth"};
 
 	// Member variables
-	private double width, height, length;
+	private double width, height, depth;
 	
 	// Constructors
 	public Box(double[] args, double[] dargs) {
@@ -17,7 +17,7 @@ public class Box extends Shape {
 		
 		width = Math.max(args[0], MIN_LENGTH);
 		height = Math.max(args[1], MIN_LENGTH);
-		length = Math.max(args[2], MIN_LENGTH);
+		depth = Math.max(args[2], MIN_LENGTH);
 	}
 	
 	// Methods
@@ -25,7 +25,7 @@ public class Box extends Shape {
 		Vector r = toLocalFrame(v);
 		
 		r.setPositive();
-		r.subtract(width, height, length);
+		r.subtract(width, height, depth);
 		
 		double dval = Math.min(Math.max(r.x, Math.max(r.y, r.z)), 0);
 		
@@ -35,13 +35,13 @@ public class Box extends Shape {
 	}
 	
 	protected void setBoundRadius() {
-		setBoundRadius(Math.sqrt(width*width + height*height + length*length));
+		setBoundRadius(Math.sqrt(width*width + height*height + depth*depth));
 	}
 	
 	// Getters
 	public double getWidth() {return width;}
 	public double getHeight() {return height;}
-	public double getLength() {return length;}
+	public double getLength() {return depth;}
 	
 	// Setters
 	public void setWidth(double w) {
@@ -54,15 +54,15 @@ public class Box extends Shape {
 		setBoundRadius(-1);
 	}
 	
-	public void setLength(double l) {
-		length = l;
+	public void setLength(double d) {
+		depth = d;
 		setBoundRadius(-1);
 	}
 	
-	public void setSize(double w, double h, double l) {
+	public void setSize(double w, double h, double d) {
 		width = w;
 		height = h;
-		length = l;
+		depth = d;
 		setBoundRadius(-1);
 	}
 }
