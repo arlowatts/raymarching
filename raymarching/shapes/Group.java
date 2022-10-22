@@ -1,5 +1,6 @@
 package raymarching.shapes;
 
+import raymarching.Color;
 import raymarching.Vector;
 
 import java.lang.Math;
