@@ -4,25 +4,43 @@ import raymarching.Vector;
 
 import java.lang.Math;
 
-public class Tetrahedron extends Shape {
+public class Dodecahedron extends Shape {
 	public static final String[] PARAMS = {"width", "height", "depth"};
 	
-	private static final double CIRCUMSCRIBED_SPHERE_RATIO = 1.0 / 3.0;
+	private static final Vector INTERIOR_ANGLE = new Vector(2.0344439357957027, 0, 0); // The interior angle between two faces: 2atan((1 + sqrt(5)) / 2)
+	private static final Double CIRCUMSCRIBED_SPHERE_RATIO = 0.7946544722917661; // The ratio of the radius of the circumscribed sphere to the radius of the inscribed sphere
 	
 	private double width, height, depth;
 	
 	private Vector[] normals;
 	
-	public Tetrahedron(double[] args, double[] dargs) {
+	public Dodecahedron(double[] args, double[] dargs) {
 		super(dargs);
 		
 		width = Math.max(args[0], MIN_LENGTH);
 		height = Math.max(args[1], MIN_LENGTH);
 		depth = Math.max(args[2], MIN_LENGTH);
 		
-		normals = new Vector[] {new Vector(-1, -1, -1), new Vector(1, -1, 1), new Vector(-1, 1, 1), new Vector(1, 1, -1)};
+		normals = new Vector[12];
 		
-		for (int i = 0; i < 4; i++) normals[i].setLength(1);
+		normals[0] = new Vector(0, 1, 0);
+		normals[11] = new Vector(0, -1, 0);
+		
+		Vector rotation = new Vector();
+		
+		for (int i = 0; i < 5; i++) {
+			rotation.set(-Math.PI / 2, i * Math.PI * 2 / 5, Math.PI / 2);
+			
+			normals[1 + i] = new Vector(normals[0]);
+			normals[1 + i].rotate(INTERIOR_ANGLE);
+			normals[1 + i].rotate(rotation);
+			
+			normals[10 - i] = new Vector(normals[11]);
+			normals[10 - i].rotate(INTERIOR_ANGLE);
+			normals[10 - i].rotate(rotation);
+		}
+		
+		for (int i = 0; i < 12; i++) normals[i].setLength(1);
 	}
 	
 	// Not exact - bound
@@ -54,7 +72,7 @@ public class Tetrahedron extends Shape {
 		double nearestDist = r.getDistance(normals[nearest]);
 		double dist;
 		
-		for (int i = 1; i < 4; i++) {
+		for (int i = 1; i < 12; i++) {
 			dist = r.getDistance(normals[i]);
 			
 			if (dist < nearestDist) {
