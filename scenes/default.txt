@@ -21,10 +21,20 @@ box b1 0xffcccc 2 2 2 -2 0 1 -1.5708 -0.75 1.5708 0 0 1
 torus t1 colorful_pixels.png 1.5 0.5 0 0 0 0 1.5708 0 0 0 1
 group . b1,t1 1 7 2 5 -1.5708 0.8 1 0.1 0 1
 
-cone c1 0x649f65 1.5 4 3 2 0.5 0.5 0 0 0 0 1
+cone c1 0x649f65 1.5 4 5 2 0.5 0.5 0 0 0 0 1
 
 octahedron o1 0x426af9 1 4 1 5 3 -4 -1.5708 0 1.5708 0.5 0 1
 action rotate o1 0 0.1 0
 
-tetrahedron tt1 0x73d91a 1 1 1 0 3 0 0 0 0 0 0.5 1.1
-action rotate tt1 0.05 0.1 0.05
+tetrahedron tt1 0x1a73d9 1 2 1 0 6 0 0 0 0 0 0.5 1.1
+action rotate tt1 0.05 0.05 0.1
+
+tetrahedron tt2 0xd91a73 1 1 2 -2 3 0 0 0 0 0 0.5 1.1
+action rotate tt2 0.05 0.1 0.05
+
+tetrahedron tt3 0x73d91a 2 1 1 2 3 0 0 0 0 0 0.5 1.1
+action rotate tt3 0.1 0.05 0.05
+
+action rotateabout tt1 0.1 0 0 0 4.5 0
+action rotateabout tt2 0.1 0 0 0 4.5 0
+action rotateabout tt3 0.1 0 0 0 4.5 0
