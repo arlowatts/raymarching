@@ -4,7 +4,8 @@ screen 750 500 500 0xa0a0a0 10
 gif 126
 //png
 
-light . 0 8 0 1 1 1
+light . 0 8 0 0.8 0.5 0.2
+light . 0 4.5 -2 0.2 0.5 0.8
 
 plane . 0xffffff 10 10 0 0 0 0 0 0 0.5 0 1
 
@@ -26,15 +27,15 @@ cone c1 0x649f65 1.5 4 5 2 0.5 0.5 0 0 0 0 1
 octahedron o1 0x426af9 1 4 1 5 3 -4 -1.5708 0 1.5708 0.5 0 1
 action rotate o1 0 0.1 0
 
-tetrahedron tt1 0x1a73d9 1 2 1 0 6 0 0 0 0 0 0.5 1.1
+tetrahedron tt1 0x1a73d9 1 2 1 0 6 -2 0 0 0 0 0.7 1.1
 action rotate tt1 0.05 0.05 0.1
 
-tetrahedron tt2 0xd91a73 1 1 2 -2 3 0 0 0 0 0 0.5 1.1
+tetrahedron tt2 0xd91a73 1 1 2 -2 3 -2 0 0 0 0 0.7 1.1
 action rotate tt2 0.05 0.1 0.05
 
-tetrahedron tt3 0x73d91a 2 1 1 2 3 0 0 0 0 0 0.5 1.1
+tetrahedron tt3 0x73d91a 2 1 1 2 3 -2 0 0 0 0 0.7 1.1
 action rotate tt3 0.1 0.05 0.05
 
-action rotateabout tt1 0.1 0 0 0 4.5 0
-action rotateabout tt2 0.1 0 0 0 4.5 0
-action rotateabout tt3 0.1 0 0 0 4.5 0
+action rotateabout tt1 0.1 0 0 0 4.5 -2
+action rotateabout tt2 0.1 0 0 0 4.5 -2
+action rotateabout tt3 0.1 0 0 0 4.5 -2
