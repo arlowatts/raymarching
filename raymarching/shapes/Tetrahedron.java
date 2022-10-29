@@ -7,8 +7,6 @@ import java.lang.Math;
 public class Tetrahedron extends Shape {
 	public static final String[] PARAMS = {"width", "height", "depth"};
 	
-	private static final double SQRT_3 = Math.sqrt(3);
-	
 	private double width, height, depth;
 	
 	private Vector[] normals;
@@ -22,7 +20,7 @@ public class Tetrahedron extends Shape {
 		
 		normals = new Vector[] {new Vector(-1, -1, -1), new Vector(1, -1, 1), new Vector(-1, 1, 1), new Vector(1, 1, -1)};
 		
-		for (int i = 0; i < 4; i++) normals[i].divide(SQRT_3);
+		for (int i = 0; i < 4; i++) normals[i].setLength(1);
 	}
 	
 	// Not exact - bound
