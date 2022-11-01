@@ -42,6 +42,9 @@ public class Ray {
 		
 		// March the ray through the scene
 		int hitIndex = march(shapes, medium);
+		// DEBUGGING DEBUGGING DEBUGGING DEBUGGING DEBUGGING
+		//hitIndex = shapes.size() - 1;
+		// DEBUGGING DEBUGGING DEBUGGING DEBUGGING DEBUGGING
 		if (hitIndex == -1) return Color.shade(scene.getScreen().getBgnd(), shade);
 		
 		Shape hit = shapes.get(hitIndex);
@@ -98,12 +101,20 @@ public class Ray {
 		}
 		
 		// Multiply the shade of the pixel by the total brightness and add ambient light
-		shade.stretch(Math.min(1 - brightness.x + (double)Color.getR(scene.getScreen().getBgnd()) * Color.RATIO, 1),
-					  Math.min(1 - brightness.y + (double)Color.getG(scene.getScreen().getBgnd()) * Color.RATIO, 1),
-					  Math.min(1 - brightness.z + (double)Color.getB(scene.getScreen().getBgnd()) * Color.RATIO, 1));
+		shade.stretch(
+			Math.min(1 - brightness.x + (double)Color.getR(scene.getScreen().getBgnd()) * Color.RATIO, 1),
+			Math.min(1 - brightness.y + (double)Color.getG(scene.getScreen().getBgnd()) * Color.RATIO, 1),
+			Math.min(1 - brightness.z + (double)Color.getB(scene.getScreen().getBgnd()) * Color.RATIO, 1)
+		);
+		
+		// DEBUGGING DEBUGGING DEBUGGING DEBUGGING DEBUGGING
+		//shade.set(1, 1, 1);
+		//reflectionColor = 0;
+		//refractionColor = 0;
+		// DEBUGGING DEBUGGING DEBUGGING DEBUGGING DEBUGGING
 		
 		// Add together all of the colors and return the result
-		return Color.shade(hit.getColor(pos), shade) + reflectionColor + refractionColor;
+		return Color.shade(hit.getColor(pos), shade) + refractionColor + reflectionColor;
 	}
 	
 	private void refract(Vector normal, double n1, double n2) {
