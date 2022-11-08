@@ -7,13 +7,13 @@ gif 63
 light flame 16.3 14.7 10.1 1 0.8 0
 action rotateabout flame 0.2589 1.5122 -0.0625 16 15 10
 
-cylinder . 0xd0c0a0 1 6 0.2 16 6 10 0 0 0 0 0 1
-cylinder . 0x807850 1.2 2 0 16 2 10 0 0 0 0.4 0 1
+cylinder . 0xd0c0a0 1 6 16 6 10 0 0 0 0 0 1
+cylinder . 0x807850 1.2 2 16 2 10 0 0 0 0.4 0 1
 
 torus cndlstk_bowl 0x807850 3 1 0 1 0 0 0 0 0 0 1
 torus cndlstk_bowl_cutout1 0x807850 3 0.8 0 1 0 0 0 0 0 0 1
 sphere cndlstk_bowl_cutout2 0x807850 5 0 4.5 0 0 0 0 0 0 1
-cylinder cndlstk_base 0x807850 3 0.1 0 0 0.1 0 0 0 0 0 0 1
+cylinder cndlstk_base 0x807850 3 0.1 0 0.1 0 0 0 0 0 0 1
 group . cndlstk_bowl,-cndlstk_bowl_cutout1,-cndlstk_bowl_cutout2,cndlstk_base 0 16 0 10 0 0 0 0.4 0 1
 
 plane desk1 wood.jpg 11 8 -11 0 -8 0 0 0 0 0 1
@@ -28,16 +28,16 @@ plane . drawers.jpg 22 10 22 10 -6 1.5708 1.5708 0 0 0 1
 plane . 0x0 22 10 0 10 -16 0 1.5708 0 0 0 1
 plane . 0x0 22 16 0 20 0 0 0 0 0 0 1
 
-cylinder . 0x325188 2 3 0.3 0 3 7 0 0 0 0.8 0 1
+cylinder . 0x325188 2 3 0 3 7 0 0 0 0.8 0 1
 
-box . 0x009162 3 2 2 0.2 -7 2 7 -1.5708 0.75 1.5708 0.4 0 1
+box . 0x009162 3 2 2 -7 2 7 -1.5708 0.75 1.5708 0.4 0 1
 
 torus . 0xdcdc24 1.75 0.25 7 2 -1 -1 1.5708 0 0 0 1
 
 sphere s1 earth.jpg 2 -5 2 0 -1.5708 0 1.5708 0 0 1
 action rotate s1 0 0.1 0
 
-box b1 0xffcccc 2 2 2 0.75 0 0 0 0 0 0 0 0 1
+box b1 0xffcccc 2 2 2 0 0 0 0 0 0 0 0 1
 torus t1 colorful_pixels.png 1.5 0.5 0 2 0 -0.3 -0.3 0 0 0 1
 group . b1,t1 1 6 2 6 0 0 0 0.1 0 1
 
