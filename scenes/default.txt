@@ -42,10 +42,5 @@ action rotateabout tt1 0.1 0 0 0 4.5 -2
 action rotateabout tt2 0.1 0 0 0 4.5 -2
 action rotateabout tt3 0.1 0 0 0 4.5 -2
 
-<<<<<<< Updated upstream
-dodecahedron dd1 0x996682 1 1 1 0 2 -3 0 0 0 0 0 1
-action rotate dd1 0 0.1 0
-=======
 dodecahedron dd1 0xee9982 1 1.5 1.5 0 4.5 0 0 0 0 0.1 0 1
 action rotate dd1 0 0.05 0
->>>>>>> Stashed changes
