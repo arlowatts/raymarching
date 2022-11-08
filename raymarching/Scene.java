@@ -66,26 +66,14 @@ public class Scene {
 		frames++;
 	}
 	
-	// Returns an ArrayList of the shapes in the scene whose bounding spheres intersect the path of the ray
-	public ArrayList<Shape> getVisible(Ray ray) {
-		ArrayList<Shape> visible = new ArrayList<>();
-		
-		for (int i = 0; i < shapes.size(); i++) {
-			if (ray.distToPoint(shapes.get(i).getPos()) < shapes.get(i).getBoundRadius() + Ray.MIN_LENGTH)
-				visible.add(shapes.get(i));
-		}
-		
-		return visible;
-	}
-	
 	// Getters
 	public Camera getCamera() {return camera;}
 	public Screen getScreen() {return screen;}
 	
-	public ArrayList<Shape> getShapes() {return shapes;}
-	public ArrayList<Light> getLights() {return lights;}
-	
+	public int numShapes() {return shapes.size();}
 	public Shape getShape(int i) {return shapes.get(i);}
+	
+	public int numLights() {return lights.size();}
 	public Light getLight(int i) {return lights.get(i);}
 	
 	public int getFrames() {return frames;}

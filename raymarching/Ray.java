@@ -20,8 +20,6 @@ public class Ray {
 	private int steps;
 	private double length;
 	
-	private double lastStep;
-	
 	// Constructors
 	public Ray(Vector pos, Vector dir) {
 		this.pos = new Vector(pos);
@@ -31,20 +29,24 @@ public class Ray {
 		
 		steps = 0;
 		length = 0;
+	}
+	
+	public Ray(Ray ray) {
+		this.pos = new Vector(ray.pos);
+		this.dir = new Vector(ray.dir);
 		
-		lastStep = 0;
+		steps = 0;
+		length = 0;
 	}
 	
 	// Methods
 	// The recursive method to cast and reflect a light ray
 	public int cast(Scene scene, Vector shade, Shape medium, int reflections) {
-		ArrayList<Shape> shapes = scene.getVisible(this);
-		
 		// March the ray through the scene
-		int hitIndex = march(shapes, medium);
+		int hitIndex = march(scene, medium);
 		if (hitIndex == -1) return Color.shade(scene.getScreen().getBgnd(), shade);
 		
-		Shape hit = shapes.get(hitIndex);
+		Shape hit = scene.getShape(hitIndex);
 		
 		Vector normal = hit.getNormal(pos);
 		
@@ -58,7 +60,7 @@ public class Ray {
 			// Get the refractive index of the object the ray is refracting into, or 1 if it hit the same surface (it is refracting into space)
 			double n2 = medium == hit ? 1 : hit.getRefrIndex();
 			
-			Ray refractedRay = new Ray(this.pos, this.dir);
+			Ray refractedRay = new Ray(this);
 			refractedRay.refract(normal, n1, n2);
 			
 			// Shade the current color by the refracted ray
@@ -74,7 +76,7 @@ public class Ray {
 		
 		// If the hit object is reflective, create a new ray and reflect it
 		if (reflectivity > 0 && reflections > 0) {
-			Ray reflectedRay = new Ray(this.pos, this.dir);
+			Ray reflectedRay = new Ray(this);
 			reflectedRay.reflect(normal);
 			
 			// Stepping away from the current surface
@@ -91,19 +93,21 @@ public class Ray {
 		Vector brightness = new Vector(1, 1, 1);
 		
 		// Iterates over all the lights and marches to them
-		for (int i = 0; i < scene.getLights().size(); i++) {
+		for (int i = 0; i < scene.numLights(); i++) {
 			if (hit == scene.getLight(i)) continue;
 			
 			getBrightness(scene, scene.getLight(i), normal, brightness);
 		}
 		
 		// Multiply the shade of the pixel by the total brightness and add ambient light
-		shade.stretch(Math.min(1 - brightness.x + (double)Color.getR(scene.getScreen().getBgnd()) * Color.RATIO, 1),
-					  Math.min(1 - brightness.y + (double)Color.getG(scene.getScreen().getBgnd()) * Color.RATIO, 1),
-					  Math.min(1 - brightness.z + (double)Color.getB(scene.getScreen().getBgnd()) * Color.RATIO, 1));
+		shade.stretch(
+			Math.min(1 - brightness.x + (double)Color.getR(scene.getScreen().getBgnd()) * Color.RATIO, 1),
+			Math.min(1 - brightness.y + (double)Color.getG(scene.getScreen().getBgnd()) * Color.RATIO, 1),
+			Math.min(1 - brightness.z + (double)Color.getB(scene.getScreen().getBgnd()) * Color.RATIO, 1)
+		);
 		
 		// Add together all of the colors and return the result
-		return Color.shade(hit.getColor(pos), shade) + reflectionColor + refractionColor;
+		return Color.shade(hit.getColor(pos), shade) + refractionColor + reflectionColor;
 	}
 	
 	private void refract(Vector normal, double n1, double n2) {
@@ -148,12 +152,10 @@ public class Ray {
 		lightRay.dir.subtract(lightRay.pos);
 		lightRay.dir.setLength(1);
 		
-		ArrayList<Shape> shapes = scene.getVisible(lightRay);
-		
-		int hit = lightRay.march(shapes, null);
+		int hit = lightRay.march(scene, null);
 		
 		// If it hits the light, add brightness proportional to the light's brightness and the dot product of the normal
-		if (hit != -1 && shapes.get(hit) == light) {
+		if (hit != -1 && scene.getShape(hit) == light) {
 			double lightShade = Math.max(normal.dotProduct(lightRay.dir), 0) * Color.RATIO;
 			int lightColor = light.getColor();
 			
@@ -163,31 +165,60 @@ public class Ray {
 		}
 	}
 	
-	// Finding the distance from a point to the ray's path
-	public double distToPoint(Vector v) {
-		Vector r = new Vector(pos);
-		
-		double gamma = v.dotProduct(dir) - pos.dotProduct(dir);
-		r.add(gamma * dir.x, gamma * dir.y, gamma * dir.z);
-		
-		return v.getDistance(r);
+	// Finding the distance along the ray's path to the closest point to v
+	public double lengthToPoint(Vector v) {
+		return v.dotProduct(dir) - pos.dotProduct(dir);
 	}
 	
 	// Marching the ray through the scene until it hits a shape, exceeds the maximum number of steps, or exceeds the maximum render distance
-	public int march(ArrayList<Shape> shapes, Shape medium) {
+	public int march(Scene scene, Shape medium) {
 		steps = 0;
 		length = 0;
 		
-		int mediumIndex = shapes.indexOf(medium);
+		double[] bounds = new double[scene.numShapes() * 2];
+		
+		for (int i = 0; i < scene.numShapes(); i++) {
+			Vector shapePos = scene.getShape(i).getPos();
+			double shapeRadius = scene.getShape(i).getBoundRadius();
+			
+			double distance = lengthToPoint(shapePos);
+			
+			double range = (shapeRadius + MIN_LENGTH)*(shapeRadius + MIN_LENGTH) -
+				(shapePos.x - pos.x - distance*dir.x) * (shapePos.x - pos.x - distance*dir.x) -
+				(shapePos.y - pos.y - distance*dir.y) * (shapePos.y - pos.y - distance*dir.y) -
+				(shapePos.z - pos.z - distance*dir.z) * (shapePos.z - pos.z - distance*dir.z);
+			
+			if (range > 0 && distance > 0) {
+				range = Math.sqrt(range);
+				bounds[2*i] = distance - range;
+				bounds[2*i+1] = distance + range;
+			}
+			else {
+				bounds[2*i] = 0;
+				bounds[2*i+1] = 0;
+			}
+		}
 		
 		while (steps < MAX_STEPS && length < MAX_LENGTH) {
 			int nearest = -1;
 			double minDist = MAX_LENGTH;
 			
 			// Finding the smallest distance to a shape in the scene
-			for (int i = 0; i < shapes.size(); i++) {
+			for (int i = 0; i < scene.numShapes(); i++) {
+				if (bounds[2*i] == bounds[2*i+1]) continue;
+				
+				double distance;
+				
+				if (length < bounds[2*i])
+					distance = bounds[2*i] - length;
+				
+				else if (length < bounds[2*i+1])
+					distance = scene.getShape(i).getDistance(pos) - MIN_LENGTH;
+				
+				else continue;
+				
 				// If the ray is traveling through an object, the distance is inverted
-				double distance = (shapes.get(i).getDistance(pos) - MIN_LENGTH) * (i == mediumIndex ? -1 : 1) + MIN_LENGTH;
+				distance = distance * (scene.getShape(i) == medium ? -1 : 1) + MIN_LENGTH;
 				
 				if (distance < minDist) {
 					nearest = i;
@@ -208,7 +239,6 @@ public class Ray {
 	public void step(double len) {
 		steps++;
 		length += len;
-		lastStep = len;
 		
 		pos.add(dir.x * len, dir.y * len, dir.z * len);
 	}
@@ -219,16 +249,4 @@ public class Ray {
 	
 	public int getSteps() {return steps;}
 	public double getLength() {return length;}
-	
-	// Setters
-	public void setPos(Vector v) {pos = v;}
-	public void setDir(Vector v) {dir = v; dir.setLength(1);}
-	
-	public void setSteps(int n) {steps = n;}
-	public void setLength(double l) {length = l;}
-	
-	// toString
-	public String toString() {
-		return "Position: " + pos.toString() + "\nDirection: " + dir.toString();
-	}
 }
