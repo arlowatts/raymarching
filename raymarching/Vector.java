@@ -3,31 +3,42 @@ package raymarching;
 import java.lang.Math;
 
 /**
-A class to store a set of three doubles and perform calculations on them.
+A 3-dimensional vector.
 */
 public class Vector {
-	public double x, y, z;
+	/**
+	The x coordinate of the vector.
+	*/
+	public double x;
+	/**
+	The y coordinate of the vector.
+	*/
+	public double y;
+	/**
+	The z coordinate of the vector.
+	*/
+	public double z;
 	
 	/**
-	Creates a new vector with the specified x, y, and z values.
+	Creates a new vector with the coordinates <code>x</code>, <code>y</code>, <code>z</code>.
 	
-	@param x the x-coordinate of the vector
-	@param y the y-coordinate of the vector
-	@param z the z-coordinate of the vector
+	@param x the x coordinate of the vector
+	@param y the y coordinate of the vector
+	@param z the z coordinate of the vector
 	*/
 	public Vector(double x, double y, double z) {set(x, y, z);}
 	
 	/**
-	Creates a new vector from the values of an array with length 3.
+	Creates a new vector from the values of an array of length 3.
 	
 	@param v an array of three doubles to be the coordinates of the vector
 	*/
 	public Vector(double[] v) {set(v[0], v[1], v[2]);}
 	
 	/**
-	Creates a new vector that is a copy of another vector.
+	Creates a copy of a vector.
 	
-	@param v a Vector to copy
+	@param v the vector to copy
 	*/
 	public Vector(Vector v) {set(v);}
 	
@@ -37,9 +48,9 @@ public class Vector {
 	public Vector() {set(0, 0, 0);}
 	
 	/**
-	Rotates the vector by the Euler angles (<code>rotation.x</code>, <code>rotation.y</code>, <code>rotation.z</code>).
+	Rotates the vector by the angles (<code>rotation.x</code>, <code>rotation.y</code>, <code>rotation.z</code>).
 	
-	@param rotation a <code>Vector</code> whose coordinates represent the Euler angles phi, theta, and psi by which to rotate the vector
+	@param rotation a vector whose coordinates represent the Euler angles phi, theta, and psi by which to rotate
 	*/
 	public void rotate(Vector rotation) {
 		double[] sincos = getSincos(rotation);
@@ -60,9 +71,21 @@ public class Vector {
 	}
 	
 	/**
-	Performs a reversed rotation by the Euler angles (<code>rotation.x</code>, <code>rotation.y</code>, <code>rotation.z</code>).
+	Rotates the vector by the angles (<code>rotation.x</code>, <code>rotation.y</code>, <code>rotation.z</code>) about <code>origin</code>.
 	
-	@param rotation a <code>Vector</code> whose coordinates represent the Euler angles phi, theta, and psi by which to rotate the vector
+	@param rotation a vector whose coordinates represent the Euler angles phi, theta, and psi by which to rotate
+	@param origin a vector representing the point about which to rotate
+	*/
+	public void rotate(Vector rotation, Vector origin) {
+		subtract(origin);
+		rotate(rotation);
+		add(origin);
+	}
+	
+	/**
+	Reverses a rotation by the angles (<code>rotation.x</code>, <code>rotation.y</code>, <code>rotation.z</code>).
+	
+	@param rotation a vector whose coordinates represent the Euler angles phi, theta, and psi by which to rotate
 	*/
 	public void inverseRotate(Vector rotation) {
 		rotation.multiply(-1);
@@ -85,22 +108,10 @@ public class Vector {
 	}
 	
 	/**
-	Rotates the vector by the Euler angles (<code>rotation.x</code>, <code>rotation.y</code>, <code>rotation.z</code>) about <code>origin</code>.
+	Reverses a rotation by the angles (<code>rotation.x</code>, <code>rotation.y</code>, <code>rotation.z</code>) about <code>origin</code>.
 	
-	@param rotation a <code>Vector</code> whose coordinates represent the Euler angles phi, theta, and psi by which to rotate the vector
-	@param origin a <code>Vector</code> representing the point about which the vector will be rotated
-	*/
-	public void rotate(Vector rotation, Vector origin) {
-		subtract(origin);
-		rotate(rotation);
-		add(origin);
-	}
-	
-	/**
-	Performs a reversed rotation by the Euler angles (<code>rotation.x</code>, <code>rotation.y</code>, <code>rotation.z</code>) about <code>origin</code>.
-	
-	@param rotation a <code>Vector</code> whose coordinates represent the Euler angles phi, theta, and psi by which to rotate the vector
-	@param origin a <code>Vector</code> representing the point about which the vector will be rotated
+	@param rotation a vector whose coordinates represent the Euler angles phi, theta, and psi by which to rotate
+	@param origin a vector representing the point about which to rotate
 	*/
 	public void inverseRotate(Vector rotation, Vector origin) {
 		subtract(origin);
@@ -108,134 +119,250 @@ public class Vector {
 		add(origin);
 	}
 	
-	/*Returns the dot product of itself and another vector.*/
-	public double dotProduct(double x1, double y1, double z1) {
-		return x*x1 + y*y1 + z*z1;
+	/**
+	Computes the dot product of this vector and another.
+	
+	@param x the x coordinate of the other vector
+	@param y the y coordinate of the other vector
+	@param z the z coordinate of the other vector
+	*/
+	public double dotProduct(double x, double y, double z) {
+		return this.x*x + this.y*y + this.z*z;
 	}
 	
-	/*Returns the dot product of itself and another vector.*/
+	/**
+	Computes the dot product of this vector and another.
+	
+	@param v the other vector
+	*/
 	public double dotProduct(Vector v) {
 		return x*v.x + y*v.y + z*v.z;
 	}
 	
+	/**
+	Computes the length of the vector.
+	*/
 	public double getLength() {
 		return Math.sqrt(x*x + y*y + z*z);
 	}
 	
+	/**
+	Scales the vector to the specified length.
+	
+	@param length the target length of the vector
+	*/
 	public void setLength(double length) {
 		multiply(length / getLength());
 	}
 	
-	/*Returns the distance between the endpoints of itself and another vector, or the length of their difference.*/
-	public double getDistance(double x1, double y1, double z1) {
-		return Math.sqrt((x-x1)*(x-x1) + (y-y1)*(y-y1) + (z-z1)*(z-z1));
+	/**
+	Computes the length of the difference between this vector and another.
+	
+	@param x the x coordinate of the other vector
+	@param y the y coordinate of the other vector
+	@param z the z coordinate of the other vector
+	*/
+	public double getDistance(double x, double y, double z) {
+		return Math.sqrt((this.x-x)*(this.x-x) + (this.y-y)*(this.y-y) + (this.z-z)*(this.z-z));
 	}
 	
-	/*Returns the distance between the endpoints of itself and another vector, or the length of their difference.*/
+	/**
+	Computes the length of the difference between this vector and another.
+	
+	@param v the other vector
+	*/
 	public double getDistance(Vector v) {
 		return Math.sqrt((x-v.x)*(x-v.x) + (y-v.y)*(y-v.y) + (z-v.z)*(z-v.z));
 	}
 	
-	// Adds the values to itself
-	public void add(double x1, double y1, double z1) {
-		x += x1;
-		y += y1;
-		z += z1;
+	/**
+	Adds the components of another vector to this vector.
+	
+	@param x the x coordinate of the other vector
+	@param y the y coordinate of the other vector
+	@param z the z coordinate of the other vector
+	*/
+	public void add(double x, double y, double z) {
+		this.x += x;
+		this.y += y;
+		this.z += z;
 	}
 	
-	// Adds the vector to itself
+	/**
+	Adds the components of another vector to this vector.
+	
+	@param v the other vector
+	*/
 	public void add(Vector v) {
 		x += v.x;
 		y += v.y;
 		z += v.z;
 	}
 	
-	// Adds the scaled vector to itself
+	/**
+	Adds the components of another vector to this vector, multiplied by a scaling value.
+	
+	@param v the other vector
+	@param scale the multiplicative scaling value
+	*/
 	public void add(Vector v, double scale) {
 		x += v.x * scale;
 		y += v.y * scale;
 		z += v.z * scale;
 	}
 	
-	// Adds the values to itself
-	public void subtract(double x1, double y1, double z1) {
-		x -= x1;
-		y -= y1;
-		z -= z1;
+	/**
+	Subtracts the components of another vector from this vector.
+	
+	@param x the x coordinate of the other vector
+	@param y the y coordinate of the other vector
+	@param z the z coordinate of the other vector
+	*/
+	public void subtract(double x, double y, double z) {
+		this.x -= x;
+		this.y -= y;
+		this.z -= z;
 	}
 	
-	// Subtracts the vector from itself
+	/**
+	Subtracts the components of another vector from this vector.
+	
+	@param v the other vector
+	*/
 	public void subtract(Vector v) {
 		x -= v.x;
 		y -= v.y;
 		z -= v.z;
 	}
 	
-	// Subtracts the scaled vector from itelf
+	/**
+	Subtracts the components of another vector from this vector, multiplied by a scaling value.
+	
+	@param v the other vector
+	@param scale the multiplying value
+	*/
 	public void subtract(Vector v, double scale) {
 		x -= v.x * scale;
 		y -= v.y * scale;
 		z -= v.z * scale;
 	}
 	
-	// Multiplies itself by a scalar
-	public void multiply(double l) {
-		x *= l;
-		y *= l;
-		z *= l;
+	/**
+	Multiplies the vector by a scalar value.
+	
+	@param scale the multiplying value
+	*/
+	public void multiply(double scale) {
+		x *= scale;
+		y *= scale;
+		z *= scale;
 	}
 	
-	// Divides itself by a scalar
-	public void divide(double l) {
-		l = 1 / l;
-		x *= l;
-		y *= l;
-		z *= l;
+	/**
+	Divides the vector by a scalar value.
+	
+	@param scale the dividing value
+	*/
+	public void divide(double scale) {
+		scale = 1 / scale;
+		x *= scale;
+		y *= scale;
+		z *= scale;
 	}
 	
-	// Rescales itself by values lx, ly, lz
-	public void stretch(double lx, double ly, double lz) {
-		x *= lx;
-		y *= ly;
-		z *= lz;
+	/**
+	Multiplies the x, y, and z coordinates of the vector by <code>scalex</code>, <code>scaley</code>, and <code>scalez</code> respectively.
+	
+	@param scalex the multiplicative value of the x coordinate
+	@param scaley the multiplicative value of the y coordinate
+	@param scalez the multiplicative value of the z coordinate
+	*/
+	public void stretch(double scalex, double scaley, double scalez) {
+		x *= scalex;
+		y *= scaley;
+		z *= scalez;
 	}
 	
-	public void set(double x1, double y1, double z1) {
-		x = x1;
-		y = y1;
-		z = z1;
+	/**
+	Multiplies the x, y, and z coordinates of the vector by the x, y, and z coordinates of <code>v</code>, respectively.
+	
+	@param v the other vector
+	*/
+	public void stretch(Vector v) {
+		x *= v.x;
+		y *= v.y;
+		z *= v.z;
 	}
 	
+	/**
+	Sets the coordinates of the vector.
+	
+	@param x the x coordinate of the vector
+	@param y the y coordinate of the vector
+	@param z the z coordinate of the vector
+	*/
+	public void set(double x, double y, double z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+	
+	/**
+	Copies the coordinates of another vector.
+	
+	@param v the other vector
+	*/
 	public void set(Vector v) {
 		x = v.x;
 		y = v.y;
 		z = v.z;
 	}
 	
+	/**
+	Takes the positive absolute value of each component individually.
+	*/
 	public void setPositive() {
 		x = Math.abs(x);
 		y = Math.abs(y);
 		z = Math.abs(z);
 	}
 	
+	/**
+	Takes the negative absolute value of each component individually.
+	*/
 	public void setNegative() {
 		x = -Math.abs(x);
 		y = -Math.abs(y);
 		z = -Math.abs(z);
 	}
 	
+	/**
+	Sets the absolute value of each component to 1, but preserves sign.
+	*/
 	public void sign() {
 		x = x > 0 ? 1 : -1;
 		y = y > 0 ? 1 : -1;
 		z = z > 0 ? 1 : -1;
 	}
 	
+	/**
+	Copies the signs of <code>a</code>, <code>b</code>, and <code>c</code> onto the coordinates x, y, and z.
+	
+	@param a the sign to copy onto the x coordinate
+	@param b the sign to copy onto the y coordinate
+	@param c the sign to copy onto the z coordinate
+	*/
 	public void copySign(double a, double b, double c) {
 		x *= a > 0 ? 1 : -1;
 		y *= b > 0 ? 1 : -1;
 		z *= c > 0 ? 1 : -1;
 	}
 	
+	/**
+	Copies the signs of the coordinates of <code>v</code> onto the coordinates of this vector.
+	
+	@param v the other vector
+	*/
 	public void copySign(Vector v) {
 		x *= v.x > 0 ? 1 : -1;
 		y *= v.y > 0 ? 1 : -1;
