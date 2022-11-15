@@ -35,8 +35,8 @@ public class Cone extends Shape {
 		return distance;
 	}
 	
-	protected void setBoundRadius() {
-		setBoundRadius(Math.sqrt(radius*radius + height*height / 4));
+	protected double setBoundRadius() {
+		return Math.sqrt(radius*radius + height*height / 4);
 	}
 	
 	public Vector getNormal(Vector v) {
@@ -51,20 +51,5 @@ public class Cone extends Shape {
 		n.rotate(getAngle());
 		
 		return n;
-	}
-	
-	// Getters
-	public double getRadius() {return radius;}
-	public double getHeight() {return height;}
-	
-	// Setters
-	public void setRadius(double r) {
-		radius = r;
-		setBoundRadius(-1);
-	}
-	
-	public void setHeight(double h) {
-		height = h;
-		setBoundRadius(-1);
 	}
 }

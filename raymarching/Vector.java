@@ -125,6 +125,8 @@ public class Vector {
 	@param x the x coordinate of the other vector
 	@param y the y coordinate of the other vector
 	@param z the z coordinate of the other vector
+	
+	@return the dot product of this vector and the vector (x, y, z)
 	*/
 	public double dotProduct(double x, double y, double z) {
 		return this.x*x + this.y*y + this.z*z;
@@ -134,6 +136,8 @@ public class Vector {
 	Computes the dot product of this vector and another.
 	
 	@param v the other vector
+	
+	@return the dot product of this vector and the vector v
 	*/
 	public double dotProduct(Vector v) {
 		return x*v.x + y*v.y + z*v.z;
@@ -141,6 +145,8 @@ public class Vector {
 	
 	/**
 	Computes the length of the vector.
+	
+	@return the length of the vector
 	*/
 	public double getLength() {
 		return Math.sqrt(x*x + y*y + z*z);
@@ -149,7 +155,7 @@ public class Vector {
 	/**
 	Scales the vector to the specified length.
 	
-	@param length the target length of the vector
+	@param length the length of the vector
 	*/
 	public void setLength(double length) {
 		multiply(length / getLength());
@@ -161,6 +167,8 @@ public class Vector {
 	@param x the x coordinate of the other vector
 	@param y the y coordinate of the other vector
 	@param z the z coordinate of the other vector
+	
+	@return the distance between this vector and the vector (x, y, z)
 	*/
 	public double getDistance(double x, double y, double z) {
 		return Math.sqrt((this.x-x)*(this.x-x) + (this.y-y)*(this.y-y) + (this.z-z)*(this.z-z));
@@ -170,6 +178,8 @@ public class Vector {
 	Computes the length of the difference between this vector and another.
 	
 	@param v the other vector
+	
+	@return the distance between this vector and the vector v
 	*/
 	public double getDistance(Vector v) {
 		return Math.sqrt((x-v.x)*(x-v.x) + (y-v.y)*(y-v.y) + (z-v.z)*(z-v.z));

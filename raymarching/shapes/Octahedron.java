@@ -33,8 +33,8 @@ public class Octahedron extends Shape {
 		return r.dotProduct(n);
 	}
 	
-	protected void setBoundRadius() {
-		setBoundRadius(Math.max(Math.max(width, height), depth));
+	protected double setBoundRadius() {
+		return Math.max(Math.max(width, height), depth);
 	}
 	
 	public Vector getNormal(Vector v) {
@@ -47,26 +47,5 @@ public class Octahedron extends Shape {
 		n.rotate(getAngle());
 		
 		return n;
-	}
-	
-	// Getters
-	public double getWidth() {return width;}
-	public double getHeight() {return height;}
-	public double getDepth() {return depth;}
-	
-	// Setters
-	public void setWidth(double w) {
-		width = w;
-		setBoundRadius(-1);
-	}
-	
-	public void setHeight(double h) {
-		height = h;
-		setBoundRadius(-1);
-	}
-	
-	public void setDepth(double d) {
-		depth = d;
-		setBoundRadius(-1);
 	}
 }

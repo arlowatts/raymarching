@@ -10,5 +10,5 @@ public class Camera extends Shape {
 	
 	public double getDistance(Vector v) {return getPos().getDistance(v);}
 	
-	public void setBoundRadius() {setBoundRadius(0);}
+	public double setBoundRadius() {return 0;}
 }

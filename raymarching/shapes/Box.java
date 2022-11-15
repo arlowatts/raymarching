@@ -34,35 +34,7 @@ public class Box extends Shape {
 		return r.getLength() + dval;
 	}
 	
-	protected void setBoundRadius() {
-		setBoundRadius(Math.sqrt(width*width + height*height + depth*depth));
-	}
-	
-	// Getters
-	public double getWidth() {return width;}
-	public double getHeight() {return height;}
-	public double getLength() {return depth;}
-	
-	// Setters
-	public void setWidth(double w) {
-		width = w;
-		setBoundRadius(-1);
-	}
-	
-	public void setHeight(double h) {
-		height = h;
-		setBoundRadius(-1);
-	}
-	
-	public void setLength(double d) {
-		depth = d;
-		setBoundRadius(-1);
-	}
-	
-	public void setSize(double w, double h, double d) {
-		width = w;
-		height = h;
-		depth = d;
-		setBoundRadius(-1);
+	protected double setBoundRadius() {
+		return Math.sqrt(width*width + height*height + depth*depth);
 	}
 }

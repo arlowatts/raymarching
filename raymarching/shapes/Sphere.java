@@ -23,8 +23,8 @@ public class Sphere extends Shape {
 		return getPos().getDistance(v) - radius;
 	}
 	
-	protected void setBoundRadius() {
-		setBoundRadius(radius);
+	protected double setBoundRadius() {
+		return radius;
 	}
 	
 	public Vector getNormal(Vector v) {
@@ -46,14 +46,5 @@ public class Sphere extends Shape {
 		int y = (int)((Math.acos(r.y / radius) / Math.PI) * (getTexture().getHeight() - 1));
 		
 		return getTexture().getRGB(x, y);
-	}
-	
-	// Getters
-	public double getRadius() {return radius;}
-	
-	// Setters
-	public void setRadius(double r) {
-		radius = r;
-		setBoundRadius(-1);
 	}
 }

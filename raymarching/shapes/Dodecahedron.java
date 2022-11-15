@@ -51,8 +51,8 @@ public class Dodecahedron extends Shape {
 		return r.dotProduct(normals[getNearestFace(r)]) - CIRCUMSCRIBED_SPHERE_RATIO;
 	}
 	
-	protected void setBoundRadius() {
-		setBoundRadius(Math.max(Math.max(width, height), depth));
+	protected double setBoundRadius() {
+		return Math.max(Math.max(width, height), depth);
 	}
 	
 	public Vector getNormal(Vector v) {

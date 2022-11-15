@@ -28,8 +28,8 @@ public class Plane extends Shape {
 		return r.getLength();
 	}
 	
-	protected void setBoundRadius() {
-		setBoundRadius(Math.sqrt(width*width + length*length));
+	protected double setBoundRadius() {
+		return Math.sqrt(width*width + length*length);
 	}
 	
 	public Vector getNormal(Vector v) {
@@ -51,26 +51,5 @@ public class Plane extends Shape {
 		int y = (int)(Math.min(Math.max(r.z / (length * 2) + 0.5, 0), 1) * (getTexture().getHeight() - 1));
 		
 		return getTexture().getRGB(x, y);
-	}
-	
-	// Getters
-	public double getWidth() {return width;}
-	public double getLength() {return length;}
-	
-	// Setters
-	public void setWidth(double w) {
-		width = w;
-		setBoundRadius(-1);
-	}
-	
-	public void setLength(double l) {
-		length = l;
-		setBoundRadius(-1);
-	}
-	
-	public void setSize(double w, double l) {
-		width = w;
-		length = l;
-		setBoundRadius(-1);
 	}
 }

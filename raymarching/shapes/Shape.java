@@ -10,14 +10,17 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 
-/*
- * Contains methods and variables a 3D shape will need, such as position and surface properties
- */
+/**
+A 3-dimensional volume defined by a signed distance function.
+*/
 public abstract class Shape {
-	// Constants
-	// The default parameters that must be passed to the constructor
+	/**
+	The list of parameters required by the class's constructor.
+	*/
 	public static final String[] DEFAULT_PARAMS = {"x", "y", "z", "phi", "theta", "psi", "reflectivity", "transparency", "refrIndex"};
-	// The minimum size of a shape - it depends on the shape to limit its size to this value
+	/**
+	The minimum size of a shape. It depends on the subclasses of Shape to limit their size by this value.
+	*/
 	public static final double MIN_LENGTH = 0.001;
 	
 	// Member variables
@@ -35,7 +38,11 @@ public abstract class Shape {
 	// The subclass of Shape must define how it is calculated
 	private double boundRadius;
 	
-	// Constructors
+	/**
+	Creates a new Shape from the array <code>args</code>, which must match the parameters in <code>DEFAULT_PARAMS</code>.
+	
+	@param args an array of doubles representing the paramaters described in <code>DEFAULT_PARAMS</code>.
+	*/
 	public Shape(double... args) {
 		pos = new Vector(args[0], args[1], args[2]);
 		angle = new Vector(args[3], args[4], args[5]);
@@ -49,16 +56,30 @@ public abstract class Shape {
 		boundRadius = -1;
 	}
 	
-	// Abstract methods
-	// Should return the least distance from a point v to the surface of the shape
-	public abstract double getDistance(Vector v);
-	// Should call setBoundRadius(double r) to set the bound radius to the radius
-	// of the smallest sphere centered at pos that completely contains the shape
-	protected abstract void setBoundRadius();
+	/**
+	Computes the least distance from a point to the surface of the volume.
 	
-	// Methods
-	// Returns the surface normal at the point v
-	// Can be overridden by a more efficient and more precise function in many cases
+	@param v the point
+	
+	@return the least distance from <code>v</code> to the surface of the volume, which is a negative value if the point is inside the volume.
+	*/
+	public abstract double getDistance(Vector v);
+	
+	/**
+	Computes the bound radius of the shape based on its dimensions. Called automatically as needed.
+	
+	@return the least radius of a sphere centered on the shape that completely contains it.
+	*/
+	protected abstract double setBoundRadius();
+	
+	/**
+	Computes the surface normal of the shape near a point.
+	Often can be overridden in a subclass by a more efficient and more accurate method.
+	
+	@param v the point
+	
+	@return the unit vector normal to the surface near <code>v</code>.
+	*/
 	public Vector getNormal(Vector v) {
 		double distance = getDistance(v);
 		
@@ -79,11 +100,21 @@ public abstract class Shape {
 		return normal;
 	}
 	
-	// Returns the color of the surface at a point v
-	// Must be overriden in a subclass to implement texture mapping
+	/**
+	Returns the color of the shape near a point.
+	Must be overriden in a sublcass to implement texture mapping.
+	
+	@param v the point
+	
+	@return an integer representing the color in 32-bit RGB format.
+	*/
 	public int getColor(Vector v) {return color;}
 	
-	// Loads a texture (image) from a file into the shape
+	/**
+	Loads an image into the texture of the shape.
+	
+	@param path a correct path to an image file
+	*/
 	public void loadTexture(String path) throws IOException {
 		texture = ImageIO.read(new File(path));
 	}
@@ -97,7 +128,7 @@ public abstract class Shape {
 	public double getRefrIndex() {return refrIndex;}
 	
 	public double getBoundRadius() {
-		if (boundRadius == -1) setBoundRadius();
+		if (boundRadius == -1) boundRadius = setBoundRadius();
 		return boundRadius;
 	}
 	
@@ -112,9 +143,16 @@ public abstract class Shape {
 	public void setColor(int color) {this.color = color;}
 	public void setTexture(BufferedImage texture) {this.texture = texture;}
 	
-	// Helpers
-	protected void setBoundRadius(double r) {boundRadius = r;}
+	/**
+	Triggers an update to the bound radius. Should be called whenever the shape's dimensions are modified.
+	*/
+	protected void updateBoundRadius() {boundRadius = -1;}
 	
+	/**
+	Takes a vector in universal coordinates and transforms it into a vector in coordinates local to the shape.
+	
+	@return a vector in coordinates relative to the position and rotation of the shape.
+	*/
 	protected Vector toLocalFrame(Vector v) {
 		Vector r = new Vector(v);
 		
@@ -124,7 +162,11 @@ public abstract class Shape {
 		return r;
 	}
 	
-	// Returns a new vector much closer to the surface of the shape and in coordinates relative to the shape
+	/**
+	Takes a universal vector and transforms it into a local vector that is closer to the surface of the shape.
+	
+	@return a vector in coordinates relative to the shape and closer to the surface.
+	*/
 	protected Vector toSurface(Vector v) {
 		Vector r = new Vector(v);
 		

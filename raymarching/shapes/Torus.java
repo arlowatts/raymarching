@@ -29,8 +29,8 @@ public class Torus extends Shape {
 		return distance;
 	}
 	
-	protected void setBoundRadius() {
-		setBoundRadius(largeRadius + smallRadius);
+	protected double setBoundRadius() {
+		return largeRadius + smallRadius;
 	}
 	
 	public int getColor(Vector v) {
@@ -45,20 +45,5 @@ public class Torus extends Shape {
 		int y = (int)(((r.y < 0 ? 0.25 : 0.75) - Math.atan(w / r.y) / (Math.PI * 2)) * (getTexture().getHeight() - 1));
 		
 		return getTexture().getRGB(x, y);
-	}
-	
-	// Getters
-	public double getLargeRadius() {return largeRadius;}
-	public double getSmallRadius() {return smallRadius;}
-	
-	// Setters
-	public void setLargeRadius(double r) {
-		largeRadius = r;
-		setBoundRadius(-1);
-	}
-	
-	public void setSmallRadius(double r) {
-		smallRadius = r;
-		setBoundRadius(-1);
 	}
 }

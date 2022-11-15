@@ -53,14 +53,16 @@ public class Group extends Shape {
 		return minDist;
 	}
 	
-	protected void setBoundRadius() {
-		setBoundRadius(0);
+	protected double setBoundRadius() {
+		double radius = 0;
 		
 		for (int i = 0; i < shapes.size(); i++) {
 			if (modifiers.get(i) == '+') {
-				setBoundRadius(Math.max(shapes.get(i).getPos().getLength() + shapes.get(i).getBoundRadius(), getBoundRadius()));
+				radius = Math.max(shapes.get(i).getPos().getLength() + shapes.get(i).getBoundRadius(), radius);
 			}
 		}
+		
+		return radius;
 	}
 	
 	public int getColor(Vector v) {
@@ -88,13 +90,13 @@ public class Group extends Shape {
 	public void add(Shape object, char modifier) {
 		shapes.add(object);
 		modifiers.add(modifier);
-		setBoundRadius(-1);
+		updateBoundRadius();
 	}
 	
 	public void remove(int i) {
 		shapes.remove(i);
 		modifiers.remove(i);
-		setBoundRadius(-1);
+		updateBoundRadius();
 	}
 	
 	// Getters

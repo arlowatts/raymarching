@@ -33,28 +33,7 @@ public class Cylinder extends Shape {
 		return dist + r.getLength();
 	}
 	
-	protected void setBoundRadius() {
-		setBoundRadius(Math.sqrt(radius*radius + height*height));
-	}
-	
-	// Getters
-	public double getRadius() {return radius;}
-	public double getHeight() {return height;}
-	
-	// Setters
-	public void setRadius(double r) {
-		radius = r;
-		setBoundRadius(-1);
-	}
-	
-	public void setHeight(double h) {
-		height = h;
-		setBoundRadius(-1);
-	}
-	
-	public void setSize(double r, double h) {
-		radius = r;
-		height = h;
-		setBoundRadius(-1);
+	protected double  setBoundRadius() {
+		return Math.sqrt(radius*radius + height*height);
 	}
 }
