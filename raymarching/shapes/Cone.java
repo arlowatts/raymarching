@@ -4,14 +4,27 @@ import raymarching.Vector;
 
 import java.lang.Math;
 
+/**
+A subclass of Shape defined by its radius at the base and its height.
+*/
 public class Cone extends Shape {
-	// Constants
+	/**
+	The list of parameters required by Cone's constructor.
+	The parameters are "radius", "height".
+	*/
 	public static final String[] PARAMS = {"radius", "height"};
 	
 	// Member variables
 	private double radius, height;
 	
-	// Constructors
+	/**
+	Creates a new Cone from <code>args</code> and <code>dargs</code>.
+	<code>args</code> must match the parameters in <code>Cone.PARAMS</code>.
+	<code>dargs</code> must match the parameters in <code>Shape.DEFAULT_PARAMS</code>.
+	
+	@param args an array of doubles representing the paramaters described in <code>Cone.PARAMS</code>.
+	@param dargs an array of doubles representing the paramaters described in <code>Shape.DEFAULT_PARAMS</code>.
+	*/
 	public Cone(double[] args, double[] dargs) {
 		super(dargs);
 		

@@ -4,14 +4,27 @@ import raymarching.Vector;
 
 import java.lang.Math;
 
+/**
+A subclass of Shape defined by its large radius and its small radius.
+*/
 public class Torus extends Shape {
-	// Constants
+	/**
+	The list of parameters required by Torus's constructor.
+	The parameters are "largeRadius", "smallRadius".
+	*/
 	public static final String[] PARAMS = {"largeRadius", "smallRadius"};
 
 	// Member variables
 	private double largeRadius, smallRadius;
 	
-	// Constructors
+	/**
+	Creates a new Torus from <code>args</code> and <code>dargs</code>.
+	<code>args</code> must match the parameters in <code>Torus.PARAMS</code>.
+	<code>dargs</code> must match the parameters in <code>Shape.DEFAULT_PARAMS</code>.
+	
+	@param args an array of doubles representing the paramaters described in <code>Torus.PARAMS</code>.
+	@param dargs an array of doubles representing the paramaters described in <code>Shape.DEFAULT_PARAMS</code>.
+	*/
 	public Torus(double[] args, double[] dargs) {
 		super(dargs);
 		

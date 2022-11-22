@@ -15,9 +15,14 @@ A 3-dimensional volume defined by a signed distance function.
 */
 public abstract class Shape {
 	/**
-	The list of parameters required by the class's constructor.
+	The list of parameters required by Shape's constructor.
+	The parameters are "x", "y", "z", "phi", "theta", "psi", "reflectivity", "transparency", "refrIndex".
 	*/
 	public static final String[] DEFAULT_PARAMS = {"x", "y", "z", "phi", "theta", "psi", "reflectivity", "transparency", "refrIndex"};
+	/**
+	The list of parameters required by subclass's constructor.
+	*/
+	public static final String[] PARAMS = {};
 	/**
 	The minimum size of a shape. It depends on the subclasses of Shape to limit their size by this value.
 	*/
@@ -30,8 +35,8 @@ public abstract class Shape {
 	private double reflectivity, transparency, refrIndex;
 	
 	// The subclass of Shape should define how the texture maps to the surface
+	// If texture is null, color is used instead
 	private BufferedImage texture;
-	// If the texture is null, a color will be used instead
 	private int color;
 	
 	// boundRadius represents the size of the smallest sphere centered at pos that can completely contain the shape
@@ -39,9 +44,9 @@ public abstract class Shape {
 	private double boundRadius;
 	
 	/**
-	Creates a new Shape from the array <code>args</code>, which must match the parameters in <code>DEFAULT_PARAMS</code>.
+	Creates a new Shape from <code>args</code>, which must match the parameters in <code>DEFAULT_PARAMS</code>.
 	
-	@param args an array of doubles representing the paramaters described in <code>DEFAULT_PARAMS</code>.
+	@param args an array or sequence of doubles representing the paramaters described in <code>DEFAULT_PARAMS</code>.
 	*/
 	public Shape(double... args) {
 		pos = new Vector(args[0], args[1], args[2]);

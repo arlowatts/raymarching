@@ -4,7 +4,14 @@ import raymarching.Vector;
 
 import java.lang.Math;
 
+/**
+A subclass of Shape defined by its width, height, and depth scale factors.
+*/
 public class Dodecahedron extends Shape {
+	/**
+	The list of parameters required by Dodecahedron's constructor.
+	The parameters are "width", "height", "depth".
+	*/
 	public static final String[] PARAMS = {"width", "height", "depth"};
 	
 	private static final Vector INTERIOR_ANGLE = new Vector(2.0344439357957027, 0, 0); // The interior angle between two faces: 2atan((1 + sqrt(5)) / 2)
@@ -14,6 +21,14 @@ public class Dodecahedron extends Shape {
 	
 	private Vector[] normals;
 	
+	/**
+	Creates a new Dodecahedron from <code>args</code> and <code>dargs</code>.
+	<code>args</code> must match the parameters in <code>Dodecahedron.PARAMS</code>.
+	<code>dargs</code> must match the parameters in <code>Shape.DEFAULT_PARAMS</code>.
+	
+	@param args an array of doubles representing the paramaters described in <code>Dodecahedron.PARAMS</code>.
+	@param dargs an array of doubles representing the paramaters described in <code>Shape.DEFAULT_PARAMS</code>.
+	*/
 	public Dodecahedron(double[] args, double[] dargs) {
 		super(dargs);
 		

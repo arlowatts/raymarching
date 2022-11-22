@@ -4,14 +4,27 @@ import raymarching.Vector;
 
 import java.lang.Math;
 
+/**
+A subclass of Shape defined by its width, height, and depth scaling factors.
+*/
 public class Octahedron extends Shape {
-	// Constants
+	/**
+	The list of parameters required by Octahedron's constructor.
+	The parameters are "width", "height", "depth".
+	*/
 	public static final String[] PARAMS = {"width", "height", "depth"};
 	
 	// Member variables
 	private double width, height, depth;
 	
-	// Constructors
+	/**
+	Creates a new Octahedron from <code>args</code> and <code>dargs</code>.
+	<code>args</code> must match the parameters in <code>Octahedron.PARAMS</code>.
+	<code>dargs</code> must match the parameters in <code>Shape.DEFAULT_PARAMS</code>.
+	
+	@param args an array of doubles representing the paramaters described in <code>Octahedron.PARAMS</code>.
+	@param dargs an array of doubles representing the paramaters described in <code>Shape.DEFAULT_PARAMS</code>.
+	*/
 	public Octahedron(double[] args, double[] dargs) {
 		super(dargs);
 		

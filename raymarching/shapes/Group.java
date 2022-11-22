@@ -6,8 +6,14 @@ import raymarching.Vector;
 import java.lang.Math;
 import java.util.ArrayList;
 
+/**
+A subclass of Shape to contain multiple Shapes and perform additional operations on them.
+*/
 public class Group extends Shape {
-	// Constants
+	/**
+	The list of parameters required by Group's constructor.
+	The parameters are "smoothing".
+	*/
 	public static final String[] PARAMS = {"smoothing"};
 	
 	// Member variables
@@ -16,7 +22,14 @@ public class Group extends Shape {
 	
 	private double smoothing;
 	
-	// Constructors
+	/**
+	Creates a new Group from <code>args</code> and <code>dargs</code>.
+	<code>args</code> must match the parameters in <code>Group.PARAMS</code>.
+	<code>dargs</code> must match the parameters in <code>Shape.DEFAULT_PARAMS</code>.
+	
+	@param args an array of doubles representing the paramaters described in <code>Group.PARAMS</code>.
+	@param dargs an array of doubles representing the paramaters described in <code>Shape.DEFAULT_PARAMS</code>.
+	*/
 	public Group(double[] args, double[] dargs) {
 		super(dargs);
 		
@@ -87,31 +100,34 @@ public class Group extends Shape {
 		return pointColor;
 	}
 	
-	public void add(Shape object, char modifier) {
-		shapes.add(object);
+	/**
+	Add a new shape to the group.
+	<code>modifier</code> is the modifier of the new shape and should be one of '+' (union), '-' (difference) and '&amp;' (intersection).
+	A shapes modifier defines how its distance function is compared with the distance functions of the other shapes in the group.
+	
+	@param shape the new shape.
+	@param modifier the modifier of the new shape.
+	
+	@return the index that the shape was added at.
+	*/
+	public int add(Shape shape, char modifier) {
+		shapes.add(shape);
 		modifiers.add(modifier);
 		updateBoundRadius();
+		
+		return shapes.size() - 1;
 	}
 	
-	public void remove(int i) {
-		shapes.remove(i);
-		modifiers.remove(i);
+	/**
+	Remove a shape from the group by its index.
+	
+	@param index the index of the shape.
+	*/
+	public void remove(int index) {
+		shapes.remove(index);
+		modifiers.remove(index);
 		updateBoundRadius();
 	}
-	
-	// Getters
-	public double getSmoothing() {return smoothing;}
-	
-	public Shape getShape(int i) {
-		return shapes.get(i);
-	}
-	
-	public char getModifier(int i) {
-		return modifiers.get(i);
-	}
-	
-	// Setters
-	public void setSmoothing(double smoothing) {this.smoothing = smoothing;}
 	
 	// Helpers
 	private double smoothUnion(double a, double b) {
