@@ -183,10 +183,12 @@ public class Ray {
 			
 			double distance = lengthToPoint(shapePos);
 			
+			// Find the value equal to the square of half the distance between the two points of intersection of the ray's path and the bounding sphere
+			// Negative if there are no points of intersection
 			double range = (shapeRadius + MIN_LENGTH)*(shapeRadius + MIN_LENGTH) -
-				(shapePos.x - pos.x - distance*dir.x) * (shapePos.x - pos.x - distance*dir.x) -
-				(shapePos.y - pos.y - distance*dir.y) * (shapePos.y - pos.y - distance*dir.y) -
-				(shapePos.z - pos.z - distance*dir.z) * (shapePos.z - pos.z - distance*dir.z);
+				(shapePos.x - pos.x - distance*dir.x)*(shapePos.x - pos.x - distance*dir.x) -
+				(shapePos.y - pos.y - distance*dir.y)*(shapePos.y - pos.y - distance*dir.y) -
+				(shapePos.z - pos.z - distance*dir.z)*(shapePos.z - pos.z - distance*dir.z);
 			
 			if (range > 0 && distance > 0) {
 				range = Math.sqrt(range);
@@ -199,6 +201,7 @@ public class Ray {
 			}
 		}
 		
+		// Iteratively step my the largest distance possible without passing through a shape
 		while (steps < MAX_STEPS && length < MAX_LENGTH) {
 			int nearest = -1;
 			double minDist = MAX_LENGTH;
