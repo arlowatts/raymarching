@@ -331,7 +331,7 @@ public class Vector {
 	/**
 	Takes the positive absolute value of each component individually.
 	*/
-	public void setPositive() {
+	public void positive() {
 		x = Math.abs(x);
 		y = Math.abs(y);
 		z = Math.abs(z);
@@ -340,7 +340,7 @@ public class Vector {
 	/**
 	Takes the negative absolute value of each component individually.
 	*/
-	public void setNegative() {
+	public void negative() {
 		x = -Math.abs(x);
 		y = -Math.abs(y);
 		z = -Math.abs(z);
@@ -350,9 +350,9 @@ public class Vector {
 	Sets the absolute value of each component to 1, but preserves sign.
 	*/
 	public void sign() {
-		x = x > 0 ? 1 : -1;
-		y = y > 0 ? 1 : -1;
-		z = z > 0 ? 1 : -1;
+		x = x >= 0 ? 1 : -1;
+		y = y >= 0 ? 1 : -1;
+		z = z >= 0 ? 1 : -1;
 	}
 	
 	/**
@@ -363,9 +363,9 @@ public class Vector {
 	@param c the sign to copy onto the z coordinate
 	*/
 	public void copySign(double a, double b, double c) {
-		x *= a > 0 ? 1 : -1;
-		y *= b > 0 ? 1 : -1;
-		z *= c > 0 ? 1 : -1;
+		x *= a >= 0 ? 1 : -1;
+		y *= b >= 0 ? 1 : -1;
+		z *= c >= 0 ? 1 : -1;
 	}
 	
 	/**
@@ -374,11 +374,12 @@ public class Vector {
 	@param v the other vector
 	*/
 	public void copySign(Vector v) {
-		x *= v.x > 0 ? 1 : -1;
-		y *= v.y > 0 ? 1 : -1;
-		z *= v.z > 0 ? 1 : -1;
+		x *= v.x >= 0 ? 1 : -1;
+		y *= v.y >= 0 ? 1 : -1;
+		z *= v.z >= 0 ? 1 : -1;
 	}
 	
+	// Returns the sine and cosine values that are used in the rotations
 	private static double[] getSincos(Vector rotation) {
 		double sincos[] = {Math.sin(rotation.x), Math.sin(rotation.y), Math.sin(rotation.z),
 						   Math.cos(rotation.x), Math.cos(rotation.y), Math.cos(rotation.z)};

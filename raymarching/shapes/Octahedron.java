@@ -37,7 +37,7 @@ public class Octahedron extends Shape {
 	public double getDistance(Vector v) {
 		Vector r = toLocalFrame(v);
 		
-		r.setPositive();
+		r.positive();
 		r.x -= width;
 		
 		Vector n = new Vector(1 / width, 1 / height, 1 / depth);

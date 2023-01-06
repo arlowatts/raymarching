@@ -37,7 +37,7 @@ public class Box extends Shape {
 	public double getDistance(Vector v) {
 		Vector r = toLocalFrame(v);
 		
-		r.setPositive();
+		r.positive();
 		r.subtract(width, height, depth);
 		
 		double dval = Math.min(Math.max(r.x, Math.max(r.y, r.z)), 0);
