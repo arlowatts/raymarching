@@ -5,8 +5,7 @@ gif 100
 
 light . 0 5 0 1 1 1
 
-sphere . 0xff8000 1 -5 0 10 0 0 0 0 0 1
-box . 0x00ff80 1 1 1 -2.5 0 10 0 0.79 0 0 0 1
-torus . 0x8000ff 0.9 0.1 0 0 10 0 1.5708 0 0 0 1
-octahedron . 0xff0080 1 1 1 2.5 0 10 0 0 0 0 0 1
-cone . 0x80ff00 1 2 5 0 10 0 0 0 0 0 1
+sphere . 0xffffff 1 0 0 10 0 0 0 0 0.8 1.5
+plane p1 earth.jpg 20 10 0 0 20 0 1.7 0 0 0 0
+
+action translate p1 0.1 0 0
