@@ -305,6 +305,30 @@ public class Vector {
 	}
 	
 	/**
+	Divides the x, y, and z coordinates of the vector by <code>scalex</code>, <code>scaley</code>, and <code>scalez</code> respectively.
+	
+	@param scalex the divisive value of the x coordinate
+	@param scaley the divisive value of the y coordinate
+	@param scalez the divisive value of the z coordinate
+	*/
+	public void compress(double scalex, double scaley, double scalez) {
+		x /= scalex;
+		y /= scaley;
+		z /= scalez;
+	}
+	
+	/**
+	Divides the x, y, and z coordinates of the vector by the x, y, and z coordinates of <code>v</code>, respectively.
+	
+	@param v the other vector
+	*/
+	public void compress(Vector v) {
+		x /= v.x;
+		y /= v.y;
+		z /= v.z;
+	}
+	
+	/**
 	Sets the coordinates of the vector.
 	
 	@param x the x coordinate of the vector
@@ -326,6 +350,24 @@ public class Vector {
 		x = v.x;
 		y = v.y;
 		z = v.z;
+	}
+	
+	/**
+	Computes the sum of all three components.
+	
+	@return the sum of the x, y, and z components of the vector.
+	*/
+	public double sum() {
+		return x + y + z;
+	}
+	
+	/**
+	Computes the product of all three components.
+	
+	@return the product of the x, y, and z components of the vector.
+	*/
+	public double product() {
+		return x * y * z;
 	}
 	
 	/**
