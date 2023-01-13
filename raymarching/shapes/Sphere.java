@@ -5,17 +5,14 @@ import raymarching.Vector;
 import java.lang.Math;
 
 /**
-A subclass of Shape defined by its radius.
+A subclass of Shape defining a sphere
 */
 public class Sphere extends Shape {
 	/**
 	The list of parameters required by Sphere's constructor.
-	The parameters are "radius".
+	Sphere has no unique parameters.
 	*/
-	public static final String[] PARAMS = {"radius"};
-
-	// Member variables
-	private double radius;
+	public static final String[] PARAMS = {};
 	
 	/**
 	Creates a new Sphere from <code>args</code> and <code>dargs</code>.
@@ -27,36 +24,30 @@ public class Sphere extends Shape {
 	*/
 	public Sphere(double[] args, double[] dargs) {
 		super(dargs);
-		
-		radius = Math.max(args[0], MIN_LENGTH);
 	}
 	
-	// Methods
-	public double getDistance(Vector v) {
-		return getPos().getDistance(v) - radius;
+	protected double getLocalDistance(Vector r) {
+		return r.getLength() - 1;
 	}
 	
-	protected double setBoundRadius() {
-		return radius;
-	}
-	
-	public Vector getNormal(Vector v) {
-		Vector n = new Vector(v);
-		
-		n.subtract(getPos());
+	@Override
+	protected Vector getLocalNormal(Vector r) {
+		Vector n = new Vector(r);
 		n.setLength(1);
-		
 		return n;
 	}
 	
-	public int getColor(Vector v) {
+	protected double setBoundRadius() {
+		return 1;
+	}
+	
+	@Override
+	protected int getLocalColor(Vector r) {
 		if (getTexture() == null) return getColor();
-		
-		Vector r = toSurface(v);
 		
 		int x = (int)(((r.z < 0 ? 0.25 : 0.75) - Math.atan(r.x / r.z) / (Math.PI * 2)) * (getTexture().getWidth() - 1));
 		
-		int y = (int)((Math.acos(r.y / radius) / Math.PI) * (getTexture().getHeight() - 1));
+		int y = (int)((Math.acos(r.y) / Math.PI) * (getTexture().getHeight() - 1));
 		
 		return getTexture().getRGB(x, y);
 	}

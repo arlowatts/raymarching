@@ -5,17 +5,16 @@ import raymarching.Vector;
 import java.lang.Math;
 
 /**
-A subclass of Shape defined by its large radius and its small radius.
+A subclass of Shape defining a torus.
 */
 public class Torus extends Shape {
 	/**
 	The list of parameters required by Torus's constructor.
-	The parameters are "largeRadius", "smallRadius".
+	The parameters are "radiusRatio".
 	*/
-	public static final String[] PARAMS = {"largeRadius", "smallRadius"};
-
-	// Member variables
-	private double largeRadius, smallRadius;
+	public static final String[] PARAMS = {"radiusRatio"};
+	
+	private double radiusRatio;
 	
 	/**
 	Creates a new Torus from <code>args</code> and <code>dargs</code>.
@@ -28,30 +27,24 @@ public class Torus extends Shape {
 	public Torus(double[] args, double[] dargs) {
 		super(dargs);
 		
-		largeRadius = Math.max(args[0], MIN_LENGTH);
-		smallRadius = Math.max(args[1], MIN_LENGTH);
+		radiusRatio = Math.max(args[0], MIN_LENGTH);
 	}
 	
 	// Methods
-	public double getDistance(Vector v) {
-		Vector r = toLocalFrame(v);
-		
-		double a = Math.sqrt(r.x*r.x + r.z*r.z) - largeRadius;
-		double distance = Math.sqrt(a*a + r.y*r.y) - smallRadius;
-		
-		return distance;
+	protected double getLocalDistance(Vector r) {
+		double d = Math.sqrt(r.x*r.x + r.z*r.z) - 1;
+		return Math.sqrt(d*d + r.y*r.y) - radiusRatio;
 	}
 	
 	protected double setBoundRadius() {
-		return largeRadius + smallRadius;
+		return 1 + radiusRatio;
 	}
 	
-	public int getColor(Vector v) {
+	@Override
+	protected int getLocalColor(Vector r) {
 		if (getTexture() == null) return getColor();
 		
-		Vector r = toSurface(v);
-		
-		double w = largeRadius - Math.sqrt(r.x*r.x + r.z*r.z);
+		double w = 1 - Math.sqrt(r.x*r.x + r.z*r.z);
 		
 		int x = (int)(((r.z < 0 ? 0.25 : 0.75) - Math.atan(r.x / r.z) / (Math.PI * 2)) * (getTexture().getWidth() - 1));
 		

@@ -5,17 +5,14 @@ import raymarching.Vector;
 import java.lang.Math;
 
 /**
-A subclass of Shape defined by its radius and height.
+A subclass of Shape defining a cylinder.
 */
 public class Cylinder extends Shape {
 	/**
 	The list of parameters required by Cylinder's constructor.
-	The parameters are "radius", "height".
+	Cylinder has no unique parameters.
 	*/
-	public static final String[] PARAMS = {"radius", "height"};
-
-	// Member variables
-	private double radius, height;
+	public static final String[] PARAMS = {};
 	
 	/**
 	Creates a new Cylinder from <code>args</code> and <code>dargs</code>.
@@ -27,26 +24,22 @@ public class Cylinder extends Shape {
 	*/
 	public Cylinder(double[] args, double[] dargs) {
 		super(dargs);
-		
-		radius = Math.max(args[0], MIN_LENGTH);
-		height = Math.max(args[1], MIN_LENGTH);
 	}
 	
-	// Methods
-	public double getDistance(Vector v) {
-		Vector r = toLocalFrame(v);
+	protected double getLocalDistance(Vector r) {
+		Vector q = new Vector(r);
 		
-		r.set(Math.sqrt(r.x*r.x + r.z*r.z) - radius, Math.abs(r.y) - height, 0);
+		q.set(Math.sqrt(q.x*q.x + q.z*q.z) - 1, Math.abs(q.y) - 1, 0);
 		
-		double dist = Math.min(Math.max(r.x, r.y), 0);
+		double d = Math.min(Math.max(q.x, q.y), 0);
 		
-		r.x = Math.max(r.x, 0);
-		r.y = Math.max(r.y, 0);
+		q.x = Math.max(q.x, 0);
+		q.y = Math.max(q.y, 0);
 		
-		return dist + r.getLength();
+		return d + q.getLength();
 	}
 	
 	protected double setBoundRadius() {
-		return Math.sqrt(radius*radius + height*height);
+		return Math.sqrt(2);
 	}
 }

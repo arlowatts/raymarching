@@ -5,17 +5,14 @@ import raymarching.Vector;
 import java.lang.Math;
 
 /**
-A subclass of Shape defined by its width, height, and depth.
+A subclass of Shape defining a rectangular box.
 */
 public class Box extends Shape {
 	/**
 	The list of parameters required by Box's constructor.
-	The parameters are "width", "height", "depth".
+	Box has no unique parameters.
 	*/
-	public static final String[] PARAMS = {"width", "height", "depth"};
-
-	// Member variables
-	private double width, height, depth;
+	public static final String[] PARAMS = {};
 	
 	/**
 	Creates a new Box from <code>args</code> and <code>dargs</code>.
@@ -27,27 +24,22 @@ public class Box extends Shape {
 	*/
 	public Box(double[] args, double[] dargs) {
 		super(dargs);
-		
-		width = Math.max(args[0], MIN_LENGTH);
-		height = Math.max(args[1], MIN_LENGTH);
-		depth = Math.max(args[2], MIN_LENGTH);
 	}
 	
-	// Methods
-	public double getDistance(Vector v) {
-		Vector r = toLocalFrame(v);
+	protected double getLocalDistance(Vector r) {
+		Vector q = new Vector(r);
 		
-		r.positive();
-		r.subtract(width, height, depth);
+		q.positive();
+		q.subtract(1, 1, 1);
 		
-		double dval = Math.min(Math.max(r.x, Math.max(r.y, r.z)), 0);
+		double d = Math.min(Math.max(q.x, Math.max(q.y, q.z)), 0);
 		
-		r.set(Math.max(r.x, 0), Math.max(r.y, 0), Math.max(r.z, 0));
+		q.set(Math.max(q.x, 0), Math.max(q.y, 0), Math.max(q.z, 0));
 		
-		return r.getLength() + dval;
+		return q.getLength() + d;
 	}
 	
 	protected double setBoundRadius() {
-		return Math.sqrt(width*width + height*height + depth*depth);
+		return Math.sqrt(3);
 	}
 }

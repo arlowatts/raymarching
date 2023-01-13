@@ -16,11 +16,11 @@ A 3-dimensional volume defined by a signed distance function.
 public abstract class Shape {
 	/**
 	The list of parameters required by Shape's constructor.
-	The parameters are "x", "y", "z", "phi", "theta", "psi", "reflectivity", "transparency", "refrIndex".
+	The parameters are "x", "y", "z", "scalex", "scaley", "scalez", "phi", "theta", "psi", "reflectivity", "transparency", "refrIndex".
 	*/
-	public static final String[] DEFAULT_PARAMS = {"x", "y", "z", "phi", "theta", "psi", "reflectivity", "transparency", "refrIndex"};
+	public static final String[] DEFAULT_PARAMS = {"x", "y", "z", "scalex", "scaley", "scalez", "phi", "theta", "psi", "reflectivity", "transparency", "refrIndex"};
 	/**
-	The list of parameters required by subclass's constructor.
+	The list of additional parameters required by subclass's constructor.
 	*/
 	public static final String[] PARAMS = {};
 	/**
@@ -29,7 +29,7 @@ public abstract class Shape {
 	public static final double MIN_LENGTH = 0.001;
 	
 	// Member variables
-	private Vector pos, angle;
+	private Vector position, dimension, rotation;
 	
 	// Reflectivity, transparency, and refractive index are all universal properties of the surface
 	private double reflectivity, transparency, refrIndex;
@@ -39,7 +39,7 @@ public abstract class Shape {
 	private BufferedImage texture;
 	private int color;
 	
-	// boundRadius represents the size of the smallest sphere centered at pos that can completely contain the shape
+	// boundRadius represents the size of the smallest sphere centered at position that can completely contain the shape
 	// The subclass of Shape must define how it is calculated
 	private double boundRadius;
 	
@@ -49,12 +49,13 @@ public abstract class Shape {
 	@param args an array or sequence of doubles representing the paramaters described in <code>DEFAULT_PARAMS</code>.
 	*/
 	public Shape(double... args) {
-		pos = new Vector(args[0], args[1], args[2]);
-		angle = new Vector(args[3], args[4], args[5]);
+		position = new Vector(args[0], args[1], args[2]);
+		dimension = new Vector(args[3], args[4], args[5]);
+		rotation = new Vector(args[6], args[7], args[8]);
 		
-		reflectivity = Math.min(Math.max(args[6], 0), 1);
-		transparency = Math.min(Math.max(args[7], 0), 1);
-		refrIndex = Math.max(args[8], 1);
+		reflectivity = Math.min(Math.max(args[9], 0), 1);
+		transparency = Math.min(Math.max(args[10], 0), 1);
+		refrIndex = Math.max(args[11], 1);
 		
 		color = 0;
 		
@@ -68,14 +69,11 @@ public abstract class Shape {
 	
 	@return the least distance from <code>v</code> to the surface of the volume, which is a negative value if the point is inside the volume.
 	*/
-	public abstract double getDistance(Vector v);
+	public double getDistance(Vector v) {
+		return getLocalDistance(toLocalFrame(v));
+	}
 	
-	/**
-	Computes the bound radius of the shape based on its dimensions. Called automatically as needed.
-	
-	@return the least radius of a sphere centered on the shape that completely contains it.
-	*/
-	protected abstract double setBoundRadius();
+	protected abstract double getLocalDistance(Vector r);
 	
 	/**
 	Computes the surface normal of the shape near a point.
@@ -86,20 +84,30 @@ public abstract class Shape {
 	@return the unit vector normal to the surface near <code>v</code>.
 	*/
 	public Vector getNormal(Vector v) {
-		double distance = getDistance(v);
+		Vector normal = getLocalNormal(toLocalFrame(v));
 		
-		v.add(MIN_LENGTH, 0, 0);
-		double xDistance = getDistance(v);
+		normal.compress(dimension);
+		normal.rotate(rotation);
+		normal.setLength(1);
 		
-		v.add(-MIN_LENGTH, MIN_LENGTH, 0);
-		double yDistance = getDistance(v);
+		return normal;
+	}
+	
+	protected Vector getLocalNormal(Vector r) {
+		double d = getLocalDistance(r);
 		
-		v.add(0, -MIN_LENGTH, MIN_LENGTH);
-		double zDistance = getDistance(v);
+		r.add(MIN_LENGTH, 0, 0);
+		double dx = getLocalDistance(r);
 		
-		v.add(0, 0, -MIN_LENGTH);
+		r.add(-MIN_LENGTH, MIN_LENGTH, 0);
+		double dy = getLocalDistance(r);
 		
-		Vector normal = new Vector(xDistance - distance, yDistance - distance, zDistance - distance);
+		r.add(0, -MIN_LENGTH, MIN_LENGTH);
+		double dz = getLocalDistance(r);
+		
+		r.add(0, 0, -MIN_LENGTH);
+		
+		Vector normal = new Vector(dx - d, dy - d, dz - d);
 		normal.setLength(1);
 		
 		return normal;
@@ -113,7 +121,20 @@ public abstract class Shape {
 	
 	@return an integer representing the color in 32-bit RGB format.
 	*/
-	public int getColor(Vector v) {return color;}
+	public int getColor(Vector v) {
+		return getLocalColor(toLocalFrame(v));
+	}
+	
+	protected int getLocalColor(Vector r) {
+		return color;
+	}
+	
+	/**
+	Computes the bound radius of the shape based on its dimensions. Called automatically as needed.
+	
+	@return the least radius of a sphere centered on the shape that completely contains it.
+	*/
+	protected abstract double setBoundRadius();
 	
 	/**
 	Loads an image into the texture of the shape.
@@ -125,15 +146,16 @@ public abstract class Shape {
 	}
 	
 	// Getters
-	public Vector getPos() {return pos;}
-	public Vector getAngle() {return angle;}
+	public Vector getPos() {return position;}
+	public Vector getDim() {return dimension;}
+	public Vector getRot() {return rotation;}
 	
 	public double getReflectivity() {return reflectivity;}
 	public double getTransparency() {return transparency;}
 	public double getRefrIndex() {return refrIndex;}
 	
 	public double getBoundRadius() {
-		if (boundRadius == -1) boundRadius = setBoundRadius();
+		if (boundRadius == -1) boundRadius = Math.max(Math.max(dimension.x, dimension.y), dimension.z) * setBoundRadius();
 		return boundRadius;
 	}
 	
@@ -154,30 +176,16 @@ public abstract class Shape {
 	protected void updateBoundRadius() {boundRadius = -1;}
 	
 	/**
-	Takes a vector in universal coordinates and transforms it into a vector in coordinates local to the shape.
+	Takes a vector in scene coordinates and transforms it into a vector in coordinates local to the shape.
 	
 	@return a vector in coordinates relative to the position and rotation of the shape.
 	*/
-	protected Vector toLocalFrame(Vector v) {
+	private Vector toLocalFrame(Vector v) {
 		Vector r = new Vector(v);
 		
-		r.subtract(pos);
-		r.inverseRotate(angle);
-		
-		return r;
-	}
-	
-	/**
-	Takes a universal vector and transforms it into a local vector that is closer to the surface of the shape.
-	
-	@return a vector in coordinates relative to the shape and closer to the surface.
-	*/
-	protected Vector toSurface(Vector v) {
-		Vector r = new Vector(v);
-		
-		r.subtract(getNormal(r), getDistance(r));
-		r.subtract(pos);
-		r.inverseRotate(angle);
+		r.subtract(position);
+		r.inverseRotate(rotation);
+		r.compress(dimension);
 		
 		return r;
 	}

@@ -5,19 +5,19 @@ import raymarching.Vector;
 import java.lang.Math;
 
 /**
-A subclass of Shape defined by its width, height, and depth scale factors.
+A subclass of Shape defining a 12-sided polyhedron.
 */
 public class Dodecahedron extends Shape {
 	/**
 	The list of parameters required by Dodecahedron's constructor.
-	The parameters are "width", "height", "depth".
+	Dodecahedron has no unique parameters.
 	*/
-	public static final String[] PARAMS = {"width", "height", "depth"};
+	public static final String[] PARAMS = {};
 	
-	private static final Vector INTERIOR_ANGLE = new Vector(2.0344439357957027, 0, 0); // The interior angle between two faces: 2atan((1 + sqrt(5)) / 2)
-	private static final Double CIRCUMSCRIBED_SPHERE_RATIO = 0.7946544722917661; // The ratio of the radius of the circumscribed sphere to the radius of the inscribed sphere
-	
-	private double width, height, depth;
+	// The interior angle between two faces: 2atan((1 + sqrt(5)) / 2)
+	private static final Vector INTERIOR_ANGLE = new Vector(2.0344439357957027, 0, 0);
+	// The ratio of the radius of the inscribed sphere to the radius of the circumscribed sphere
+	private static final Double CIRCUMSCRIBED_SPHERE_RATIO = 0.7946544722917661;
 	
 	private Vector[] normals;
 	
@@ -31,10 +31,6 @@ public class Dodecahedron extends Shape {
 	*/
 	public Dodecahedron(double[] args, double[] dargs) {
 		super(dargs);
-		
-		width = Math.max(args[0], MIN_LENGTH);
-		height = Math.max(args[1], MIN_LENGTH);
-		depth = Math.max(args[2], MIN_LENGTH);
 		
 		normals = new Vector[12];
 		
@@ -54,32 +50,22 @@ public class Dodecahedron extends Shape {
 			normals[10 - i].rotate(INTERIOR_ANGLE);
 			normals[10 - i].rotate(rotation);
 		}
-		
-		for (int i = 0; i < 12; i++) normals[i].setLength(1);
 	}
 	
 	// Not exact - bound
-	public double getDistance(Vector v) {
-		Vector r = toLocalFrame(v);
-		r.stretch(1 / width, 1 / height, 1 / depth);
-		
+	protected double getLocalDistance(Vector r) {
 		return r.dotProduct(normals[getNearestFace(r)]) - CIRCUMSCRIBED_SPHERE_RATIO;
 	}
 	
-	protected double setBoundRadius() {
-		return Math.max(Math.max(width, height), depth);
-	}
-	
-	public Vector getNormal(Vector v) {
-		Vector r = toLocalFrame(v);
-		r.stretch(1 / width, 1 / height, 1 / depth);
-		
+	@Override
+	protected Vector getLocalNormal(Vector r) {
 		Vector n = new Vector(normals[getNearestFace(r)]);
-		n.stretch(width, height, depth);
-		n.setLength(1);
-		n.rotate(getAngle());
 		
 		return n;
+	}
+	
+	protected double setBoundRadius() {
+		return 1;
 	}
 	
 	private int getNearestFace(Vector r) {

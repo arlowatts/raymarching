@@ -5,18 +5,17 @@ import raymarching.Vector;
 import java.lang.Math;
 
 /**
-A subclass of Shape defined by its width, height, and depth scaling factors.
+A subclass of Shape defining a 4-sided polyhedron.
 */
 public class Tetrahedron extends Shape {
 	/**
 	The list of parameters required by Tetrahedron's constructor.
-	The parameters are "width", "height", "depth".
+	Tetrahedron has no unique parameters.
 	*/
-	public static final String[] PARAMS = {"width", "height", "depth"};
+	public static final String[] PARAMS = {};
 	
+	// The ratio of the radius of the inscribed sphere to the radius of the circumscribed sphere
 	private static final double CIRCUMSCRIBED_SPHERE_RATIO = 1.0 / 3.0;
-	
-	private double width, height, depth;
 	
 	private Vector[] normals;
 	
@@ -31,37 +30,25 @@ public class Tetrahedron extends Shape {
 	public Tetrahedron(double[] args, double[] dargs) {
 		super(dargs);
 		
-		width = Math.max(args[0], MIN_LENGTH);
-		height = Math.max(args[1], MIN_LENGTH);
-		depth = Math.max(args[2], MIN_LENGTH);
-		
 		normals = new Vector[] {new Vector(-1, -1, -1), new Vector(1, -1, 1), new Vector(-1, 1, 1), new Vector(1, 1, -1)};
 		
 		for (int i = 0; i < 4; i++) normals[i].setLength(1);
 	}
 	
 	// Not exact - bound
-	public double getDistance(Vector v) {
-		Vector r = toLocalFrame(v);
-		r.stretch(1 / width, 1 / height, 1 / depth);
-		
+	protected double getLocalDistance(Vector r) {
 		return r.dotProduct(normals[getNearestFace(r)]) - CIRCUMSCRIBED_SPHERE_RATIO;
 	}
 	
-	protected double setBoundRadius() {
-		return Math.max(Math.max(width, height), depth);
-	}
-	
-	public Vector getNormal(Vector v) {
-		Vector r = toLocalFrame(v);
-		r.stretch(1 / width, 1 / height, 1 / depth);
-		
+	@Override
+	protected Vector getLocalNormal(Vector r) {
 		Vector n = new Vector(normals[getNearestFace(r)]);
-		n.stretch(width, height, depth);
-		n.setLength(1);
-		n.rotate(getAngle());
 		
 		return n;
+	}
+	
+	protected double setBoundRadius() {
+		return 1;
 	}
 	
 	private int getNearestFace(Vector r) {

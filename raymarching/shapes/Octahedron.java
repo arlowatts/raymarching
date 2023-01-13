@@ -5,17 +5,19 @@ import raymarching.Vector;
 import java.lang.Math;
 
 /**
-A subclass of Shape defined by its width, height, and depth scaling factors.
+A subclass of Shape defining an 8-sided polyhedron.
 */
 public class Octahedron extends Shape {
 	/**
 	The list of parameters required by Octahedron's constructor.
-	The parameters are "width", "height", "depth".
+	Octahedron has no unique parameters.
 	*/
-	public static final String[] PARAMS = {"width", "height", "depth"};
+	public static final String[] PARAMS = {};
 	
-	// Member variables
-	private double width, height, depth;
+	// The ratio of the radius of the inscribed sphere to the radius of the circumscribed sphere
+	private static final double CIRCUMSCRIBED_SPHERE_RATIO = 1.0 / Math.sqrt(3);
+	
+	private Vector[] normals;
 	
 	/**
 	Creates a new Octahedron from <code>args</code> and <code>dargs</code>.
@@ -28,37 +30,42 @@ public class Octahedron extends Shape {
 	public Octahedron(double[] args, double[] dargs) {
 		super(dargs);
 		
-		width = Math.max(args[0], MIN_LENGTH);
-		height = Math.max(args[1], MIN_LENGTH);
-		depth = Math.max(args[2], MIN_LENGTH);
+		normals = new Vector[] {new Vector(-1, -1, -1), new Vector(-1, -1, 1), new Vector(-1, 1, -1), new Vector(1, -1, -1),
+								new Vector(1, 1, 1), new Vector(1, 1, -1), new Vector(1, -1, 1), new Vector(-1, 1, 1)};
+		
+		for (int i = 0; i < 8; i++) normals[i].setLength(1);
 	}
 	
-	// Methods
-	public double getDistance(Vector v) {
-		Vector r = toLocalFrame(v);
+	// Not exact - bound
+	protected double getLocalDistance(Vector r) {
+		return r.dotProduct(normals[getNearestFace(r)]) - CIRCUMSCRIBED_SPHERE_RATIO;
+	}
+	
+	@Override
+	protected Vector getLocalNormal(Vector r) {
+		Vector n = new Vector(normals[getNearestFace(r)]);
 		
-		r.positive();
-		r.x -= width;
-		
-		Vector n = new Vector(1 / width, 1 / height, 1 / depth);
-		n.setLength(1);
-		
-		return r.dotProduct(n);
+		return n;
 	}
 	
 	protected double setBoundRadius() {
-		return Math.max(Math.max(width, height), depth);
+		return 1;
 	}
 	
-	public Vector getNormal(Vector v) {
-		Vector n = toLocalFrame(v);
+	private int getNearestFace(Vector r) {
+		int nearest = 0;
+		double nearestDist = r.getDistance(normals[nearest]);
+		double dist;
 		
-		n.sign();
-		n.stretch(1 / width, 1 / height, 1 / depth);
-		n.setLength(1);
+		for (int i = 1; i < 8; i++) {
+			dist = r.getDistance(normals[i]);
+			
+			if (dist < nearestDist) {
+				nearest = i;
+				nearestDist = dist;
+			}
+		}
 		
-		n.rotate(getAngle());
-		
-		return n;
+		return nearest;
 	}
 }

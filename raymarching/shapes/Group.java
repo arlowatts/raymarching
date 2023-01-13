@@ -40,10 +40,8 @@ public class Group extends Shape {
 	}
 	
 	// Methods
-	public double getDistance(Vector v) {
-		if (shapes.size() == 0) return getPos().getDistance(v);
-		
-		Vector r = toLocalFrame(v);
+	protected double getLocalDistance(Vector r) {
+		if (shapes.size() == 0) return r.getLength();
 		
 		double minDist = shapes.get(0).getDistance(r);
 		
@@ -78,10 +76,9 @@ public class Group extends Shape {
 		return radius;
 	}
 	
-	public int getColor(Vector v) {
+	@Override
+	protected int getLocalColor(Vector r) {
 		if (shapes.size() == 0) return getColor();
-		
-		Vector r = toLocalFrame(v);
 		
 		int pointColor = 0;
 		
