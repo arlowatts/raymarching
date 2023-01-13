@@ -14,7 +14,7 @@
 	</target>
 
 	<target name="run" depends="compile">
-		<java fork="true" classpath="${build}" sourcefile="${src}/raymarching.java">
+		<java fork="true" classpath="${build}" sourcefile="${src}/RaymarchingMain.java">
 			<arg value="${scene}"/>
 		</java>
 	</target>

@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.image.BufferedImage;
 
-public class Raymarching {
+public class RaymarchingMain {
 	// All of the objects being rendered are stored in Scene object
 	private static Scene scene;
 	private static String sceneName;
