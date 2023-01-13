@@ -44,19 +44,22 @@ public class Group extends Shape {
 		if (shapes.size() == 0) return r.getLength();
 		
 		double minDist = shapes.get(0).getDistance(r);
+		double dist;
 		
 		for (int i = 1; i < shapes.size(); i++) {
+			dist = shapes.get(i).getDistance(r);
+			
 			switch (modifiers.get(i)) {
 				case '+':
-				minDist = smoothUnion(minDist, shapes.get(i).getDistance(r));
+				minDist = smoothUnion(minDist, dist);
 				break;
 				
 				case '-':
-				minDist = smoothDifference(minDist, shapes.get(i).getDistance(r));
+				minDist = smoothDifference(minDist, dist);
 				break;
 				
 				case '&':
-				minDist = smoothIntersection(minDist, shapes.get(i).getDistance(r));
+				minDist = smoothIntersection(minDist, dist);
 				break;
 			}
 		}

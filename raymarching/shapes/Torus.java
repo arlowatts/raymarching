@@ -33,6 +33,7 @@ public class Torus extends Shape {
 	// Methods
 	protected double getLocalDistance(Vector r) {
 		double d = Math.sqrt(r.x*r.x + r.z*r.z) - 1;
+		
 		return Math.sqrt(d*d + r.y*r.y) - radiusRatio;
 	}
 	
