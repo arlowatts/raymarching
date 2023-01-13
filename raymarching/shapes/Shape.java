@@ -57,7 +57,7 @@ public abstract class Shape {
 		transparency = Math.min(Math.max(args[10], 0), 1);
 		refrIndex = Math.max(args[11], 1);
 		
-		color = 0;
+		color = -1;
 		
 		boundRadius = -1;
 	}
@@ -122,7 +122,12 @@ public abstract class Shape {
 	@return an integer representing the color in 32-bit RGB format.
 	*/
 	public int getColor(Vector v) {
-		return getLocalColor(toLocalFrame(v));
+		if (texture == null && color != -1) return color;
+		
+		Vector r = toLocalFrame(v);
+		r.subtract(getLocalNormal(r), getLocalDistance(r));
+		
+		return getLocalColor(r);
 	}
 	
 	protected int getLocalColor(Vector r) {

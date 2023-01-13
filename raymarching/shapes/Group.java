@@ -89,7 +89,7 @@ public class Group extends Shape {
 		double sumDists = 0;
 		
 		for (int i = 0; i < shapes.size(); i++) {
-			dists[i] = smoothing / Math.abs(shapes.get(i).getDistance(r));
+			dists[i] = smoothing / Math.max(Math.abs(shapes.get(i).getDistance(r)), Shape.MIN_LENGTH);
 			sumDists += dists[i];
 		}
 		
