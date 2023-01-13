@@ -37,10 +37,6 @@ public class Torus extends Shape {
 		return Math.sqrt(d*d + r.y*r.y) - radiusRatio;
 	}
 	
-	protected double setBoundRadius() {
-		return 1 + radiusRatio;
-	}
-	
 	@Override
 	protected int getLocalColor(Vector r) {
 		if (getTexture() == null) return getColor();
@@ -52,5 +48,9 @@ public class Torus extends Shape {
 		int y = (int)(((r.y < 0 ? 0.25 : 0.75) - Math.atan(w / r.y) / (Math.PI * 2)) * (getTexture().getHeight() - 1));
 		
 		return getTexture().getRGB(x, y);
+	}
+	
+	protected double setBoundRadius() {
+		return 1 + radiusRatio;
 	}
 }

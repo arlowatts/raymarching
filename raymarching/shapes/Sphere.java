@@ -37,10 +37,6 @@ public class Sphere extends Shape {
 		return n;
 	}
 	
-	protected double setBoundRadius() {
-		return 1;
-	}
-	
 	@Override
 	protected int getLocalColor(Vector r) {
 		if (getTexture() == null) return getColor();
@@ -50,5 +46,9 @@ public class Sphere extends Shape {
 		int y = (int)((Math.acos(r.y) / Math.PI) * (getTexture().getHeight() - 1));
 		
 		return getTexture().getRGB(x, y);
+	}
+	
+	protected double setBoundRadius() {
+		return 1;
 	}
 }

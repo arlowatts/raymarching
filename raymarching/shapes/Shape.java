@@ -73,11 +73,17 @@ public abstract class Shape {
 		return getLocalDistance(toLocalFrame(v));
 	}
 	
+	/**
+	Computes the least distance from a point given in coordinates local to the shape to the surface of the volume.
+	
+	@param r the point
+	
+	@return the least distance from <code>v</code> to the surface of the volume, which is a negative value if the point is inside the volume.
+	*/
 	protected abstract double getLocalDistance(Vector r);
 	
 	/**
 	Computes the surface normal of the shape near a point.
-	Often can be overridden in a subclass by a more efficient and more accurate method.
 	
 	@param v the point
 	
@@ -93,6 +99,14 @@ public abstract class Shape {
 		return normal;
 	}
 	
+	/**
+	Computes the surface normal of the shape near a point given in coordinates local to the shape.
+	This method can be overridden in a subclass by a more efficient and more accurate method.
+	
+	@param r the point in local coordinates
+	
+	@return the unit vector normal to the surface near <code>v</code>.
+	*/
 	protected Vector getLocalNormal(Vector r) {
 		double d = getLocalDistance(r);
 		
@@ -115,7 +129,6 @@ public abstract class Shape {
 	
 	/**
 	Returns the color of the shape near a point.
-	Must be overriden in a sublcass to implement texture mapping.
 	
 	@param v the point
 	
@@ -130,6 +143,14 @@ public abstract class Shape {
 		return getLocalColor(r);
 	}
 	
+	/**
+	Returns the color of the shape near a point given in coordinates local to the shape.
+	This method must be overriden in a subclass to implement texture mapping.
+	
+	@param r the point
+	
+	@return an integer representing the color in 32-bit RGB format.
+	*/
 	protected int getLocalColor(Vector r) {
 		return color;
 	}
@@ -176,7 +197,7 @@ public abstract class Shape {
 	public void setTexture(BufferedImage texture) {this.texture = texture;}
 	
 	/**
-	Triggers an update to the bound radius. Should be called whenever the shape's dimensions are modified.
+	Triggers an update to the bound radius. This method should be called whenever the shape's dimensions are modified.
 	*/
 	protected void updateBoundRadius() {boundRadius = -1;}
 	
