@@ -40,7 +40,7 @@ public class Screen {
 				Ray ray = new Ray(scene.getCamera().getPos(), new Vector(x - width / 2, y - height / 2, distance));
 				
 				// Rotate it by the camera's rotation
-				ray.getDir().rotate(scene.getCamera().getAngle());
+				ray.getDir().rotate(scene.getCamera().getRot());
 				
 				pixels[k++] = ray.cast(scene, new Vector(1, 1, 1), null, maxReflections);
 			}

@@ -32,7 +32,7 @@ public class Action {
 			
 			// Rotation
 			case 1:
-			shape.getAngle().add(vals[0]);
+			shape.getRot().add(vals[0]);
 			break;
 			
 			// Rotation about a point
