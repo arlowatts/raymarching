@@ -397,30 +397,6 @@ public class Vector {
 		z = z >= 0 ? 1 : -1;
 	}
 	
-	/**
-	Copies the signs of <code>a</code>, <code>b</code>, and <code>c</code> onto the coordinates x, y, and z.
-	
-	@param a the sign to copy onto the x coordinate
-	@param b the sign to copy onto the y coordinate
-	@param c the sign to copy onto the z coordinate
-	*/
-	public void copySign(double a, double b, double c) {
-		x *= a >= 0 ? 1 : -1;
-		y *= b >= 0 ? 1 : -1;
-		z *= c >= 0 ? 1 : -1;
-	}
-	
-	/**
-	Copies the signs of the coordinates of <code>v</code> onto the coordinates of this vector.
-	
-	@param v the other vector
-	*/
-	public void copySign(Vector v) {
-		x *= v.x >= 0 ? 1 : -1;
-		y *= v.y >= 0 ? 1 : -1;
-		z *= v.z >= 0 ? 1 : -1;
-	}
-	
 	// Returns the sine and cosine values that are used in the rotations
 	private static double[] getSincos(Vector rotation) {
 		double sincos[] = {Math.sin(rotation.x), Math.sin(rotation.y), Math.sin(rotation.z),
