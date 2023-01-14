@@ -5,9 +5,9 @@ import raymarching.Vector;
 import java.lang.Math;
 
 /**
-A subclass of Shape defining an 8-sided polyhedron.
+A subclass of Polyhedron defining an 8-sided polyhedron.
 */
-public class Octahedron extends Shape {
+public class Octahedron extends Polyhedron {
 	/**
 	The list of parameters required by Octahedron's constructor.
 	Octahedron has no unique parameters.
@@ -15,9 +15,7 @@ public class Octahedron extends Shape {
 	public static final String[] PARAMS = {};
 	
 	// The ratio of the radius of the inscribed sphere to the radius of the circumscribed sphere
-	private static final double CIRCUMSCRIBED_SPHERE_RATIO = 1.0 / Math.sqrt(3);
-	
-	private Vector[] normals;
+	private static final double CIRCUMSCRIBED_SPHERE_RATIO = 1.0 / Math.sqrt(3.0);
 	
 	/**
 	Creates a new Octahedron from <code>args</code> and <code>dargs</code>.
@@ -28,44 +26,17 @@ public class Octahedron extends Shape {
 	@param dargs an array of doubles representing the paramaters described in <code>Shape.DEFAULT_PARAMS</code>.
 	*/
 	public Octahedron(double[] args, double[] dargs) {
-		super(dargs);
-		
-		normals = new Vector[] {new Vector(-1, -1, -1), new Vector(-1, -1, 1), new Vector(-1, 1, -1), new Vector(1, -1, -1),
-								new Vector(1, 1, 1), new Vector(1, 1, -1), new Vector(1, -1, 1), new Vector(-1, 1, 1)};
-		
-		for (int i = 0; i < 8; i++) normals[i].setLength(1);
+		super(8, dargs);
 	}
 	
-	// Not exact - bound
-	protected double getLocalDistance(Vector r) {
-		return r.dotProduct(normals[getNearestFace(r)]) - CIRCUMSCRIBED_SPHERE_RATIO;
+	protected void initFaces() {
+		for (int i = -1; i <= 1; i += 2)
+			for (int j = -1; j <= 1; j += 2)
+				for (int k = -1; k <= 1; k += 2)
+					addFace(i, j, k);
 	}
 	
-	@Override
-	protected Vector getLocalNormal(Vector r) {
-		Vector n = new Vector(normals[getNearestFace(r)]);
-		
-		return n;
-	}
-	
-	protected double setBoundRadius() {
-		return 1;
-	}
-	
-	private int getNearestFace(Vector r) {
-		int nearest = 0;
-		double nearestDist = r.getDistance(normals[nearest]);
-		double dist;
-		
-		for (int i = 1; i < 8; i++) {
-			dist = r.getDistance(normals[i]);
-			
-			if (dist < nearestDist) {
-				nearest = i;
-				nearestDist = dist;
-			}
-		}
-		
-		return nearest;
+	protected double getCircumSphereRatio() {
+		return CIRCUMSCRIBED_SPHERE_RATIO;
 	}
 }
