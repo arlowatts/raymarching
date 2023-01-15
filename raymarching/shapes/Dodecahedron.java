@@ -5,7 +5,7 @@ import raymarching.Vector;
 import java.lang.Math;
 
 /**
-A subclass of Polyhedron defining a 12-sided polyhedron.
+A subclass of Polyhedron defining a regular 12-sided polyhedron.
 */
 public class Dodecahedron extends Polyhedron {
 	/**
@@ -14,10 +14,10 @@ public class Dodecahedron extends Polyhedron {
 	*/
 	public static final String[] PARAMS = {};
 	
-	// The interior angle between two faces: 2atan((1 + sqrt(5)) / 2)
-	private static final Vector INTERIOR_ANGLE = new Vector(2.0344439357957027, 0, 0);
 	// The ratio of the radius of the inscribed sphere to the radius of the circumscribed sphere
-	private static final Double CIRCUMSCRIBED_SPHERE_RATIO = 0.7946544722917661;
+	private static final Double CIRCUMSCRIBED_SPHERE_RATIO = Math.sqrt((5.0 + 2.0 * Math.sqrt(5.0)) / 15.0);
+	// The interior angle between two faces
+	private static final Vector INTERIOR_ANGLE = new Vector(Math.acos(-1.0 / Math.sqrt(5.0)), 0, 0);
 	
 	/**
 	Creates a new Dodecahedron from <code>args</code> and <code>dargs</code>.
@@ -35,10 +35,10 @@ public class Dodecahedron extends Polyhedron {
 		addFace(0, 1, 0);
 		addFace(0, -1, 0);
 		
-		Vector n, rotation = new Vector(-Math.PI / 2, 0, Math.PI / 2);
+		Vector n, rotation = new Vector(-Math.PI / 2.0, 0, Math.PI / 2.0);
 		
 		for (int i = 0; i < 5; i++) {
-			rotation.y = i * Math.PI * 2 / 5;
+			rotation.y = i * Math.PI * 2.0 / 5.0;
 			
 			n = new Vector(0, 1, 0);
 			n.rotate(INTERIOR_ANGLE);

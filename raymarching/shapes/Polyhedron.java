@@ -5,7 +5,7 @@ import raymarching.Vector;
 import java.lang.Math;
 
 /**
-An abstract subclass of Shape defining a polyhedron.
+An abstract subclass of Shape defining a regular polyhedron.
 */
 public abstract class Polyhedron extends Shape {
 	private int numFaces;

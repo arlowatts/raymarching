@@ -5,7 +5,7 @@ import raymarching.Vector;
 import java.lang.Math;
 
 /**
-A subclass of Polyhedron defining a 4-sided polyhedron.
+A subclass of Polyhedron defining a regular 4-sided polyhedron.
 */
 public class Tetrahedron extends Polyhedron {
 	/**

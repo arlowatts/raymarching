@@ -5,7 +5,7 @@ import raymarching.Vector;
 import java.lang.Math;
 
 /**
-A subclass of Polyhedron defining an 8-sided polyhedron.
+A subclass of Polyhedron defining a regular 8-sided polyhedron.
 */
 public class Octahedron extends Polyhedron {
 	/**
