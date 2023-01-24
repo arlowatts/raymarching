@@ -1,6 +1,6 @@
 <project name="Raymarching" default="compile">
 
-	<property name="src" location="raymarching"/>
+	<property name="src" location="src"/>
 	<property name="build" location="build"/>
 	<property name="docs" location="docs"/>
 
