@@ -14,6 +14,8 @@ public class Color {
 	// Methods to merge three components into a color
 	public static int toColor(int r, int g, int b) {return (r << 16) | (g << 8) | b;}
 	public static int toColor(double r, double g, double b) {return ((int)(r * 255) << 16) | ((int)(g * 255) << 8) | (int)(b * 255);}
+	public static int toColor(Vector v) {return toColor(v.x, v.y, v.z);}
+	public static Vector toVector(int color) {return new Vector(getR(color) * RATIO, getG(color) * RATIO, getB(color) * RATIO);}
 	
 	// Shades a color by a value between 0 and 1
 	public static int shade(int color, double shade) {
