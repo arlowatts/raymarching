@@ -8,12 +8,6 @@ import java.lang.Math;
 A subclass of Polyhedron defining a regular 8-sided polyhedron.
 */
 public class Octahedron extends Polyhedron {
-	/**
-	The list of parameters required by Octahedron's constructor.
-	Octahedron has no unique parameters.
-	*/
-	public static final String[] PARAMS = {};
-	
 	// The ratio of the radius of the inscribed sphere to the radius of the circumscribed sphere
 	private static final double CIRCUMSCRIBED_SPHERE_RATIO = 1.0 / Math.sqrt(3.0);
 	

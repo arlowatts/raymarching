@@ -16,11 +16,12 @@ A 3-dimensional volume defined by a signed distance function.
 public abstract class Shape {
 	/**
 	The list of parameters required by Shape's constructor.
-	The parameters are "x", "y", "z", "scalex", "scaley", "scalez", "phi", "theta", "psi", "reflectivity", "transparency", "refrIndex".
+	The parameters are "x", "y", "z", "scalex", "scaley", "scalez", "phi", "theta", "psi", "smoothness", "transparency", "refrIndex".
 	*/
-	public static final String[] DEFAULT_PARAMS = {"x", "y", "z", "scalex", "scaley", "scalez", "phi", "theta", "psi", "reflectivity", "transparency", "refrIndex"};
+	public static final String[] DEFAULT_PARAMS = {"x", "y", "z", "scalex", "scaley", "scalez", "phi", "theta", "psi", "smoothness", "transparency", "refrIndex"};
 	/**
 	The list of additional parameters required by subclass's constructor.
+	Defaults to none.
 	*/
 	public static final String[] PARAMS = {};
 	/**
@@ -32,7 +33,7 @@ public abstract class Shape {
 	private Vector position, dimension, rotation;
 	
 	// Reflectivity, transparency, and refractive index are all universal properties of the surface
-	private double reflectivity, transparency, refrIndex;
+	private double smoothness, transparency, refrIndex;
 	
 	// The subclass of Shape should define how the texture maps to the surface
 	// If texture is null, color is used instead
@@ -53,7 +54,7 @@ public abstract class Shape {
 		dimension = new Vector(args[3], args[4], args[5]);
 		rotation = new Vector(args[6], args[7], args[8]);
 		
-		reflectivity = Math.min(Math.max(args[9], 0), 1);
+		smoothness = Math.min(Math.max(args[9], 0), 1);
 		transparency = Math.min(Math.max(args[10], 0), 1);
 		refrIndex = Math.max(args[11], 1);
 		
@@ -176,7 +177,7 @@ public abstract class Shape {
 	public Vector getDim() {return dimension;}
 	public Vector getRot() {return rotation;}
 	
-	public double getReflectivity() {return reflectivity;}
+	public double getSmoothness() {return smoothness;}
 	public double getTransparency() {return transparency;}
 	public double getRefrIndex() {return refrIndex;}
 	
@@ -189,7 +190,7 @@ public abstract class Shape {
 	public BufferedImage getTexture() {return texture;}
 	
 	// Setters
-	public void setReflectivity(double reflectivity) {this.reflectivity = reflectivity;}
+	public void setSmoothness(double smoothness) {this.smoothness = smoothness;}
 	public void setTransparency(double transparency) {this.transparency = transparency;}
 	public void setRefrIndex(double refrIndex) {this.refrIndex = refrIndex;}
 	

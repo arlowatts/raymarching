@@ -9,12 +9,6 @@ A subclass of Shape defining a flat rectangle.
 */
 public class Plane extends Shape {
 	/**
-	The list of parameters required by Plane's constructor.
-	Plane has no unique parameters.
-	*/
-	public static final String[] PARAMS = {};
-	
-	/**
 	Creates a new Plane from <code>args</code> and <code>dargs</code>.
 	<code>args</code> must match the parameters in <code>Plane.PARAMS</code>.
 	<code>dargs</code> must match the parameters in <code>Shape.DEFAULT_PARAMS</code>.

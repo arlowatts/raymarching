@@ -8,12 +8,6 @@ import java.lang.Math;
 A subclass of Polyhedron defining a regular 12-sided polyhedron.
 */
 public class Dodecahedron extends Polyhedron {
-	/**
-	The list of parameters required by Dodecahedron's constructor.
-	Dodecahedron has no unique parameters.
-	*/
-	public static final String[] PARAMS = {};
-	
 	// The ratio of the radius of the inscribed sphere to the radius of the circumscribed sphere
 	private static final Double CIRCUMSCRIBED_SPHERE_RATIO = Math.sqrt((5.0 + 2.0 * Math.sqrt(5.0)) / 15.0);
 	// The interior angle between two faces

@@ -9,12 +9,6 @@ A subclass of Shape defining a cylinder.
 */
 public class Cylinder extends Shape {
 	/**
-	The list of parameters required by Cylinder's constructor.
-	Cylinder has no unique parameters.
-	*/
-	public static final String[] PARAMS = {};
-	
-	/**
 	Creates a new Cylinder from <code>args</code> and <code>dargs</code>.
 	<code>args</code> must match the parameters in <code>Cylinder.PARAMS</code>.
 	<code>dargs</code> must match the parameters in <code>Shape.DEFAULT_PARAMS</code>.

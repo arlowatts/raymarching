@@ -9,12 +9,6 @@ A subclass of Shape defining a rectangular box.
 */
 public class Box extends Shape {
 	/**
-	The list of parameters required by Box's constructor.
-	Box has no unique parameters.
-	*/
-	public static final String[] PARAMS = {};
-	
-	/**
 	Creates a new Box from <code>args</code> and <code>dargs</code>.
 	<code>args</code> must match the parameters in <code>Box.PARAMS</code>.
 	<code>dargs</code> must match the parameters in <code>Shape.DEFAULT_PARAMS</code>.

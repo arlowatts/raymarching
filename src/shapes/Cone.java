@@ -9,12 +9,6 @@ A subclass of Shape defining a cone.
 */
 public class Cone extends Shape {
 	/**
-	The list of parameters required by Cone's constructor.
-	Cone has no unique parameters.
-	*/
-	public static final String[] PARAMS = {};
-	
-	/**
 	Creates a new Cone from <code>args</code> and <code>dargs</code>.
 	<code>args</code> must match the parameters in <code>Cone.PARAMS</code>.
 	<code>dargs</code> must match the parameters in <code>Shape.DEFAULT_PARAMS</code>.

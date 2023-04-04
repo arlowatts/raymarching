@@ -71,7 +71,7 @@ public class Ray {
 			refractionColor = refractedRay.cast(scene, tempShade, medium == hit ? null : hit, reflections - 1);
 		}
 		
-		double reflectivity = hit.getReflectivity();
+		double reflectivity = hit.getSmoothness();
 		int reflectionColor = 0;
 		
 		// If the hit object is reflective, create a new ray and reflect it

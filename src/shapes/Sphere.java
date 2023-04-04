@@ -9,12 +9,6 @@ A subclass of Shape defining a sphere
 */
 public class Sphere extends Shape {
 	/**
-	The list of parameters required by Sphere's constructor.
-	Sphere has no unique parameters.
-	*/
-	public static final String[] PARAMS = {};
-	
-	/**
 	Creates a new Sphere from <code>args</code> and <code>dargs</code>.
 	<code>args</code> must match the parameters in <code>Sphere.PARAMS</code>.
 	<code>dargs</code> must match the parameters in <code>Shape.DEFAULT_PARAMS</code>.
