@@ -71,21 +71,21 @@ public class Ray {
 			refractionColor = refractedRay.cast(scene, tempShade, medium == hit ? null : hit, reflections - 1);
 		}
 		
-		double reflectivity = hit.getSmoothness();
+		double smoothness = hit.getSmoothness();
 		int reflectionColor = 0;
 		
 		// If the hit object is reflective, create a new ray and reflect it
-		if (reflectivity > 0 && reflections > 0) {
+		if (smoothness > 0 && reflections > 0) {
 			Ray reflectedRay = new Ray(this);
 			reflectedRay.reflect(normal);
 			
 			// Stepping away from the current surface
-			reflectedRay.pos.add(2 * MIN_LENGTH * normal.x, 2 * MIN_LENGTH * normal.y, 2 * MIN_LENGTH * normal.z);
+			reflectedRay.pos.add(normal, 2 * MIN_LENGTH);
 			
 			// Shade the current color by the reflected ray
 			Vector tempShade = new Vector(shade);
-			tempShade.multiply(reflectivity);
-			shade.multiply(1 - reflectivity);
+			tempShade.multiply(smoothness);
+			shade.multiply(1 - smoothness);
 			
 			reflectionColor = reflectedRay.cast(scene, tempShade, medium, reflections - 1);
 		}
@@ -110,34 +110,33 @@ public class Ray {
 		return Color.shade(hit.getColor(pos), shade) + refractionColor + reflectionColor;
 	}
 	
+	/* 
+	 * Implementing Snell's Law in vector form as t = sqrt(1 - (u^2)(1 - (n.i)^2)) * n + u(i - (n.i)n)
+	 * i = the initial vector,
+	 * t = the resultant vector,
+	 * n = the normal vector,
+	 * u = the ratio of refractive indices n1/n2
+	 */
 	private void refract(Vector normal, double n1, double n2) {
 		double dot = normal.dotProduct(dir);
 		double mu = n1 / n2;
 		
 		double root = Math.sqrt(1 - mu*mu * (1 - dot*dot)) * (dot < 0 ? -1 : 1);
 		
-		/* 
-		 * Implementing Snell's Law in vector form as t = sqrt(1 - (u^2)(1 - (n.i)^2)) * n + u(i - (n.i)n)
-		 * i = the initial vector,
-		 * t = the resultant vector,
-		 * n = the normal vector,
-		 * u = the ratio of refractive indices n1/n2
-		 */
-		dir.add(-dot * normal.x, -dot * normal.y, -dot * normal.z);
+		dir.add(normal, -dot);
 		dir.multiply(mu);
-		dir.add(root * normal.x, root * normal.y, root * normal.z);
+		dir.add(normal, root);
 	}
-	
+		
+	/*
+	 * Reflecting the ray by the formula t = i - 2(n.i)(n)
+	 * i = the initial vector,
+	 * t = the resultant vector,
+	 * n = the normal vector
+	 */
 	private void reflect(Vector normal) {
 		double dot = normal.dotProduct(dir);
-		
-		/*
-		 * Reflecting the ray by the formula t = i - 2(n.i)(n)
-		 * i = the initial vector,
-		 * t = the resultant vector,
-		 * n = the normal vector
-		 */
-		dir.add(-2 * dot * normal.x, -2 * dot * normal.y, -2 * dot * normal.z);
+		dir.add(normal, -2 * dot);
 	}
 	
 	// March rays from the current point to each light source in the scene to find the total brightness of the hit point
@@ -145,7 +144,7 @@ public class Ray {
 		Ray lightRay = new Ray(this.pos, this.dir);
 		
 		// Stepping away from the current surface
-		lightRay.pos.add(2 * MIN_LENGTH * normal.x, 2 * MIN_LENGTH * normal.y, 2 * MIN_LENGTH * normal.z);
+		lightRay.pos.add(normal, 2 * MIN_LENGTH);
 		
 		// Pointing it at the light
 		lightRay.dir.set(light.getPos());
@@ -201,7 +200,7 @@ public class Ray {
 			}
 		}
 		
-		// Iteratively step my the largest distance possible without passing through a shape
+		// Iteratively step by the largest distance possible without passing through a shape
 		while (steps < MAX_STEPS && length < MAX_LENGTH) {
 			int nearest = -1;
 			double minDist = MAX_LENGTH;
@@ -243,7 +242,7 @@ public class Ray {
 		steps++;
 		length += len;
 		
-		pos.add(dir.x * len, dir.y * len, dir.z * len);
+		pos.add(dir, len);
 	}
 	
 	// Getters
