@@ -42,7 +42,7 @@ public class Screen {
 				// Rotate it by the camera's rotation
 				ray.getDir().rotate(scene.getCamera().getRot());
 				
-				pixels[k++] = ray.cast(scene, new Vector(1, 1, 1), null, maxReflections);
+				pixels[k++] = ray.cast(scene, null, maxReflections);
 			}
 		}
 		

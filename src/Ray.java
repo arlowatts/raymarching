@@ -2,8 +2,6 @@ package raymarching;
 
 import raymarching.shapes.*;
 
-import java.util.ArrayList;
-
 /*
  * A Ray object has a position and a direction and can be cast through a scene.
  */
@@ -41,74 +39,131 @@ public class Ray {
 	
 	// Methods
 	// The recursive method to cast and reflect a light ray
-	public int cast(Scene scene, Vector shade, Shape medium, int reflections) {
+	public int cast(Scene scene, Shape medium, int reflections) {
 		// March the ray through the scene
 		int hitIndex = march(scene, medium);
-		if (hitIndex == -1) return Color.shade(scene.getScreen().getBgnd(), shade);
+		if (hitIndex == -1) return scene.getScreen().getBgnd();
 		
-		Shape hit = scene.getShape(hitIndex);
+		Shape surface = scene.getShape(hitIndex);
+		int surfaceColor = surface.getColor(pos);
 		
-		Vector normal = hit.getNormal(pos);
+		// If the ray has reached the reflection limit, simply return the surface color
+		if (reflections <= 0) return surfaceColor;
 		
-		double transparency = hit.getTransparency();
-		int refractionColor = 0;
+		Vector normal = surface.getNormal(pos);
 		
-		// If the hit object is not opaque, create a new ray and refract it through the surface
-		if (transparency > 0 && reflections > 0) {
-			// Get the refractive index of the current medium, or 1 if the medium is null (empty space)
-			double n1 = medium == null ? 1 : medium.getRefrIndex();
-			// Get the refractive index of the object the ray is refracting into, or 1 if it hit the same surface (it is refracting into space)
-			double n2 = medium == hit ? 1 : hit.getRefrIndex();
-			
-			Ray refractedRay = new Ray(this);
-			refractedRay.refract(normal, n1, n2);
-			
-			// Shade the current color by the refracted ray
-			Vector tempShade = new Vector(shade);
-			tempShade.multiply(transparency);
-			shade.multiply(1 - transparency);
-			
-			refractionColor = refractedRay.cast(scene, tempShade, medium == hit ? null : hit, reflections - 1);
-		}
+		int diffuseColor = 0, reflectColor = 0, refractColor = 0;
 		
-		double smoothness = hit.getSmoothness();
-		int reflectionColor = 0;
+		double smoothness = surface.getSmoothness();
+		double transparency = surface.getTransparency();
 		
-		// If the hit object is reflective, create a new ray and reflect it
-		if (smoothness > 0 && reflections > 0) {
+		// If the hit surface is not smooth, estimate the diffusion color from nearby surfaces
+		if (smoothness < 1)
+			diffuseColor = Color.shade(getDiffuseColor(scene, normal), 1 - smoothness);
+		
+		// If the hit surface is smooth, create a reflection ray and march it into the scene
+		if (smoothness > 0 && transparency < 1) {
 			Ray reflectedRay = new Ray(this);
 			reflectedRay.reflect(normal);
 			
 			// Stepping away from the current surface
 			reflectedRay.pos.add(normal, 2 * MIN_LENGTH);
 			
-			// Shade the current color by the reflected ray
-			Vector tempShade = new Vector(shade);
-			tempShade.multiply(smoothness);
-			shade.multiply(1 - smoothness);
-			
-			reflectionColor = reflectedRay.cast(scene, tempShade, medium, reflections - 1);
+			reflectColor = Color.shade(reflectedRay.cast(scene, medium, reflections - 1), smoothness * (1 - transparency));
 		}
 		
-		Vector brightness = new Vector(1, 1, 1);
+		// If the hit surface is smooth and transparent, create a refraction ray and march it through the surface
+		if (smoothness > 0 && transparency > 0) {
+			// Get the refractive index of the current medium, or 1 if the medium is null (empty space)
+			double n1 = medium == null ? 1 : medium.getRefrIndex();
+			// Get the refractive index of the object the ray is refracting into, or 1 if it hit the same surface (it is refracting into space)
+			double n2 = medium == surface ? 1 : surface.getRefrIndex();
+			
+			Ray refractedRay = new Ray(this);
+			refractedRay.refract(normal, n1, n2);
+			
+			refractColor = Color.shade(refractedRay.cast(scene, medium == surface ? null : surface, reflections - 1), smoothness * transparency);
+		}
+		
+		/*Vector brightness = new Vector(1, 1, 1);
 		
 		// Iterates over all the lights and marches to them
 		for (int i = 0; i < scene.numLights(); i++) {
-			if (hit == scene.getLight(i)) continue;
+			if (surface == scene.getLight(i)) continue;
 			
 			getBrightness(scene, scene.getLight(i), normal, brightness);
 		}
 		
-		// Multiply the shade of the pixel by the total brightness and add ambient light
-		shade.stretch(
-			Math.min(1 - brightness.x + (double)Color.getR(scene.getScreen().getBgnd()) * Color.RATIO, 1),
-			Math.min(1 - brightness.y + (double)Color.getG(scene.getScreen().getBgnd()) * Color.RATIO, 1),
-			Math.min(1 - brightness.z + (double)Color.getB(scene.getScreen().getBgnd()) * Color.RATIO, 1)
-		);
+		brightness.multiply(-1);
+		brightness.add(1, 1, 1);
 		
-		// Add together all of the colors and return the result
-		return Color.shade(hit.getColor(pos), shade) + refractionColor + reflectionColor;
+		int light = Color.safeAdd(Color.toColor(brightness), scene.getScreen().getBgnd());*/
+		
+		//return Color.shade(Color.shade(diffuseColor + reflectColor + refractColor, surfaceColor), light);
+		return Color.shade(diffuseColor + reflectColor + refractColor, surfaceColor);
 	}
+	
+	/*
+	 * Approximate the diffusion color at the current point on the surface of an object
+	 * Consider light emitted from light sources in the calculation
+	 * Approximate each shape as a disk facing the target point
+	 */
+	private int getDiffuseColor(Scene scene, Vector normal) {
+		// Start with the background color, weighted with full area (surface area of half spher)
+		double totalShapeArea = 2 * Math.PI;
+		Vector diffuseColor = Color.toVector(scene.getScreen().getBgnd());
+		diffuseColor.multiply(totalShapeArea);
+		
+		// Project each shape onto the unit sphere
+		for (int i = scene.numShapes() - 1; i >= 0; i--) {
+			Shape currShape = scene.getShape(i);
+			
+			// Get the position of the shape relative to the current point
+			Vector relativePos = new Vector(currShape.getPos());
+			relativePos.subtract(pos);
+			
+			// Find the arc length of the projected radius on the unit sphere, and the area of the region
+			// See https://mathworld.wolfram.com/SphericalCap.html
+			double radius = Math.atan(currShape.getBoundRadius() / relativePos.getLength());
+			double area = Math.PI * (2 - 2 / Math.sqrt(1 + radius * radius));
+			
+			// Shade the color by the area it fills and add to the total color
+			Vector color = Color.toVector(currShape.getColor(pos));
+			diffuseColor.add(color, area);
+			
+			// Track the total area that has been contributed by each shape
+			totalShapeArea += area;
+		}
+		
+		diffuseColor.divide(totalShapeArea);
+		
+		return Color.toColor(diffuseColor);
+	}
+	
+	// March rays from the current point to each light source in the scene to find the total brightness of the hit point
+	/*private void getBrightness(Scene scene, Shape light, Vector normal, Vector brightness) {
+		Ray lightRay = new Ray(this);
+		
+		// Stepping away from the current surface
+		lightRay.pos.add(normal, 2 * MIN_LENGTH);
+		
+		// Pointing it at the light
+		lightRay.dir.set(light.getPos());
+		lightRay.dir.subtract(lightRay.pos);
+		lightRay.dir.setLength(1);
+		
+		int hit = lightRay.march(scene, null);
+		
+		// If it hits the light, add brightness proportional to the light's brightness and the dot product of the normal
+		if (hit != -1 && scene.getShape(hit) == light) {
+			double lightShade = Math.max(normal.dotProduct(lightRay.dir), 0) * Color.RATIO;
+			int lightColor = light.getColor();
+			
+			brightness.stretch(1 - Color.getR(lightColor) * lightShade,
+							   1 - Color.getG(lightColor) * lightShade,
+							   1 - Color.getB(lightColor) * lightShade);
+		}
+	}*/
 	
 	/* 
 	 * Implementing Snell's Law in vector form as t = sqrt(1 - (u^2)(1 - (n.i)^2)) * n + u(i - (n.i)n)
@@ -137,31 +192,6 @@ public class Ray {
 	private void reflect(Vector normal) {
 		double dot = normal.dotProduct(dir);
 		dir.add(normal, -2 * dot);
-	}
-	
-	// March rays from the current point to each light source in the scene to find the total brightness of the hit point
-	private void getBrightness(Scene scene, Shape light, Vector normal, Vector brightness) {
-		Ray lightRay = new Ray(this.pos, this.dir);
-		
-		// Stepping away from the current surface
-		lightRay.pos.add(normal, 2 * MIN_LENGTH);
-		
-		// Pointing it at the light
-		lightRay.dir.set(light.getPos());
-		lightRay.dir.subtract(lightRay.pos);
-		lightRay.dir.setLength(1);
-		
-		int hit = lightRay.march(scene, null);
-		
-		// If it hits the light, add brightness proportional to the light's brightness and the dot product of the normal
-		if (hit != -1 && scene.getShape(hit) == light) {
-			double lightShade = Math.max(normal.dotProduct(lightRay.dir), 0) * Color.RATIO;
-			int lightColor = light.getColor();
-			
-			brightness.stretch(1 - Color.getR(lightColor) * lightShade,
-							   1 - Color.getG(lightColor) * lightShade,
-							   1 - Color.getB(lightColor) * lightShade);
-		}
 	}
 	
 	// Finding the distance along the ray's path to the closest point to v
