@@ -128,7 +128,7 @@ public class Ray {
 			double area = Math.PI * (2 - 2 / Math.sqrt(1 + radius * radius));
 			
 			// Shade the color by the area it fills and add to the total color
-			Vector color = Color.toVector(currShape.getColor(pos));
+			Vector color = Color.toVector(currShape.getColor());
 			diffuseColor.add(color, area);
 			
 			// Track the total area that has been contributed by each shape

@@ -1,9 +1,9 @@
 package raymarching.shapes;
 
+import raymarching.Color;
 import raymarching.Vector;
 
 import java.lang.Math;
-
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -168,7 +168,7 @@ public abstract class Shape {
 	@param path a correct path to an image file
 	*/
 	public void loadTexture(String path) throws IOException {
-		texture = ImageIO.read(new File(path));
+		setTexture(ImageIO.read(new File(path)));
 	}
 	
 	// Getters
@@ -194,7 +194,10 @@ public abstract class Shape {
 	public void setRefrIndex(double refrIndex) {this.refrIndex = refrIndex;}
 	
 	public void setColor(int color) {this.color = color;}
-	public void setTexture(BufferedImage texture) {this.texture = texture;}
+	public void setTexture(BufferedImage texture) {
+		this.texture = texture;
+		this.color = computeAverageColor(0, 0, texture.getWidth(), texture.getHeight());
+	}
 	
 	/**
 	Triggers an update to the bound radius. This method should be called whenever the shape's dimensions are modified.
@@ -214,5 +217,27 @@ public abstract class Shape {
 		r.compress(dimension);
 		
 		return r;
+	}
+
+	// Compute the average color of the texture
+	private int computeAverageColor(int x, int y, int width, int height) {
+		if (texture == null) return color;
+
+		if (width <= 1 && height <= 1)
+			return texture.getRGB(x, y);
+
+		int halfWidth = width / 2;
+		int halfHeight = height / 2;
+
+		return Color.averageColor(
+			Color.averageColor(
+				computeAverageColor(x, y, halfWidth, halfHeight),
+				computeAverageColor(x, y + halfHeight, halfWidth, height - halfHeight)
+			),
+			Color.averageColor(
+				computeAverageColor(x + halfWidth, y, width - halfWidth, halfHeight),
+				computeAverageColor(x + halfWidth, y + halfHeight, width - halfWidth, height - halfHeight)
+			)
+		);
 	}
 }
