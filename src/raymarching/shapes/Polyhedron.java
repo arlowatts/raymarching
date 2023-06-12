@@ -2,8 +2,6 @@ package raymarching.shapes;
 
 import raymarching.Vector;
 
-import java.lang.Math;
-
 /**
 An abstract subclass of Shape defining a regular polyhedron.
 */

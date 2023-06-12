@@ -1,9 +1,5 @@
 package raymarching.shapes;
 
-import raymarching.Vector;
-
-import java.lang.Math;
-
 /**
 A subclass of Polyhedron defining a regular 4-sided polyhedron.
 */

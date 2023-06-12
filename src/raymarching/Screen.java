@@ -1,7 +1,5 @@
 package raymarching;
 
-import raymarching.Vector;
-
 import java.awt.image.BufferedImage;
 
 /*
