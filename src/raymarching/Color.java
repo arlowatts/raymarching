@@ -28,12 +28,19 @@ public class Color {
 		return new Vector(getR(color) * RATIO, getG(color) * RATIO, getB(color) * RATIO);
 	}
 
+	// Returns the component-wise average of two colors
 	public static int averageColor(int colorA, int colorB) {
 		return toColor(
 			(getR(colorA) + getR(colorB)) / 2,
 			(getG(colorA) + getG(colorB)) / 2,
 			(getB(colorA) + getB(colorB)) / 2
 		);
+	}
+
+	// Converts the color to a vector and then adds it to the other vector
+	public static void addToVector(Vector v, int color, double scale) {
+		scale *= RATIO;
+		v.add(getR(color) * scale, getG(color) * scale, getB(color) * scale);
 	}
 	
 	// Shades a color by a value between 0 and 1

@@ -109,7 +109,7 @@ public class Ray {
 	 * Approximate each shape as a disk facing the target point
 	 */
 	private int getDiffuseColor(Scene scene, Vector normal) {
-		// Start with the background color, weighted with full area (surface area of half spher)
+		// Start with the background color, weighted with full area (surface area of half sphere)
 		double totalShapeArea = 2 * Math.PI;
 		Vector diffuseColor = Color.toVector(scene.getScreen().getBgnd());
 		diffuseColor.multiply(totalShapeArea);
@@ -125,11 +125,10 @@ public class Ray {
 			// Find the arc length of the projected radius on the unit sphere, and the area of the region
 			// See https://mathworld.wolfram.com/SphericalCap.html
 			double radius = Math.atan(currShape.getBoundRadius() / relativePos.getLength());
-			double area = Math.PI * (2 - 2 / Math.sqrt(1 + radius * radius));
+			double area = 2 * Math.PI * (1 - 1 / Math.sqrt(1 + radius * radius));
 			
 			// Shade the color by the area it fills and add to the total color
-			Vector color = Color.toVector(currShape.getColor());
-			diffuseColor.add(color, area);
+			Color.addToVector(diffuseColor, currShape.getColor(), area);
 			
 			// Track the total area that has been contributed by each shape
 			totalShapeArea += area;
