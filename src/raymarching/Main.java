@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.image.BufferedImage;
 
-public class RaymarchingMain {
+public class Main {
 	// All of the objects being rendered are stored in Scene object
 	private static Scene scene;
 	private static String sceneName;
@@ -38,7 +38,7 @@ public class RaymarchingMain {
 			
 			if (scene.getOutputFormat() == 2) {
 				try {
-					ImageIO.write(scene.getScreen().getImage(), "png", new File("output\\" + sceneName + ".png"));
+					ImageIO.write(scene.getScreen().getImage(), "png", new File("output/" + sceneName + ".png"));
 					System.out.println(sceneName + ".png saved");
 				}
 				catch (IOException e) {
@@ -95,7 +95,7 @@ public class RaymarchingMain {
 	
 	// Initializes a Gif writer to write the rendered images to a .gif file
 	private static void setupGifWriter() throws IOException{
-		File outputFile = new File("output\\" + sceneName + ".gif");
+		File outputFile = new File("output/" + sceneName + ".gif");
 		gifWriter = new GifSequenceWriter(ImageIO.createImageOutputStream(outputFile), BufferedImage.TYPE_INT_RGB, 1000 / 60, true);
 	}
 }

@@ -35,7 +35,7 @@ public class Scene {
 	
 	// Constructors
 	public Scene(String path) throws UndefinedException {
-		File setup = new File("scenes\\" + path);
+		File setup = new File("scenes/" + path);
 		Scanner scanner = null;
 		
 		try {scanner = new Scanner(setup);}
@@ -281,7 +281,7 @@ public class Scene {
 		try {shape.setColor(Integer.decode(line[3]));}
 		catch (NumberFormatException e) {}
 		
-		try {shape.loadTexture("textures\\" + line[3]);}
+		try {shape.loadTexture("textures/" + line[3]);}
 		catch (IOException e) {}
 		
 		return shape;
